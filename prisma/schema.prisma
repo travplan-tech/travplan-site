@@ -1,0 +1,362 @@
+datasource db {
+    provider = "postgresql"
+}
+
+generator client {
+    provider        = "prisma-client-js"
+    previewFeatures = ["schemaEngineDriverAdapters"]
+}
+
+model Destination {
+    id          Int       @id @default(autoincrement())
+    name        String
+    description String?
+    country     String?
+    city        String? // City/State within the country (e.g., Kerala, Goa, Rajasthan)
+    region      String? // Region: Europe, Asia, South America, Africa, North America, Oceania
+    image       String?
+    rating      Float     @default(0)
+    popularity  Int       @default(0)
+    tours       Int       @default(0)
+    packages    Package[]
+    createdAt   DateTime  @default(now())
+    updatedAt   DateTime  @updatedAt
+
+    @@index([name])
+    @@index([country])
+    @@index([city])
+    @@index([region])
+    @@index([popularity])
+    @@map("Destination")
+}
+
+model User {
+    id            Int        @id @default(autoincrement())
+    email         String     @unique
+    name          String?
+    password      String?
+    emailVerified DateTime?
+    image         String?
+    phone         String? // User's phone number
+    role          String     @default("USER")
+    bookings      Booking[]
+    reviews       Review[]
+    coupons       Coupon[]
+    favorites     Favorite[]
+    createdAt     DateTime   @default(now())
+    updatedAt     DateTime   @updatedAt
+
+    @@map("User")
+}
+
+model Package {
+    id            Int         @id @default(autoincrement())
+    title         String
+    description   String?
+    destinationId Int
+    destination   Destination @relation(fields: [destinationId], references: [id], onDelete: Cascade)
+    price         Float
+    originalPrice Float? // Original price before discount
+    duration      String
+    cities        String?
+    rating        Float       @default(0)
+    image         String?
+    mapImage      String? // Map route image
+    galleryImages String? // Comma-separated gallery image URLs
+    highlights    String? // Newline-separated highlights
+    specialNotes  String? // Special notes for the package
+    sales         Sale[]
+
+    // Tour specific fields
+    tourType        String? @default("Family") // Family, Couples, Friends, Adventure, Cultural & Architecture, Pilgrim Tours, Luxury, Instagrammable.
+    tourCategory    String? @default("PRIVATE") // PRIVATE or GROUP
+    maxPersons      Int?    @default(10) // Maximum number of persons that can book this package
+    accommodation   String? // Hotel, Resort, Camp, etc.
+    ageRange        String? // e.g., "1-80 yrs"
+    discountPercent Int?    @default(0)
+    tags            String? // Comma-separated tags
+    isCustomizable  Boolean @default(true)
+    bestPrice       Boolean @default(true)
+    flightsIncluded Boolean @default(false) // Whether flights are included in the package
+
+    // Departure related
+    departureDates     String? // JSON string: [{date: "Jan 05", seatsRemaining: null, price: 5000}]
+    departureType      String? @default("Fixed") // Fixed, Flexible
+    departurePoints    String? // Comma-separated departure cities
+    itinerary          String? // JSON string: [{day: 1, title: "", description: ""}]
+    itineraryPdf       String? // PDF URL
+    inclusions         String? // Newline-separated
+    exclusions         String? // Newline-separated
+    cancellationPolicy String?
+    priceChartImage    String? // Monthly price comparison chart image
+
+    bookings      Booking[]
+    reviews       Review[]
+    favorites     Favorite[]
+    tourDateSlots TourDate[] // Tour dates with seat availability
+    createdAt     DateTime   @default(now())
+    updatedAt     DateTime   @updatedAt
+
+    // Performance indexes for common queries
+    @@index([destinationId])
+    @@index([price])
+    @@index([rating])
+    @@index([tourCategory])
+    @@index([tourType])
+    @@index([createdAt])
+    @@map("Package")
+}
+
+// Tour Date with Seat Availability
+model TourDate {
+    id        Int     @id @default(autoincrement())
+    packageId Int
+    package   Package @relation(fields: [packageId], references: [id], onDelete: Cascade)
+
+    startDate DateTime // Tour start date
+    endDate   DateTime // Tour end date
+    dateLabel String // Display label e.g., "20 Nov - 29 Nov"
+    price     Float? // Price for this specific date (optional, falls back to package price)
+
+    totalSeats     Int @default(20) // Total seats available for this date
+    availableSeats Int @default(20) // Current available seats (decrements on booking)
+
+    isActive Boolean @default(true) // Can disable dates without deleting
+
+    // Room availability for this date
+    roomAvailability RoomAvailability[]
+
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    bookings  Booking[]
+
+    @@unique([packageId, startDate])
+    @@index([startDate])
+    @@index([isActive])
+    @@map("TourDate")
+}
+
+// Room Availability per Tour Date
+model RoomAvailability {
+    id         Int      @id @default(autoincrement())
+    tourDateId Int
+    tourDate   TourDate @relation(fields: [tourDateId], references: [id], onDelete: Cascade)
+
+    roomType       Int // 1 = single, 2 = double, 3 = triple, 4 = quad
+    totalRooms     Int   @default(0) // Total rooms of this type available
+    availableRooms Int   @default(0) // Current available rooms (decrements on booking)
+    pricePerRoom   Float @default(0) // Price per room of this type
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@unique([tourDateId, roomType])
+    @@index([tourDateId])
+    @@map("RoomAvailability")
+}
+
+model Booking {
+    id         Int       @id @default(autoincrement())
+    bookingRef String    @unique @default(cuid())
+    userId     Int
+    user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+    packageId  Int?
+    package    Package?  @relation(fields: [packageId], references: [id], onDelete: SetNull)
+    tourDateId Int?
+    tourDate   TourDate? @relation(fields: [tourDateId], references: [id])
+
+    // Guest Details
+    guestName      String
+    guestEmail     String
+    guestPhone     String
+    numberOfPeople Int
+    travelerNames  String? // Comma-separated list of all travelers' names
+
+    // Room Selection - JSON string: [{roomType: 2, count: 1, pricePerRoom: 5000}]
+    roomSelection  String?
+    roomTotalPrice Float?  @default(0) // Total price for all rooms
+
+    // Trip Details
+    selectedDate    String // e.g., "20 Nov - 29 Nov"
+    departureCity   String
+    specialRequests String?
+
+    // Pricing
+    pricePerPerson Float
+    totalPrice     Float
+    discountAmount Float?  @default(0)
+    couponCode     String?
+
+    // Status
+    status        String  @default("PENDING") // PENDING, CONFIRMED, CANCELLED, COMPLETED
+    paymentStatus String  @default("UNPAID") // UNPAID, PAID, REFUNDED
+    paymentId     String? // Razorpay payment ID
+    orderId       String? // Razorpay order ID
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([userId])
+    @@index([packageId])
+    @@index([status])
+    @@index([createdAt])
+    @@map("Booking")
+}
+
+model Review {
+    id Int @id @default(autoincrement())
+
+    userId      Int?
+    user        User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userName    String? // Name of the reviewer (if not a registered user)
+    packageId   Int
+    package     Package  @relation(fields: [packageId], references: [id], onDelete: Cascade)
+    bookingId   Int? // Optional: links review to a specific booking
+    rating      Int
+    comment     String?
+    designation String?
+    avatar      String?
+    image       String?
+    images      String? // Comma-separated list of image URLs
+    video       String? // Video testimonial URL (Cloudinary)
+    destination String? // Destination name for video testimonials
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+
+    @@index([packageId])
+    @@index([userId])
+    @@map("Review")
+}
+
+model Enquiry {
+    id                Int      @id @default(autoincrement())
+    name              String
+    email             String
+    phone             String
+    packageId         Int?
+    packageName       String?
+    preferredDate     String?
+    numberOfTravelers String?
+    message           String?
+    status            String   @default("NEW") // NEW, CONTACTED, CONVERTED, CLOSED
+    createdAt         DateTime @default(now())
+    updatedAt         DateTime @updatedAt
+
+    @@map("Enquiry")
+}
+
+model ContactMessage {
+    id        Int      @id @default(autoincrement())
+    fullName  String
+    email     String
+    phone     String
+    message   String
+    status    String   @default("UNREAD") // UNREAD, READ, REPLIED
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@map("ContactMessage")
+}
+
+model FeatureBox {
+    id          Int      @id @default(autoincrement())
+    title       String
+    description String? // Optional description
+    icon        String // Icon name (Award, DollarSign, Leaf, Star, etc.)
+    order       Int      @default(0) // For ordering the boxes
+    isActive    Boolean  @default(true)
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+
+    @@index([isActive])
+    @@index([order])
+    @@map("FeatureBox")
+}
+
+model SiteSetting {
+    id        Int      @id @default(autoincrement())
+    key       String   @unique
+    value     String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@map("SiteSetting")
+}
+
+model TripExpert {
+    id             Int      @id @default(autoincrement())
+    name           String
+    email          String? // Expert's email for receiving trip requests
+    avatar         String? // Image URL
+    bio            String?
+    expertise      String // Comma-separated countries of expertise
+    whatsappNumber String? // WhatsApp contact number
+    type           String   @default("INTERNATIONAL") // DOMESTIC or INTERNATIONAL
+    isActive       Boolean  @default(true)
+    order          Int      @default(0)
+    createdAt      DateTime @default(now())
+    updatedAt      DateTime @updatedAt
+
+    @@index([isActive])
+    @@index([type])
+    @@index([order])
+    @@map("TripExpert")
+}
+
+model Coupon {
+    id            Int       @id @default(autoincrement())
+    code          String    @unique
+    discountType  String    @default("PERCENTAGE") // PERCENTAGE or FIXED
+    discountValue Float     @default(5) // 5% discount
+    email         String?
+    userId        Int? // Link to specific user
+    user          User?     @relation(fields: [userId], references: [id])
+    packageId     Int?
+    packageName   String?
+    expiresAt     DateTime?
+    isUsed        Boolean   @default(false)
+    usedAt        DateTime?
+    usedByBooking Int? // Reference to booking ID if used
+    createdAt     DateTime  @default(now())
+    updatedAt     DateTime  @updatedAt
+
+    @@map("Coupon")
+}
+
+model Sale {
+    id          Int       @id @default(autoincrement())
+    name        String
+    slug        String    @unique
+    description String?
+    heroImage   String? // Image for the sale page hero
+    isActive    Boolean   @default(false)
+    packages    Package[]
+    createdAt   DateTime  @default(now())
+    updatedAt   DateTime  @updatedAt
+
+    @@map("Sale")
+}
+
+model Favorite {
+    id        Int      @id @default(autoincrement())
+    userId    Int
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    packageId Int
+    package   Package  @relation(fields: [packageId], references: [id], onDelete: Cascade)
+    createdAt DateTime @default(now())
+
+    @@unique([userId, packageId])
+    @@index([userId])
+    @@index([packageId])
+    @@map("Favorite")
+}
+
+model PasswordResetToken {
+    id        Int      @id @default(autoincrement())
+    email     String
+    token     String   @unique
+    expiresAt DateTime
+    createdAt DateTime @default(now())
+
+    @@map("PasswordResetToken")
+}

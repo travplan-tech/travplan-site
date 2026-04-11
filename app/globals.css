@@ -1,0 +1,374 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+/* ========================================================================== 
+   CUSTOM FONT DEFINITIONS
+   ========================================================================== */
+
+/* Arial Unicode MS - Heading Font */
+@font-face {
+  font-family: 'Arial Unicode MS';
+  src: url('/fonts/Arial Unicode MS/arial unicode ms.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Arial Unicode MS';
+  src: url('/fonts/Arial Unicode MS/arial unicode ms bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Helvetica Now Display - Body Font */
+@font-face {
+  font-family: 'Helvetica Now Display';
+  src: url('/fonts/helvetica-now-display/HelveticaNowDisplay-Regular.woff2') format('woff2'),
+    url('/fonts/helvetica-now-display/HelveticaNowDisplay-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Helvetica Now Display';
+  src: url('/fonts/helvetica-now-display/HelveticaNowDisplay-RegIta.woff2') format('woff2'),
+    url('/fonts/helvetica-now-display/HelveticaNowDisplay-RegIta.woff') format('woff');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Helvetica Now Display';
+  src: url('/fonts/helvetica-now-display/HelveticaNowDisplay-Medium.woff2') format('woff2'),
+    url('/fonts/helvetica-now-display/HelveticaNowDisplay-Medium.woff') format('woff');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Helvetica Now Display';
+  src: url('/fonts/helvetica-now-display/HelveticaNowDisplay-MedIta.woff2') format('woff2'),
+    url('/fonts/helvetica-now-display/HelveticaNowDisplay-MedIta.woff') format('woff');
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Helvetica Now Display';
+  src: url('/fonts/helvetica-now-display/HelveticaNowDisplay-Bold.woff2') format('woff2'),
+    url('/fonts/helvetica-now-display/HelveticaNowDisplay-Bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Helvetica Now Display';
+  src: url('/fonts/helvetica-now-display/HelveticaNowDisplay-BoldIta.woff2') format('woff2'),
+    url('/fonts/helvetica-now-display/HelveticaNowDisplay-BoldIta.woff') format('woff');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Helvetica Now Display';
+  src: url('/fonts/helvetica-now-display/HelveticaNowDisplay-Light.woff2') format('woff2'),
+    url('/fonts/helvetica-now-display/HelveticaNowDisplay-Light.woff') format('woff');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Helvetica Now Display';
+  src: url('/fonts/helvetica-now-display/HelveticaNowDisplay-LightIta.woff2') format('woff2'),
+    url('/fonts/helvetica-now-display/HelveticaNowDisplay-LightIta.woff') format('woff');
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Helvetica Now Display';
+  src: url('/fonts/helvetica-now-display/HelveticaNowDisplay-ExtraBold.woff2') format('woff2'),
+    url('/fonts/helvetica-now-display/HelveticaNowDisplay-ExtraBold.woff') format('woff');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Helvetica Now Display';
+  src: url('/fonts/helvetica-now-display/HelveticaNowDisplay-Black.woff2') format('woff2'),
+    url('/fonts/helvetica-now-display/HelveticaNowDisplay-Black.woff') format('woff');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: #8745d1;
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: #8745d1;
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: #8745d1;
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: #8745d1;
+  --chart-1: #8745d1;
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --radius: 0.625rem;
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: #8745d1;
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: #8745d1;
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: #8745d1;
+}
+
+@theme inline {
+  --font-heading: "Arial Unicode MS", Arial, "Helvetica Neue", sans-serif;
+  --font-body: "Helvetica Now Display", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-sans: var(--font-body);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-body);
+  }
+
+  /* Apply heading font to all heading elements */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-heading);
+  }
+}
+
+/* Utility classes for fonts */
+.font-heading {
+  font-family: var(--font-heading) !important;
+}
+
+.font-body {
+  font-family: var(--font-body) !important;
+}
+
+/* Hero Section Fonts - using the new variables */
+.hero-heading {
+  font-family: var(--font-heading) !important;
+}
+
+.hero-text {
+  font-family: var(--font-body) !important;
+}
+
+/* ========================================================================== 
+   GALLERY COMPONENT STYLES
+   ========================================================================== */
+
+.gallery {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  overflow: hidden;
+}
+
+.gallery__strip {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.photo {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.photo__image {
+  width: 450px;
+  height: 200px;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.photo__name {
+  position: absolute;
+  text-transform: uppercase;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 28px;
+  font-weight: 900;
+  transition: all 0.3s ease;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
+  pointer-events: none;
+  user-select: none;
+}
+
+.photo:hover .photo__name {
+  font-size: 34px;
+  text-shadow: 2px 2px 12px rgba(0, 0, 0, 0.8);
+}
+
+/* Gallery Responsive Styles */
+@media (max-width: 1200px) {
+  .photo__image {
+    width: 380px;
+    height: 180px;
+  }
+
+  .photo__name {
+    font-size: 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .photo__image {
+    width: 300px;
+    height: 150px;
+  }
+
+  .photo__name {
+    font-size: 20px;
+  }
+
+  .photo:hover .photo__name {
+    font-size: 24px;
+  }
+}
+
+@media (max-width: 450px) {
+  .photo__image {
+    width: 250px;
+    height: 130px;
+  }
+
+  .photo__name {
+    font-size: 18px;
+  }
+
+  .photo:hover .photo__name {
+    font-size: 20px;
+  }
+}
+
+/* ========================================================================== 
+   CUSTOM SCROLLBAR STYLES
+   ========================================================================== */
+
+/* Primary colored scrollbar - for elements with .scrollbar-primary class */
+.scrollbar-primary {
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary) rgba(135, 69, 209, 0.1);
+}
+
+.scrollbar-primary::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+
+.scrollbar-primary::-webkit-scrollbar-track {
+  background: linear-gradient(90deg, rgba(135, 69, 209, 0.05) 0%, rgba(135, 69, 209, 0.1) 100%);
+  border-radius: 100px;
+}
+
+.scrollbar-primary::-webkit-scrollbar-thumb {
+  background: linear-gradient(90deg, #8745d1 0%, #a855f7 50%, #8745d1 100%);
+  border-radius: 100px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.scrollbar-primary::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(90deg, #7338b8 0%, #9333ea 50%, #7338b8 100%);
+  background-clip: padding-box;
+}
+
+/* Hide scrollbar utility */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
