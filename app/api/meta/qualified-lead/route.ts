@@ -22,15 +22,26 @@ function toUnixSeconds(value: unknown): number | null {
 
 export async function POST(request: Request) {
     try {
-        if (!META_DATASET_ID || !META_ACCESS_TOKEN) {
-            console.error("Meta Conversions API is not configured")
+        const body = await request.json()
+
+        // dataset_id and access_token can be sent in the body, env values are the fallback
+        const datasetId = String(body.dataset_id || META_DATASET_ID || "")
+        const accessToken = String(body.access_token || META_ACCESS_TOKEN || "")
+
+        if (!datasetId || !accessToken) {
             return NextResponse.json(
-                { error: "Meta Conversions API is not configured" },
-                { status: 500 }
+                { error: "dataset_id and access_token are required" },
+                { status: 400 }
             )
         }
 
-        const body = await request.json()
+        // Only digits are allowed so the Graph API URL cannot be tampered with
+        if (!/^\d+$/.test(datasetId)) {
+            return NextResponse.json(
+                { error: "dataset_id must be numeric" },
+                { status: 400 }
+            )
+        }
 
         const isEmpty = (value: unknown) =>
             value === undefined || value === null || value === "" || value === "null"
@@ -59,7 +70,9 @@ export async function POST(request: Request) {
         }
 
         const userData: Record<string, string> = {
-            whatsapp_business_account_id: META_WABA_ID || META_DATASET_ID,
+            whatsapp_business_account_id: String(
+                body.whatsapp_business_account_id || META_WABA_ID || datasetId
+            ),
             ctwa_clid: String(ctwaClid),
         }
 
@@ -77,7 +90,7 @@ export async function POST(request: Request) {
         }
 
         const metaResponse = await fetch(
-            `https://graph.facebook.com/${META_API_VERSION}/${META_DATASET_ID}/events?access_token=${META_ACCESS_TOKEN}`,
+            `https://graph.facebook.com/${META_API_VERSION}/${datasetId}/events?access_token=${encodeURIComponent(accessToken)}`,
             {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
