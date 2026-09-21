@@ -72,7 +72,7 @@ export async function POST(request: Request) {
         }
 
         const metaResponse = await fetch(
-            `https://graph.facebook.com/${META_API_VERSION}/${META_DATASET_ID}/dataset?access_token=${META_ACCESS_TOKEN}`,
+            `https://graph.facebook.com/${META_API_VERSION}/${META_DATASET_ID}/events?access_token=${META_ACCESS_TOKEN}`,
             {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
