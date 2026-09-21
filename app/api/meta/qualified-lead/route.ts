@@ -32,25 +32,30 @@ export async function POST(request: Request) {
 
         const body = await request.json()
 
-        const ctwaClid = body.ctwa_clid
-        if (!ctwaClid) {
-            return NextResponse.json(
-                { error: "ctwa_clid is required" },
-                { status: 400 }
-            )
-        }
+        const isEmpty = (value: unknown) =>
+            value === undefined || value === null || value === "" || value === "null"
 
-        // Fall back to now if event_time is missing
-        const eventTime =
-            body.event_time === undefined || body.event_time === null || body.event_time === ""
-                ? Math.floor(Date.now() / 1000)
-                : toUnixSeconds(body.event_time)
+        // Fall back to now if event_time is missing or null
+        const eventTime = isEmpty(body.event_time)
+            ? Math.floor(Date.now() / 1000)
+            : toUnixSeconds(body.event_time)
 
         if (eventTime === null) {
             return NextResponse.json(
                 { error: "event_time is not a valid date" },
                 { status: 400 }
             )
+        }
+
+        // Meta cannot attribute an event without a click id, so accept the request and skip sending
+        const ctwaClid = body.ctwa_clid
+        if (isEmpty(ctwaClid)) {
+            return NextResponse.json({
+                success: true,
+                skipped: true,
+                message: "No ctwa_clid provided, event not sent to Meta",
+                event_time: eventTime,
+            })
         }
 
         const userData: Record<string, string> = {
