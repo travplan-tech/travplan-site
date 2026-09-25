@@ -22,7 +22,13 @@ function toUnixSeconds(value: unknown): number | null {
 
 export async function POST(request: Request) {
     try {
-        const body = await request.json()
+        const rawBody = await request.json()
+
+        // DoubleTick may wrap the fields in a "data" object, so accept both shapes
+        const body =
+            rawBody && typeof rawBody.data === "object" && !Array.isArray(rawBody.data) && rawBody.data !== null
+                ? { ...rawBody, ...rawBody.data }
+                : rawBody
 
         // dataset_id and access_token can be sent in the body, env values are the fallback
         const datasetId = String(body.dataset_id || META_DATASET_ID || "")
