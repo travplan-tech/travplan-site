@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import TripDetailClient, { TourData } from "./TripDetailClient";
 import { SITE_URL } from "@/lib/site"
 import { upcomingDeparturesOnly } from "@/lib/departures"
+import { packagePageTitle, packagePageDescription, readableTitle } from "@/lib/package-title"
 
 // Force dynamic rendering so admin changes (e.g., brochure PDF uploads) are reflected immediately
 export const dynamic = "force-dynamic";
@@ -173,12 +174,23 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
         return { title: "Tour Not Found" };
     }
 
-    const title = `${pkg.title} | Travplan`;
-    const description = pkg.description || `Explore ${pkg.title} with Travplan. ${pkg.duration} tour with prices starting from ₹${pkg.price.toLocaleString("en-IN")}`;
+    const place = pkg.destination?.name || pkg.destination?.country || null;
+    const title = packagePageTitle(pkg.title, pkg.duration);
+    const description = packagePageDescription(pkg.title, pkg.duration, place, pkg.description);
 
     return {
-        title,
+        // absolute: the root layout already appends "| Travplan", which doubled
+        // the brand on every package page.
+        title: { absolute: title },
         description,
+        keywords: [
+            readableTitle(pkg.title, pkg.duration),
+            place,
+            pkg.destination?.country,
+            "tour package",
+            "travel package",
+            "tour booking",
+        ].filter(Boolean) as string[],
         alternates: {
             canonical: `/destinations/trip/${pkg.id}`,
         },
