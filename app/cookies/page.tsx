@@ -2,8 +2,10 @@ import React from 'react';
 import { Cookie, Info, Settings, ShieldCheck } from 'lucide-react';
 
 export const metadata = {
-    title: 'Cookie Policy | Travplan',
-    description: 'Learn how Travplan uses cookies and tracking technologies to improve your travel planning experience.',
+    title: { absolute: 'Cookie Policy | Travplan' },
+    description:
+        'Read Travplan cookie policy to understand how cookies and similar technologies may be used on the website.',
+    alternates: { canonical: '/cookies' },
 };
 
 export default function CookiePolicyPage() {

@@ -373,6 +373,12 @@ const VideoTestimonialsSection = () => {
         return () => observer.disconnect()
     }, [])
 
+    // An empty testimonials rail still rendered its heading and a dashed
+    // placeholder, so the homepage advertised social proof it did not have.
+    if (!isLoading && testimonials.length === 0) {
+        return <section ref={sectionRef} aria-hidden="true" />
+    }
+
     return (
         <section
             ref={sectionRef}
@@ -432,11 +438,7 @@ const VideoTestimonialsSection = () => {
                             ))}
                         </div>
                     </div>
-                ) : (
-                    <div className="py-20 text-center border-2 border-dashed border-gray-100 rounded-3xl">
-                        <p className="text-gray-400">No testimonials found yet.</p>
-                    </div>
-                )}
+                ) : null}
             </div>
 
             {/* Full-Screen Modal */}

@@ -1,8 +1,13 @@
 import { MetadataRoute } from "next"
 import { prisma } from "@/lib/prisma"
+import { SITE_URL } from "@/lib/site"
+
+// The sitemap is built from live package/destination data, so refresh it hourly
+// instead of freezing whatever existed at build time.
+export const revalidate = 3600
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-    const baseUrl = "https://travel-1-plan.vercel.app"
+    const baseUrl = SITE_URL
 
     // Static pages
     const staticPages: MetadataRoute.Sitemap = [
@@ -37,12 +42,29 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             priority: 0.8,
         },
         {
-            url: `${baseUrl}/deals`,
+            url: `${baseUrl}/about`,
             lastModified: new Date(),
-            changeFrequency: "daily",
-            priority: 0.8,
+            changeFrequency: "monthly",
+            priority: 0.6,
         },
     ]
+
+    // Active sale pages (/deals/[slug]); there is no bare /deals route.
+    let dealPages: MetadataRoute.Sitemap = []
+    try {
+        const sales = await prisma.sale.findMany({
+            where: { isActive: true },
+            select: { slug: true, updatedAt: true },
+        })
+        dealPages = sales.map((sale) => ({
+            url: `${baseUrl}/deals/${sale.slug}`,
+            lastModified: sale.updatedAt,
+            changeFrequency: "daily" as const,
+            priority: 0.8,
+        }))
+    } catch (error) {
+        console.error("Error fetching sales for sitemap:", error)
+    }
 
     // Fetch all packages for dynamic sitemap entries
     let packagePages: MetadataRoute.Sitemap = []
@@ -108,5 +130,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         console.error("Error fetching destinations for sitemap:", error)
     }
 
-    return [...staticPages, ...packagePages, ...destinationPages]
+    return [...staticPages, ...dealPages, ...packagePages, ...destinationPages]
 }

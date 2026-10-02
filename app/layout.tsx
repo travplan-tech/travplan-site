@@ -7,15 +7,16 @@ import { Providers } from "./providers";
 import { LayoutWrapper } from "@/components/layout-wrapper";
 import { prisma } from "@/lib/prisma";
 import { unstable_noStore as noStore } from "next/cache";
+import { SITE_URL, SITE_NAME } from "@/lib/site";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://travel-1-plan.vercel.app"),
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: "Travplan - Book Tours & Travel Experiences Worldwide",
+    default: "Travplan Tour Packages | Group Trips & Custom Holidays",
     template: "%s | Travplan",
   },
   description:
-    "Discover and book the best tours, trips, and travel experiences globally. Compare 15,000+ curated multiday tours in 130+ countries with verified reviews, best prices, and carbon-offset travel.",
+    "Book curated India and international tour packages with Travplan. Explore group departures, custom holidays, expert support and easy WhatsApp enquiries.",
   keywords: [
     "tours",
     "travel packages",
@@ -32,7 +33,7 @@ export const metadata: Metadata = {
     "customized trips",
     "travel booking",
   ],
-  authors: [{ name: "Travplan", url: "https://travel-1-plan.vercel.app" }],
+  authors: [{ name: SITE_NAME, url: SITE_URL }],
   creator: "Travplan",
   publisher: "Travplan",
   formatDetection: {
@@ -43,11 +44,11 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://travel-1-plan.vercel.app",
-    siteName: "Travplan",
-    title: "Travplan - Book Tours & Travel Experiences Worldwide",
+    url: SITE_URL,
+    siteName: SITE_NAME,
+    title: "Travplan Tour Packages | Group Trips & Custom Holidays",
     description:
-      "Discover and book the best tours, trips, and travel experiences globally. Compare 15,000+ curated multiday tours with verified reviews and best prices.",
+      "Book curated India and international tour packages with Travplan. Explore group departures, custom holidays, expert support and easy WhatsApp enquiries.",
     images: [
       {
         url: "/og-image.jpg",
@@ -59,9 +60,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Travplan - Book Tours & Travel Experiences Worldwide",
+    title: "Travplan Tour Packages | Group Trips & Custom Holidays",
     description:
-      "Discover and book the best tours, trips, and travel experiences globally. Compare 15,000+ curated multiday tours with verified reviews and best prices.",
+      "Book curated India and international tour packages with Travplan. Explore group departures, custom holidays, expert support and easy WhatsApp enquiries.",
     images: ["/og-image.jpg"],
     creator: "@Travplan",
   },
@@ -84,9 +85,6 @@ export const metadata: Metadata = {
     apple: "/apple-touch-icon.png",
   },
   manifest: "/manifest.json",
-  alternates: {
-    canonical: "https://travel-1-plan.vercel.app",
-  },
   verification: {
     google: process.env.GOOGLE_SITE_VERIFICATION || "",
   },

@@ -42,6 +42,7 @@ export default function TravelersPhotos() {
                 src={photo.image}
                 alt={photo.title || `Photo by ${photo.name}`}
                 fill
+                sizes="(max-width: 768px) 50vw, (max-width: 1280px) 25vw, 320px"
                 className="object-cover group-hover:scale-110 transition duration-300"
               />
               <div className="absolute inset-x-0 bottom-0 bg-black/60 p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">

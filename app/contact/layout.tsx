@@ -1,18 +1,19 @@
 import { Metadata } from "next"
 
 export const metadata: Metadata = {
-    title: "Contact Us",
+    title: { absolute: "Contact Travplan Travel Agency in Delhi" },
     description:
-        "Get in touch with Travplan for tour bookings, travel inquiries, and customer support. We're here to help you plan your next unforgettable journey.",
+        "Contact Travplan for India and international tour packages, custom holidays, group trips, WhatsApp enquiries and travel planning support.",
     alternates: {
         canonical: "/contact",
     },
     openGraph: {
-        title: "Contact Travplan - Get Help with Your Travel Plans",
+        title: "Contact Travplan Travel Agency in Delhi",
         description:
-            "Get in touch with Travplan for tour bookings, travel inquiries, and customer support. Available worldwide with 24/7 support.",
+            "Contact Travplan for India and international tour packages, custom holidays, group trips and travel planning support.",
         url: "/contact",
         type: "website",
+        images: ["/og-image.jpg"],
     },
 }
 

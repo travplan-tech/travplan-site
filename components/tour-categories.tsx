@@ -50,6 +50,7 @@ export default function TourCategories() {
                                     src={section.image}
                                     alt={section.title}
                                     fill
+                                    sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 640px"
                                     className="object-cover group-hover:scale-105 transition-transform duration-500"
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />

@@ -34,7 +34,7 @@ const defaultFeatureBoxes: FeatureBox[] = [
   {
     id: 1,
     title: "Best Tours",
-    description: "A strict screening process ensures that we only offer high quality, vetted tours and trip packages globally. The result? 4.8 of 5 stars out of more than 25,000 trip ratings.",
+    description: "A strict screening process means we only offer vetted tours and trip packages, run with operators we work with directly and review after every departure.",
     icon: "Award",
     order: 0,
     isActive: true,
@@ -49,8 +49,8 @@ const defaultFeatureBoxes: FeatureBox[] = [
   },
   {
     id: 3,
-    title: "Sustainable Tours",
-    description: "All tours booked through Travplan are 100% carbon offset. Every quarter, we invest in carbon reduction projects around the world—at no extra cost to you.",
+    title: "Responsible Travel",
+    description: "We plan trips with local operators, keep group sizes manageable and favour stays and transport that keep more of the spend within the places we visit.",
     icon: "Leaf",
     order: 2,
     isActive: true,

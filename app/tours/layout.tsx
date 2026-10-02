@@ -1,9 +1,9 @@
 import { Metadata } from "next"
 
 export const metadata: Metadata = {
-    title: "Browse Tours & Travel Deals",
+    title: { absolute: "Tour Packages & Group Departures | Travplan" },
     description:
-        "Find the best travel deals and discounted tour packages. Filter by destination, duration, tour type, and budget. Book your next adventure with verified reviews and best price guarantee.",
+        "Browse Travplan tour packages, group departures and holiday trips. Find curated routes, inclusions, travel dates and enquiry options.",
     keywords: [
         "tour deals",
         "travel packages",
@@ -19,11 +19,12 @@ export const metadata: Metadata = {
         canonical: "/tours",
     },
     openGraph: {
-        title: "Browse Tours & Travel Deals - Travplan",
+        title: "Tour Packages & Group Departures | Travplan",
         description:
-            "Find the best travel deals and discounted tour packages. Filter by destination, duration, tour type, and budget.",
+            "Browse Travplan tour packages, group departures and holiday trips. Find curated routes, inclusions and travel dates.",
         url: "/tours",
         type: "website",
+        images: ["/og-image.jpg"],
     },
 }
 

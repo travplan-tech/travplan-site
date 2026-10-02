@@ -19,8 +19,8 @@ const footerLinks = {
     { name: 'Couples', href: '/destinations?tourType=Couples' },
     { name: 'Friends', href: '/destinations?tourType=Friends' },
     { name: 'Adventure', href: '/destinations?tourType=Adventure' },
-    { name: 'Cultural & Architecture', href: '/destinations?tourType=Cultural & Architecture' },
-    { name: 'Pilgrim Tours', href: '/destinations?tourType=Pilgrim Tours' },
+    { name: 'Cultural & Architecture', href: '/destinations?tourType=Cultural%20%26%20Architecture' },
+    { name: 'Pilgrim Tours', href: '/destinations?tourType=Pilgrim%20Tours' },
     { name: 'Luxury', href: '/destinations?tourType=Luxury' },
     { name: 'Instagrammable', href: '/destinations?tourType=Instagrammable' }
   ],
@@ -47,14 +47,14 @@ const footerLinks = {
 const socialLinks = [
   // { name: 'Facebook', icon: Facebook, href: 'https://facebook.com/Travplan' },
   { name: 'Instagram', icon: Instagram, href: 'https://www.instagram.com/Travplan.in?igsh=MXE0ZXBiMTU2Nmd3NQ==' },
-  { name: 'WhatsApp', icon: Phone, href: 'https://wa.me/7011990884' },
+  { name: 'WhatsApp', icon: Phone, href: 'https://wa.me/917011990884' },
   { name: 'Google', icon: Globe, href: 'https://share.google/z741QzbcH9tbag9Nz' },
 ];
 
 const trustBadges = [
   { icon: Shield, title: '100% Secure', desc: 'Secure Payments' },
-  { icon: Globe, title: '150+ Countries', desc: 'Worldwide Tours' },
-  { icon: HeadphonesIcon, title: '24/7 Support', desc: 'Always Here' },
+  { icon: Globe, title: 'India & Abroad', desc: 'Curated Destinations' },
+  { icon: HeadphonesIcon, title: 'Expert Support', desc: 'Mon-Sat, 9am-6pm IST' },
   { icon: CreditCard, title: 'Easy Refunds', desc: 'Hassle-free' },
 ];
 
@@ -94,8 +94,8 @@ export default function Footer() {
               <span className="font-bold text-gray-900 md:text-lg"><span className="text-primary">TRAV</span>PLAN</span>
             </Link>
             <p className="text-sm text-gray-600 mb-6 leading-relaxed">
-              Discover the world with Travplan. We offer curated travel experiences across 150+ countries
-              with verified local operators, best price guarantee, and 24/7 customer support.
+              Discover the world with Travplan. We plan curated group tours and custom holidays across India
+              and international destinations, with verified local operators and support from our travel team.
             </p>
 
             {/* Social Links */}

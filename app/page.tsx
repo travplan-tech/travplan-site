@@ -1,20 +1,23 @@
 import { Metadata } from "next"
 import Hero from "@/components/hero"
 import HomeClient from "./HomeClient"
+import { SITE_URL } from "@/lib/site"
 
 export const metadata: Metadata = {
-  title: "Book Tours & Travel Experiences Worldwide",
+  title: { absolute: "Travplan Tour Packages | Group Trips & Custom Holidays" },
   description:
-    "Discover and book the best tours, trips, and travel experiences globally. Compare 15,000+ curated multiday tours in 130+ countries. Best prices guaranteed with 100% carbon offset.",
+    "Book curated India and international tour packages with Travplan. Explore group departures, custom holidays, expert support and easy WhatsApp enquiries.",
   alternates: {
     canonical: "/",
   },
   openGraph: {
-    title: "Travplan - Book Tours & Travel Experiences Worldwide",
+    title: "Travplan Tour Packages | Group Trips & Custom Holidays",
     description:
-      "Discover and book the best tours, trips, and travel experiences globally. Compare 15,000+ curated multiday tours with verified reviews.",
+      "Book curated India and international tour packages with Travplan. Explore group departures, custom holidays and expert travel support.",
     url: "/",
     type: "website",
+    // Page-level openGraph replaces the root layout's, so the image is restated
+    images: ["/og-image.jpg"],
   },
 }
 
@@ -24,77 +27,67 @@ const jsonLd = {
   "@graph": [
     {
       "@type": "Organization",
-      "@id": "https://travel-1-plan.vercel.app/#organization",
+      "@id": `${SITE_URL}/#organization`,
       name: "Travplan",
-      url: "https://travel-1-plan.vercel.app",
+      url: SITE_URL,
       logo: {
         "@type": "ImageObject",
-        url: "https://travel-1-plan.vercel.app/logo.webp",
+        url: `${SITE_URL}/logo.webp`,
         width: 200,
         height: 200,
       },
       sameAs: [
-        "https://www.facebook.com/Travplan",
-        "https://www.instagram.com/Travplan",
-        "https://twitter.com/Travplan",
+        "https://www.instagram.com/Travplan.in",
+        "https://wa.me/917011990884",
       ],
       contactPoint: {
         "@type": "ContactPoint",
-        telephone: "+45-8897-6045",
+        telephone: "+91-7011990884",
         contactType: "customer service",
         email: "Info@Travplan.in",
-        availableLanguage: ["English"],
-        areaServed: "Worldwide",
+        availableLanguage: ["English", "Hindi"],
+        areaServed: "IN",
       },
     },
     {
       "@type": "WebSite",
-      "@id": "https://travel-1-plan.vercel.app/#website",
-      url: "https://travel-1-plan.vercel.app",
+      "@id": `${SITE_URL}/#website`,
+      url: SITE_URL,
       name: "Travplan",
       description:
-        "Discover and book the best tours, trips, and travel experiences globally.",
+        "Curated India and international tour packages, group departures and custom holidays.",
       publisher: {
-        "@id": "https://travel-1-plan.vercel.app/#organization",
+        "@id": `${SITE_URL}/#organization`,
       },
       potentialAction: {
         "@type": "SearchAction",
         target: {
           "@type": "EntryPoint",
-          urlTemplate: "https://travel-1-plan.vercel.app/tours?country={search_term_string}",
+          urlTemplate: `${SITE_URL}/tours?country={search_term_string}`,
         },
         "query-input": "required name=search_term_string",
       },
     },
     {
       "@type": "TravelAgency",
-      "@id": "https://travel-1-plan.vercel.app/#travelagency",
+      "@id": `${SITE_URL}/#travelagency`,
       name: "Travplan",
-      url: "https://travel-1-plan.vercel.app",
+      url: SITE_URL,
       priceRange: "$$-$$$",
+      telephone: "+91-7011990884",
+      email: "Info@Travplan.in",
       address: {
         "@type": "PostalAddress",
-        streetAddress: "Skovlunden 18",
-        addressLocality: "Ry",
-        postalCode: "8680",
-        addressCountry: "DK",
+        streetAddress: "Workingdom, Block A, Sector 7 Dwarka, Palam",
+        addressLocality: "New Delhi",
+        addressRegion: "Delhi",
+        postalCode: "110077",
+        addressCountry: "IN",
       },
-      aggregateRating: {
-        "@type": "AggregateRating",
-        ratingValue: "4.8",
-        reviewCount: "10000",
-        bestRating: "5",
-        worstRating: "1",
-      },
-      areaServed: {
-        "@type": "GeoCircle",
-        geoMidpoint: {
-          "@type": "GeoCoordinates",
-          latitude: "0",
-          longitude: "0",
-        },
-        geoRadius: "40075000",
-      },
+      // No aggregateRating here: a self-serving rating on the business itself is
+      // not eligible for review stars. Ratings belong on individual packages,
+      // sourced from real reviews.
+      areaServed: "IN",
     },
   ],
 }

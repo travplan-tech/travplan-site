@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import { cache } from "react";
 import { prisma } from "@/lib/prisma";
 import TripDetailClient, { TourData } from "./TripDetailClient";
+import { SITE_URL } from "@/lib/site"
+import { upcomingDeparturesOnly } from "@/lib/departures"
 
 // Force dynamic rendering so admin changes (e.g., brochure PDF uploads) are reflected immediately
 export const dynamic = "force-dynamic";
@@ -128,13 +130,15 @@ const getPackage = cache(async (id: number) => {
         bestPrice: pkg.bestPrice || false,
         flightsIncluded: pkg.hasOwnProperty('flightsIncluded') ? (pkg as any).flightsIncluded : false,
         cancellationPolicy: pkg.cancellationPolicy,
-        upcomingDepartures: pkg.tourDateSlots && pkg.tourDateSlots.length > 0
-            ? pkg.tourDateSlots.map(slot => ({
-                date: new Date(slot.startDate).toISOString().split('T')[0],
-                seatsRemaining: slot.availableSeats,
-                price: slot.price
-            }))
-            : (pkg.departureDates ? JSON.parse(pkg.departureDates) : []),
+        upcomingDepartures: upcomingDeparturesOnly(
+            pkg.tourDateSlots && pkg.tourDateSlots.length > 0
+                ? pkg.tourDateSlots.map(slot => ({
+                    date: new Date(slot.startDate).toISOString().split('T')[0],
+                    seatsRemaining: slot.availableSeats,
+                    price: slot.price
+                }))
+                : (pkg.departureDates ? JSON.parse(pkg.departureDates) : [])
+        ),
         reviews: pkg.reviews.map(r => ({
             id: r.id,
             user: {
@@ -206,11 +210,11 @@ function generateJsonLd(tourData: TourData) {
         "@graph": [
             {
                 "@type": "TouristTrip",
-                "@id": `https://travel-1-plan.vercel.app/destinations/trip/${tourData.id}#touristtrip`,
+                "@id": `${SITE_URL}/destinations/trip/${tourData.id}#touristtrip`,
                 name: tourData.title,
                 description: tourData.description || `Explore ${tourData.title} with Travplan`,
                 image: mainImage,
-                url: `https://travel-1-plan.vercel.app/destinations/trip/${tourData.id}`,
+                url: `${SITE_URL}/destinations/trip/${tourData.id}`,
                 touristType: tourData.tourType || "All travelers",
                 itinerary: {
                     "@type": "ItemList",
@@ -227,24 +231,24 @@ function generateJsonLd(tourData: TourData) {
                     price: tourData.price,
                     priceCurrency: "INR",
                     availability: "https://schema.org/InStock",
-                    url: `https://travel-1-plan.vercel.app/destinations/trip/${tourData.id}`,
+                    url: `${SITE_URL}/destinations/trip/${tourData.id}`,
                     validFrom: new Date().toISOString(),
                     priceValidUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
                     seller: {
                         "@type": "Organization",
                         name: "Travplan",
-                        url: "https://travel-1-plan.vercel.app",
+                        url: SITE_URL,
                     },
                 },
                 provider: {
                     "@type": "TravelAgency",
                     name: "Travplan",
-                    url: "https://travel-1-plan.vercel.app",
+                    url: SITE_URL,
                 },
             },
             {
                 "@type": "Product",
-                "@id": `https://travel-1-plan.vercel.app/destinations/trip/${tourData.id}#product`,
+                "@id": `${SITE_URL}/destinations/trip/${tourData.id}#product`,
                 name: tourData.title,
                 description: tourData.description || `Explore ${tourData.title}`,
                 image: [mainImage, ...galleryImages],
@@ -258,7 +262,7 @@ function generateJsonLd(tourData: TourData) {
                     price: tourData.price,
                     priceCurrency: "INR",
                     availability: "https://schema.org/InStock",
-                    url: `https://travel-1-plan.vercel.app/destinations/trip/${tourData.id}`,
+                    url: `${SITE_URL}/destinations/trip/${tourData.id}`,
                     priceValidUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
                 },
                 aggregateRating: tourData.reviewCount > 0 ? {
@@ -276,25 +280,25 @@ function generateJsonLd(tourData: TourData) {
                         "@type": "ListItem",
                         position: 1,
                         name: "Home",
-                        item: "https://travel-1-plan.vercel.app",
+                        item: SITE_URL,
                     },
                     {
                         "@type": "ListItem",
                         position: 2,
                         name: "Destinations",
-                        item: "https://travel-1-plan.vercel.app/destinations",
+                        item: `${SITE_URL}/destinations`,
                     },
                     ...(tourData.destination?.country ? [{
                         "@type": "ListItem",
                         position: 3,
                         name: tourData.destination.country,
-                        item: `https://travel-1-plan.vercel.app/destinations?country=${encodeURIComponent(tourData.destination.country)}`,
+                        item: `${SITE_URL}/destinations?country=${encodeURIComponent(tourData.destination.country)}`,
                     }] : []),
                     {
                         "@type": "ListItem",
                         position: tourData.destination?.country ? 4 : 3,
                         name: tourData.title,
-                        item: `https://travel-1-plan.vercel.app/destinations/trip/${tourData.id}`,
+                        item: `${SITE_URL}/destinations/trip/${tourData.id}`,
                     },
                 ],
             },

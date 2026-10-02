@@ -192,10 +192,15 @@ const Hero: React.FC = () => {
         {/* Title and Subtitle */}
         {tourMode === "all" ? (
           <>
+            {/* The rotating destination is decorative: it types in one letter at
+                a time, so it is hidden from crawlers and screen readers and a
+                complete phrase is supplied instead. That keeps the H1 fully
+                descriptive at every frame. */}
             <h1 className={`${arimo.className} text-3xl md:text-4xl lg:text-6xl font-heading font-bold mb-5`}>
               <span className="block md:inline">Book Your Trip to{" "}</span>
-              <span className="text-primary">{currentDestination}</span>
-              <span className="animate-pulse text-primary">|</span>
+              <span className="text-primary" aria-hidden="true">{currentDestination}</span>
+              <span className="animate-pulse text-primary" aria-hidden="true">|</span>
+              <span className="sr-only">India and destinations worldwide</span>
             </h1>
           </>
         ) : (

@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { Mail, Phone, MapPin, MessageCircle, Clock, Loader2, CheckCircle } from 'lucide-react';
 import Script from 'next/script';
+import { SITE_URL } from "@/lib/site"
 
 // Schema.org structured data for Contact page
 const contactPageSchema = {
@@ -16,8 +17,8 @@ const contactPageSchema = {
     "@type": "Organization",
     "@id": "https://Travplan.in/#organization",
     name: "Travplan",
-    url: "https://Travplan.in",
-    logo: "https://Travplan.in/logo.webp",
+    url: SITE_URL,
+    logo: `${SITE_URL}/logo.webp`,
     email: "Info@Travplan.in",
     telephone: "+91-7011990884",
     address: {
@@ -30,7 +31,7 @@ const contactPageSchema = {
     },
     sameAs: [
       "https://www.instagram.com/Travplan.in",
-      "https://wa.me/7011990884"
+      "https://wa.me/917011990884"
     ],
     contactPoint: [
       {
@@ -237,7 +238,7 @@ export default function ContactPage() {
                     <div>
                       <p className="font-semibold text-sm md:text-base">Phone</p>
                       <p className="text-xs md:text-sm">+91 7011990884</p>
-                      <a href="https://wa.me/7011990884" target="_blank" rel="noopener noreferrer" className="text-xs md:text-sm text-primary hover:underline">WhatsApp</a>
+                      <a href="https://wa.me/917011990884" target="_blank" rel="noopener noreferrer" className="text-xs md:text-sm text-primary hover:underline">WhatsApp</a>
                     </div>
                   </div>
                   <div className="flex items-start text-gray-700">

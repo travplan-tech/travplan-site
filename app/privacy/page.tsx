@@ -2,8 +2,10 @@ import React from 'react';
 import { Shield, Lock, Eye, FileText } from 'lucide-react';
 
 export const metadata = {
-    title: 'Privacy Policy | Travplan',
-    description: 'Learn how Travplan collects, uses, and protects your personal information.',
+    title: { absolute: 'Privacy Policy | Travplan' },
+    description:
+        'Read Travplan privacy policy to understand how enquiry details, contact information and website data are collected and used.',
+    alternates: { canonical: '/privacy' },
 };
 
 export default function PrivacyPolicyPage() {

@@ -6,6 +6,7 @@ import TailoredTours from "@/components/tailored-tours"
 import FAQ from "@/components/faq"
 import TravelersPhotos from "@/components/travelers-photos"
 import { prisma } from "@/lib/prisma"
+import { SITE_URL } from "@/lib/site"
 
 // Prevent Next.js from caching this page - always fetch fresh sale data
 export const dynamic = "force-dynamic"
@@ -96,12 +97,12 @@ export default async function SalePage({ params }: SalePageProps) {
         "@type": "Sale",
         name: sale.name,
         description: sale.description || `Special travel deals - ${sale.name}`,
-        url: `https://travel-1-plan.vercel.app/deals/${sale.slug}`,
+        url: `${SITE_URL}/deals/${sale.slug}`,
         image: sale.heroImage,
         seller: {
             "@type": "TravelAgency",
             name: "Travplan",
-            url: "https://travel-1-plan.vercel.app",
+            url: SITE_URL,
         },
     }
 

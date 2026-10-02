@@ -1,9 +1,9 @@
 import { Metadata } from "next"
 
 export const metadata: Metadata = {
-    title: "Plan Your Custom Trip",
+    title: { absolute: "Custom Trip Planner for Holidays | Travplan" },
     description:
-        "Create your perfect customized trip with Travplan's easy trip planner. Tell us your preferences and get a personalized travel itinerary from local experts.",
+        "Plan a custom holiday with Travplan. Share your destination, budget and travel dates to get itinerary support for India and international trips.",
     keywords: [
         "trip planner",
         "custom tour",
@@ -18,11 +18,12 @@ export const metadata: Metadata = {
         canonical: "/trip-planner",
     },
     openGraph: {
-        title: "Plan Your Custom Trip - Travplan",
+        title: "Custom Trip Planner for Holidays | Travplan",
         description:
-            "Create your perfect customized trip with our easy trip planner. Get a personalized travel itinerary from local experts.",
+            "Plan a custom holiday with Travplan. Share your destination, budget and travel dates to get itinerary support.",
         url: "/trip-planner",
         type: "website",
+        images: ["/og-image.jpg"],
     },
 }
 
