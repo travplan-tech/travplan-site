@@ -400,6 +400,7 @@ const VideoTestimonialsSection = () => {
                     <div className="flex gap-3">
                         <button
                             onClick={() => emblaApi?.scrollPrev()}
+                            aria-label="Previous testimonial"
                             disabled={!canScrollPrev}
                             className={`w-12 h-12 rounded-full border border-gray-200 flex items-center justify-center transition-all ${canScrollPrev ? 'hover:bg-primary hover:border-primary hover:text-white' : 'opacity-40 cursor-not-allowed'
                                 }`}
@@ -408,6 +409,7 @@ const VideoTestimonialsSection = () => {
                         </button>
                         <button
                             onClick={() => emblaApi?.scrollNext()}
+                            aria-label="Next testimonial"
                             disabled={!canScrollNext}
                             className={`w-12 h-12 rounded-full border border-gray-200 flex items-center justify-center transition-all ${canScrollNext ? 'hover:bg-primary hover:border-primary hover:text-white' : 'opacity-40 cursor-not-allowed'
                                 }`}

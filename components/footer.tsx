@@ -117,7 +117,7 @@ export default function Footer() {
 
           {/* Destinations */}
           <div>
-            <h4 className="text-gray-900 font-semibold mb-4 text-sm uppercase tracking-wider">Destinations</h4>
+            <h2 className="text-gray-900 font-semibold mb-4 text-sm uppercase tracking-wider">Destinations</h2>
             <ul className="space-y-2">
               {footerLinks.destinations.map((link) => (
                 <li key={link.name}>
@@ -131,7 +131,7 @@ export default function Footer() {
 
           {/* Tour Categories */}
           <div>
-            <h4 className="text-gray-900 font-semibold mb-4 text-sm uppercase tracking-wider">Tour Types</h4>
+            <h2 className="text-gray-900 font-semibold mb-4 text-sm uppercase tracking-wider">Tour Types</h2>
             <ul className="space-y-2">
               {footerLinks.categories.map((link) => (
                 <li key={link.name}>
@@ -145,7 +145,7 @@ export default function Footer() {
 
           {/* Company */}
           <div>
-            <h4 className="text-gray-900 font-semibold mb-4 text-sm uppercase tracking-wider">Company</h4>
+            <h2 className="text-gray-900 font-semibold mb-4 text-sm uppercase tracking-wider">Company</h2>
             <ul className="space-y-2">
               {footerLinks.company.map((link) => (
                 <li key={link.name}>
@@ -159,7 +159,7 @@ export default function Footer() {
 
           {/* Support */}
           <div>
-            <h4 className="text-gray-900 font-semibold mb-4 text-sm uppercase tracking-wider">Support</h4>
+            <h2 className="text-gray-900 font-semibold mb-4 text-sm uppercase tracking-wider">Support</h2>
             <ul className="space-y-2">
               {footerLinks.support.map((link) => (
                 <li key={link.name}>
