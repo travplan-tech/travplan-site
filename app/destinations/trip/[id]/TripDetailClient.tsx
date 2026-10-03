@@ -231,7 +231,7 @@ export default function TripDetailClient({ tourData }: TripDetailClientProps) {
                         <div className="flex-1 md:flex-none h-[150px] sm:h-[180px] md:h-[195px] relative overflow-hidden rounded-lg">
                             <Image
                                 src={galleryImages[0] || mainImage}
-                                alt="Gallery 1"
+                                alt={`${tourData.title} - ${tourData.destination?.name || "tour"} photo 1`}
                                 fill
                                 sizes="(max-width: 768px) 50vw, 20vw"
                                 className="object-cover"
@@ -240,7 +240,7 @@ export default function TripDetailClient({ tourData }: TripDetailClientProps) {
                         <div className="flex-1 md:flex-none h-[150px] sm:h-[180px] md:h-[195px] relative overflow-hidden rounded-lg">
                             <Image
                                 src={galleryImages[1] || mainImage}
-                                alt="Gallery 2"
+                                alt={`${tourData.title} - ${tourData.destination?.name || "tour"} photo 2`}
                                 fill
                                 sizes="(max-width: 768px) 50vw, 20vw"
                                 className="object-cover"
