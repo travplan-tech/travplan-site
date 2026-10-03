@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { requireAdmin } from "@/lib/auth-helpers"
-import { upcomingDeparturesOnly } from "@/lib/departures"
+import { upcomingDeparturesOnly, parseDepartureDates } from "@/lib/departures"
 
 export async function GET(request: Request) {
     try {
@@ -231,7 +231,7 @@ export async function GET(request: Request) {
                 tags: pkg.tags ? pkg.tags.split(",").map(t => t.trim()) : [],
                 destinations: pkg.cities ? pkg.cities.split(",").map(c => c.trim()) : [],
                 galleryImages: pkg.galleryImages ? pkg.galleryImages.split(",").map(img => img.trim()).filter(Boolean) : [],
-                upcomingDepartures: upcomingDeparturesOnly(pkg.departureDates ? JSON.parse(pkg.departureDates) : []),
+                upcomingDepartures: upcomingDeparturesOnly(parseDepartureDates(pkg.departureDates)),
                 originalPrice: pkg.originalPrice,
                 saving: pkg.originalPrice && pkg.originalPrice > pkg.price ? Math.round(pkg.originalPrice - pkg.price) : 0,
             }

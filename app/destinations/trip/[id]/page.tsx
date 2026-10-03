@@ -4,7 +4,7 @@ import { cache } from "react";
 import { prisma } from "@/lib/prisma";
 import TripDetailClient, { TourData } from "./TripDetailClient";
 import { SITE_URL } from "@/lib/site"
-import { upcomingDeparturesOnly } from "@/lib/departures"
+import { upcomingDeparturesOnly, parseDepartureDates } from "@/lib/departures"
 import { packagePageTitle, packagePageDescription, readableTitle } from "@/lib/package-title"
 
 // Force dynamic rendering so admin changes (e.g., brochure PDF uploads) are reflected immediately
@@ -138,13 +138,15 @@ const getPackage = cache(async (id: number) => {
                     seatsRemaining: slot.availableSeats,
                     price: slot.price
                 }))
-                : (pkg.departureDates ? JSON.parse(pkg.departureDates) : [])
+                : parseDepartureDates(pkg.departureDates)
         ),
         reviews: pkg.reviews.map(r => ({
             id: r.id,
             user: {
-                name: r.user.name,
-                image: r.user.image,
+                // Reviews can outlive the user record they belong to; losing the
+                // name must not take the whole package page down.
+                name: r.user?.name || "Traveller",
+                image: r.user?.image || null,
             },
             rating: r.rating,
             comment: r.comment,
