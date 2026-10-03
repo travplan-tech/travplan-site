@@ -86,7 +86,12 @@ export const metadata: Metadata = {
   },
   manifest: "/manifest.json",
   verification: {
-    google: process.env.GOOGLE_SITE_VERIFICATION || "",
+    // Search Console HTML-tag verification. The token is public (it ships in
+    // the page head), so the default keeps verification working without a
+    // dashboard step; GOOGLE_SITE_VERIFICATION still overrides it.
+    google:
+      process.env.GOOGLE_SITE_VERIFICATION ||
+      "EUWzGcBe9U10xk8eEV7bkGzCmAtevGZn-oVxP-C740k",
   },
 };
 
