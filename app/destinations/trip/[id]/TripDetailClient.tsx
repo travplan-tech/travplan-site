@@ -15,6 +15,7 @@ import {
     TourAvailabilitySkeleton,
     CardGridSkeleton,
 } from "@/components/loading-skeletons";
+import { readableTitle } from "@/lib/package-title";
 
 // Dynamic Imports for below-the-fold content
 const TourDetailsFooter = dynamic(() => import("@/components/tripdetails"), {
@@ -195,6 +196,16 @@ export default function TripDetailClient({ tourData }: TripDetailClientProps) {
         ? tourData.galleryImages
         : [mainImage, mainImage];
 
+    // Alt text for the two side images. Uses the readable title rather than the
+    // stored "Kerala-7N/8D" form, and tidies destination names that carry a
+    // stray space before the comma ("Kerala , India").
+    const galleryAltPlace = (tourData.destination?.name || "")
+        .replace(/\s+,/g, ",")
+        .trim();
+    const galleryAltBase = [readableTitle(tourData.title, tourData.duration), galleryAltPlace]
+        .filter(Boolean)
+        .join(" in ");
+
     return (
         <div className="bg-white">
             {/* --- Full-Width Gallery/Hero Section --- */}
@@ -231,7 +242,7 @@ export default function TripDetailClient({ tourData }: TripDetailClientProps) {
                         <div className="flex-1 md:flex-none h-[150px] sm:h-[180px] md:h-[195px] relative overflow-hidden rounded-lg">
                             <Image
                                 src={galleryImages[0] || mainImage}
-                                alt={`${tourData.title} - ${tourData.destination?.name || "tour"} photo 1`}
+                                alt={`${galleryAltBase} photo 1`}
                                 fill
                                 sizes="(max-width: 768px) 50vw, 20vw"
                                 className="object-cover"
@@ -240,7 +251,7 @@ export default function TripDetailClient({ tourData }: TripDetailClientProps) {
                         <div className="flex-1 md:flex-none h-[150px] sm:h-[180px] md:h-[195px] relative overflow-hidden rounded-lg">
                             <Image
                                 src={galleryImages[1] || mainImage}
-                                alt={`${tourData.title} - ${tourData.destination?.name || "tour"} photo 2`}
+                                alt={`${galleryAltBase} photo 2`}
                                 fill
                                 sizes="(max-width: 768px) 50vw, 20vw"
                                 className="object-cover"
