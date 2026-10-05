@@ -51,6 +51,15 @@ const nextConfig = {
   productionBrowserSourceMaps: false,
   // Headers for caching
   async headers() {
+    // Immutable, year-long caching is only safe for content-hashed production
+    // assets. In development Turbopack reuses filenames (app_globals_<hash>.css
+    // keeps its name while Tailwind regenerates its contents), so these rules
+    // would pin stale CSS/JS in the browser and no amount of reloading would
+    // pick up a change.
+    if (process.env.NODE_ENV === 'development') {
+      return []
+    }
+
     return [
       {
         source: '/:all*(svg|jpg|jpeg|png|webp|avif|gif|ico)',
