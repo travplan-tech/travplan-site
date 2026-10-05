@@ -40,6 +40,8 @@ interface BestToursProps {
   excludeCountry?: string | null;
   tourType?: string | null;
   destinationId?: number;
+  /** Human label for the destination, e.g. "Tawang" */
+  destinationName?: string | null;
 }
 
 const RatingStars: React.FC<{ rating: number }> = ({ rating }) => {
@@ -59,7 +61,7 @@ const RatingStars: React.FC<{ rating: number }> = ({ rating }) => {
   return <div className="flex items-center space-x-0.5">{stars}</div>;
 };
 
-export default function BestTours({ country, region, saleSlug, tourCategory, excludeCountry, tourType, destinationId }: BestToursProps) {
+export default function BestTours({ country, region, saleSlug, tourCategory, excludeCountry, tourType, destinationId, destinationName }: BestToursProps) {
   const [brochureDialog, setBrochureDialog] = useState<{
     isOpen: boolean;
     packageId: number;
@@ -93,7 +95,7 @@ export default function BestTours({ country, region, saleSlug, tourCategory, exc
         ? (tourCategory === "PRIVATE" ? "Private" : "Group")
         : excludeCountry
           ? "International"
-          : (country || region || "World");
+          : (destinationName || country || region || "World");
 
   // Build Explore All Link
   const exploreParams = new URLSearchParams();
@@ -103,6 +105,7 @@ export default function BestTours({ country, region, saleSlug, tourCategory, exc
   if (tourCategory) exploreParams.set("tourCategory", tourCategory);
   if (excludeCountry) exploreParams.set("excludeCountry", excludeCountry);
   if (tourType) exploreParams.set("tourType", tourType);
+  if (destinationId) exploreParams.set("destinationId", String(destinationId));
 
   return (
     <>
@@ -115,7 +118,7 @@ export default function BestTours({ country, region, saleSlug, tourCategory, exc
                 Best {displayName} Tours
               </h2>
               <p className="text-sm md:text-base text-gray-600 mt-1 md:mt-1.5">
-                Explore our top-rated tours {country ? `in ${country}` : region ? `across ${region}` : "worldwide"} — handpicked for unforgettable experiences!
+                Explore our top-rated tours {destinationName ? `in ${destinationName}` : country ? `in ${country}` : region ? `across ${region}` : "worldwide"} — handpicked for unforgettable experiences!
               </p>
             </div>
 
