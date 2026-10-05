@@ -25,6 +25,7 @@ const footerLinks = {
     { name: 'Instagrammable', href: '/destinations?tourType=Instagrammable' }
   ],
   company: [
+    { name: 'Travel Guides', href: '/blog' },
     { name: 'About Us', href: '/about' },
     { name: 'Contact Us', href: '/contact' },
   ],

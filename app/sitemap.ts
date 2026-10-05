@@ -42,12 +42,35 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             priority: 0.8,
         },
         {
+            url: `${baseUrl}/blog`,
+            lastModified: new Date(),
+            changeFrequency: "weekly",
+            priority: 0.7,
+        },
+        {
             url: `${baseUrl}/about`,
             lastModified: new Date(),
             changeFrequency: "monthly",
             priority: 0.6,
         },
     ]
+
+    // Published blog posts
+    let blogPages: MetadataRoute.Sitemap = []
+    try {
+        const blogs = await prisma.blog.findMany({
+            where: { isPublished: true },
+            select: { slug: true, updatedAt: true },
+        })
+        blogPages = blogs.map((blog) => ({
+            url: `${baseUrl}/blog/${blog.slug}`,
+            lastModified: blog.updatedAt,
+            changeFrequency: "monthly" as const,
+            priority: 0.7,
+        }))
+    } catch (error) {
+        console.error("Error fetching blogs for sitemap:", error)
+    }
 
     // Active sale pages (/deals/[slug]); there is no bare /deals route.
     let dealPages: MetadataRoute.Sitemap = []
@@ -130,5 +153,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         console.error("Error fetching destinations for sitemap:", error)
     }
 
-    return [...staticPages, ...dealPages, ...packagePages, ...destinationPages]
+    return [...staticPages, ...blogPages, ...dealPages, ...packagePages, ...destinationPages]
 }

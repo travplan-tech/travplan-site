@@ -364,6 +364,9 @@ export default function Header({ initialActiveSale }: HeaderProps = {}) {
               )}
             </div>
 
+            <Link href="/blog" className="hover:text-primary transition">
+              Travel Guides
+            </Link>
             <Link href="/about" className="hover:text-primary transition">
               About Us
             </Link>
@@ -652,6 +655,16 @@ export default function Header({ initialActiveSale }: HeaderProps = {}) {
               )}
             </div>
 
+            <Link
+              href="/blog"
+              className="block hover:text-primary py-2"
+              onClick={() => {
+                setIsOpen(false);
+                setIsDestinationsOpen(false);
+              }}
+            >
+              Travel Guides
+            </Link>
             <Link
               href="/about"
               className="block hover:text-primary py-2"
