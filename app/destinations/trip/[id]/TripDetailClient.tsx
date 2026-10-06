@@ -8,7 +8,13 @@ import {
     Download,
     Check,
     ChevronDown,
+    ChevronRight,
+    Clock,
+    Info,
+    MapPin,
     Star,
+    Users,
+    X,
 } from "lucide-react";
 import {
     TourDetailsFooterSkeleton,
@@ -16,6 +22,9 @@ import {
     CardGridSkeleton,
 } from "@/components/loading-skeletons";
 import { readableTitle } from "@/lib/package-title";
+import PackageOverview from "@/components/package-overview";
+import PackageSection from "@/components/package-section";
+import PackageItinerary from "@/components/package-itinerary";
 
 // Dynamic Imports for below-the-fold content
 const TourDetailsFooter = dynamic(() => import("@/components/tripdetails"), {
@@ -94,95 +103,6 @@ export interface TourData {
     };
 }
 
-interface ItineraryDayProps {
-    dayData: TourData["itinerary"][0];
-    isFirst?: boolean;
-    isLast?: boolean;
-    accommodation?: string | null;
-}
-
-const ItineraryDay: React.FC<ItineraryDayProps> = ({ dayData, isFirst = false, isLast = false, accommodation }) => {
-    const [isOpen, setIsOpen] = useState(isFirst);
-    const { day, title, description, showAccommodation } = dayData;
-
-    return (
-        <div className="relative">
-            {/* Vertical Timeline Line */}
-            {!isLast && (
-                <div className="absolute left-[15px] top-[40px] bottom-0 w-[2px] bg-gray-200" />
-            )}
-
-            <div className="flex gap-4">
-                {/* Timeline Dot / Icon */}
-                <div className="relative z-10 shrink-0">
-                    {isOpen ? (
-                        <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center shadow-md">
-                            <svg
-                                className="w-4 h-4 text-white"
-                                fill="currentColor"
-                                viewBox="0 0 24 24"
-                            >
-                                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
-                            </svg>
-                        </div>
-                    ) : (
-                        <div className="w-8 h-8 flex items-center justify-center">
-                            <div className="w-3 h-3 rounded-full bg-primary" />
-                        </div>
-                    )}
-                </div>
-
-                {/* Content */}
-                <div className="flex-1 pb-6">
-                    <button
-                        className="flex justify-between items-center w-full text-left group"
-                        onClick={() => setIsOpen(!isOpen)}
-                    >
-                        <div className="flex items-center gap-2">
-                            <span className="text-base md:text-lg font-semibold text-primary">Day {day}</span>
-                            <span className="text-base md:text-lg font-semibold text-gray-800">- {title}</span>
-                        </div>
-                        <ChevronDown
-                            className={`w-5 h-5 text-gray-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : 'rotate-0'}`}
-                        />
-                    </button>
-
-                    {isOpen && (
-                        <div className="mt-4 space-y-4">
-                            <p className="text-gray-600 text-sm md:text-base leading-relaxed">
-                                {description}
-                            </p>
-
-                            {/* Accommodation Info */}
-                            {accommodation && showAccommodation !== false && (
-                                <div className="flex items-center gap-3 bg-gray-100 rounded-lg p-3">
-                                    <svg
-                                        className="w-5 h-5 text-primary shrink-0"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth={2}
-                                            d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-                                        />
-                                    </svg>
-                                    <div>
-                                        <span className="text-sm font-semibold text-gray-800">Accommodation: </span>
-                                        <span className="text-sm text-gray-600">{accommodation}</span>
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                    )}
-                </div>
-            </div>
-        </div>
-    );
-};
-
 interface TripDetailClientProps {
     tourData: TourData;
 }
@@ -205,6 +125,15 @@ export default function TripDetailClient({ tourData }: TripDetailClientProps) {
     const galleryAltBase = [readableTitle(tourData.title, tourData.duration), galleryAltPlace]
         .filter(Boolean)
         .join(" in ");
+
+    // "Tawang, India" -> "Tawang · India", with the stray space tidied.
+    // destination.name arrives as "Tawang, India"; show it as "Tawang · India".
+    const destinationLabel =
+        (tourData.destination?.name || "")
+            .split(",")
+            .map((part) => part.trim())
+            .filter(Boolean)
+            .join(" · ") || null;
 
     return (
         <div className="bg-white">
@@ -264,88 +193,95 @@ export default function TripDetailClient({ tourData }: TripDetailClientProps) {
             {/* --- Main Content Container --- */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* --- Breadcrumbs and Title --- */}
-                <nav className="text-xs md:text-sm text-gray-500 mb-3 md:mb-4 overflow-x-auto whitespace-nowrap">
-                    <Link href="/" className="hover:text-primary">Home</Link>{" "}
-                    /
-                    <Link href="/destinations" className="hover:text-primary"> Destinations</Link>{" "}
-                    /
-                    {tourData.destination?.country && (
-                        <>
-                            <Link href={`/destinations?country=${tourData.destination.country}`} className="hover:text-primary">
-                                {" "}{tourData.destination.country}
-                            </Link>{" "}
-                            /
-                        </>
-                    )}
-                    <span className="font-medium text-wrap text-gray-700">
-                        {" "}{tourData.title}
-                    </span>
+                <nav aria-label="Breadcrumb" className="mb-4 md:mb-5">
+                    <ol className="flex items-center gap-1.5 text-sm text-gray-500 flex-wrap">
+                        <li><Link href="/" className="hover:text-primary transition-colors">Home</Link></li>
+                        <ChevronRight size={14} className="text-gray-300 shrink-0" aria-hidden="true" />
+                        <li><Link href="/destinations" className="hover:text-primary transition-colors">Destinations</Link></li>
+                        {tourData.destination?.country && (
+                            <>
+                                <ChevronRight size={14} className="text-gray-300 shrink-0" aria-hidden="true" />
+                                <li>
+                                    <Link
+                                        href={`/destinations?country=${encodeURIComponent(tourData.destination.country)}`}
+                                        className="hover:text-primary transition-colors"
+                                    >
+                                        {tourData.destination.country}
+                                    </Link>
+                                </li>
+                            </>
+                        )}
+                    </ol>
                 </nav>
-                <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-900 mb-2">
-                    {tourData.title}
+
+                {destinationLabel && (
+                    <p className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-primary mb-3">
+                        <MapPin size={13} aria-hidden="true" />
+                        {destinationLabel}
+                    </p>
+                )}
+
+                <h1 className="font-heading text-2xl md:text-4xl lg:text-5xl font-bold text-gray-900 tracking-tight leading-tight">
+                    {readableTitle(tourData.title, tourData.duration)}
                 </h1>
-                <div className="flex items-center mb-4 md:mb-6">
-                    <Star className="w-4 h-4 md:w-5 md:h-5 text-yellow-500 fill-yellow-500 mr-1" />
-                    <span className="font-semibold text-sm md:text-base text-gray-700 mr-1">
-                        {tourData.rating?.toFixed(1) || "0.0"}
-                    </span>
-                    <span className="text-gray-500 text-xs md:text-sm cursor-pointer">
-                        based on {tourData.reviewCount || 0} reviews
-                    </span>
+
+                <div className="flex flex-wrap items-center gap-2 mt-4 mb-6 md:mb-8">
+                    {tourData.duration && (
+                        <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-gray-700 bg-gray-100 px-3 py-1.5 rounded-full">
+                            <Clock size={12} aria-hidden="true" />
+                            {tourData.duration}
+                        </span>
+                    )}
+                    {tourData.tourCategory && (
+                        <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary bg-primary/10 px-3 py-1.5 rounded-full">
+                            <Users size={12} aria-hidden="true" />
+                            {tourData.tourCategory === "GROUP" ? "Group tour" : "Private tour"}
+                        </span>
+                    )}
+                    {/* Shown only when the trip genuinely has reviews */}
+                    {typeof tourData.rating === "number" && tourData.rating > 0 && (
+                        <span className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-700 bg-amber-50 px-3 py-1.5 rounded-full">
+                            <Star size={12} className="fill-amber-500 text-amber-500" aria-hidden="true" />
+                            {tourData.rating.toFixed(1)}
+                            {tourData.reviewCount ? (
+                                <span className="font-medium text-amber-700/70">
+                                    ({tourData.reviewCount} reviews)
+                                </span>
+                            ) : null}
+                        </span>
+                    )}
                 </div>
 
                 {/* --- Content/Sidebar Split --- */}
                 <div className="flex flex-col lg:grid lg:grid-cols-3 gap-6 md:gap-8">
                     {/* LEFT/MIDDLE COLUMN - Tour Details (Part 1: Up to Route Map) */}
                     <div className="lg:col-span-2 space-y-6 md:space-y-8 order-1">
-                        {/* Tags and Key Details Row */}
-                        <div className="flex flex-wrap gap-2 md:gap-3 lg:gap-4 items-center border-b border-gray-200 pb-3 md:pb-4">
-                            {tourData?.tags.map((tag, index) => (
-                                <span key={index} className="px-2 md:px-3 py-1 text-xs font-semibold bg-primary/10 text-primary rounded-full">
-                                    {tag}
-                                </span>
-                            ))}
-                        </div>
+                        {tourData.tags.length > 0 && (
+                            <div className="flex flex-wrap gap-2">
+                                {tourData.tags.map((tag, index) => (
+                                    <span
+                                        key={index}
+                                        className="px-3 py-1 text-xs font-semibold bg-primary/10 text-primary rounded-full"
+                                    >
+                                        {tag}
+                                    </span>
+                                ))}
+                            </div>
+                        )}
 
-                        {/* Key Trip Facts Grid */}
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 text-xs md:text-sm border-b border-gray-200 pb-3 md:pb-4 text-gray-700">
-                            <div>
-                                <p className="font-semibold text-sm md:text-base text-gray-900">Start Point</p>
-                                <p className="text-xs md:text-sm">{tourData.departurePoints[0] || tourData.destination?.name || "N/A"}</p>
-                            </div>
-                            <div>
-                                <p className="font-semibold text-sm md:text-base text-gray-900">End Point</p>
-                                <p className="text-xs md:text-sm">{tourData.departurePoints[tourData.departurePoints.length - 1] || tourData.destination?.name || "N/A"}</p>
-                            </div>
-                            <div>
-                                <p className="font-semibold text-sm md:text-base text-gray-900">{tourData.duration}</p>
-                                <p className="text-xs md:text-sm">Duration</p>
-                            </div>
-                            <div>
-                                <p className="font-semibold text-sm md:text-base text-gray-900 line-clamp-2">
-                                    {tourData.tourType || "Private Tour"}
-                                </p>
-                                <p className="text-xs md:text-sm">Tour Type</p>
-                            </div>
-                            <div>
-                                <p className="font-semibold text-sm md:text-base text-gray-900">{tourData.ageRange || "All ages"}</p>
-                                <p className="text-xs md:text-sm line-clamp-2">Age range</p>
-                            </div>
-                            <div>
-                                <p className="font-semibold text-sm md:text-base text-gray-900">
-                                    {tourData.tourCategory === "GROUP" ? "Group Tour" : "Private Tour"}
-                                </p>
-                                <p className="text-xs md:text-sm">Category</p>
-                            </div>
-                            <div>
-                                <p className="font-semibold text-sm md:text-base text-gray-900">{tourData.maxPersons || 10} Persons</p>
-                                <p className="text-xs md:text-sm">Max Group Size</p>
-                            </div>
-                            <div>
-                                <p className="font-semibold text-sm md:text-base text-gray-900">Flights</p>
-                                <p className="text-xs md:text-sm">{tourData.flightsIncluded ? "Included" : "Excluded"}</p>
-                            </div>
-                        </div>
+                        <PackageOverview
+                            duration={tourData.duration}
+                            tourType={tourData.tourType}
+                            tourCategory={tourData.tourCategory}
+                            maxPersons={tourData.maxPersons}
+                            ageRange={tourData.ageRange}
+                            flightsIncluded={tourData.flightsIncluded}
+                            accommodation={tourData.accommodation}
+                            isCustomizable={tourData.isCustomizable}
+                            departurePoints={tourData.departurePoints}
+                            destinationName={tourData.destination?.name}
+                            cities={tourData.destinations}
+                        />
 
                         {/* --- Route Map Section --- */}
                         {tourData.mapImage && (
@@ -432,102 +368,107 @@ export default function TripDetailClient({ tourData }: TripDetailClientProps) {
                     </div>
 
                     {/* LEFT/MIDDLE COLUMN - Tour Details (Part 2: After Route Map) */}
-                    <div className="lg:col-span-2 space-y-6 md:space-y-8 order-3">
-                        {/* --- Description Section --- */}
+                    <div className="lg:col-span-2 space-y-7 md:space-y-9 order-3">
+                        {/* --- About --- */}
                         {tourData.description && (
-                            <div className="py-3 md:py-4 border-t border-gray-200">
-                                <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-3 md:mb-4">
-                                    About This Tour
-                                </h2>
-                                <p className="text-sm md:text-base text-gray-600">
+                            <PackageSection title="About this trip" bordered={false}>
+                                <p className="text-base md:text-lg text-gray-600 leading-relaxed whitespace-pre-line">
                                     {tourData.description}
                                 </p>
-                            </div>
+                            </PackageSection>
                         )}
 
-                        {/* --- Highlights Section --- */}
+                        {/* --- Highlights --- */}
                         {tourData.highlights.length > 0 && (
-                            <div className="py-3 md:py-4 border-t border-gray-200">
-                                <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-3 md:mb-4">
-                                    Highlights
-                                </h2>
-                                <ul className="space-y-2">
+                            <PackageSection title="Trip highlights">
+                                <ul className="grid sm:grid-cols-2 gap-3">
                                     {tourData.highlights.map((item, index) => (
-                                        <li key={index} className="flex items-start text-sm md:text-base text-gray-700">
-                                            <Check className="w-4 h-4 md:w-5 md:h-5 text-primary mr-2 shrink-0 mt-0.5" />
-                                            {item}
+                                        <li
+                                            key={index}
+                                            className="flex items-start gap-3 rounded-xl border border-gray-200 bg-white p-3.5"
+                                        >
+                                            <span className="shrink-0 w-6 h-6 rounded-lg bg-primary/10 text-primary flex items-center justify-center mt-0.5">
+                                                <Check size={14} strokeWidth={3} aria-hidden="true" />
+                                            </span>
+                                            <span className="text-sm text-gray-700 leading-relaxed min-w-0">{item}</span>
                                         </li>
                                     ))}
                                 </ul>
-                            </div>
+                            </PackageSection>
                         )}
 
-                        {/* --- Special Notes Section --- */}
-                        {tourData.specialNotes && (
-                            <div className="py-3 md:py-4 border-t border-gray-200">
-                                <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-3 md:mb-4">
-                                    Special Notes
-                                </h2>
-                                <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-                                    <p className="text-sm md:text-base text-amber-900 whitespace-pre-line">
-                                        {tourData.specialNotes}
-                                    </p>
-                                </div>
-                            </div>
-                        )}
-
-                        {/* --- Itinerary Section --- */}
+                        {/* --- Itinerary --- */}
                         {tourData.itinerary.length > 0 && (
-                            <div className="py-3 md:py-4 border-t border-gray-200">
-                                <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-6">Itinerary</h2>
-
-                                {/* Day-by-Day Collapsible List */}
-                                <div className="mt-2">
-                                    {tourData.itinerary.map((dayData, index) => (
-                                        <ItineraryDay
-                                            key={dayData.day}
-                                            dayData={dayData}
-                                            isFirst={index === 0}
-                                            isLast={index === tourData.itinerary.length - 1}
-                                            accommodation={tourData.accommodation}
-                                        />
-                                    ))}
-                                </div>
-                            </div>
+                            <PackageSection title="Day-by-day itinerary" eyebrow="The plan">
+                                <PackageItinerary
+                                    days={tourData.itinerary}
+                                    accommodation={tourData.accommodation}
+                                />
+                            </PackageSection>
                         )}
 
                         {/* --- Inclusions & Exclusions --- */}
                         {(tourData.inclusions.length > 0 || tourData.exclusions.length > 0) && (
-                            <div className="py-2">
-                                <div className="grid md:grid-cols-2 gap-6">
+                            <PackageSection title="What's included">
+                                <div className="grid md:grid-cols-2 gap-4 md:gap-5 items-start">
                                     {tourData.inclusions.length > 0 && (
-                                        <div>
-                                            <h3 className="text-base font-semibold text-green-700 mb-3">What's Included</h3>
-                                            <ul className="space-y-2">
+                                        <div className="rounded-2xl border border-emerald-200 bg-emerald-50/50 p-5">
+                                            <h3 className="flex items-center gap-2 text-sm font-bold text-emerald-800 mb-3">
+                                                <span className="w-6 h-6 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center">
+                                                    <Check size={14} strokeWidth={3} aria-hidden="true" />
+                                                </span>
+                                                Included
+                                            </h3>
+                                            <ul className="space-y-2.5">
                                                 {tourData.inclusions.map((item, index) => (
-                                                    <li key={index} className="flex items-start text-sm text-gray-700">
-                                                        <Check className="w-4 h-4 text-green-500 mr-2 shrink-0 mt-0.5" />
-                                                        {item}
+                                                    <li key={index} className="flex items-start gap-2.5 text-sm text-gray-700">
+                                                        <Check
+                                                            size={15}
+                                                            className="text-emerald-600 shrink-0 mt-0.5"
+                                                            aria-hidden="true"
+                                                        />
+                                                        <span className="min-w-0 leading-relaxed">{item}</span>
                                                     </li>
                                                 ))}
                                             </ul>
                                         </div>
                                     )}
                                     {tourData.exclusions.length > 0 && (
-                                        <div>
-                                            <h3 className="text-base font-semibold text-red-700 mb-3">What's Excluded</h3>
-                                            <ul className="space-y-2">
+                                        <div className="rounded-2xl border border-gray-200 bg-gray-50 p-5">
+                                            <h3 className="flex items-center gap-2 text-sm font-bold text-gray-800 mb-3">
+                                                <span className="w-6 h-6 rounded-lg bg-gray-200 text-gray-600 flex items-center justify-center">
+                                                    <X size={14} strokeWidth={3} aria-hidden="true" />
+                                                </span>
+                                                Not included
+                                            </h3>
+                                            <ul className="space-y-2.5">
                                                 {tourData.exclusions.map((item, index) => (
-                                                    <li key={index} className="flex items-start text-sm text-gray-700">
-                                                        <span className="w-4 h-4 text-red-500 mr-2 shrink-0 mt-0.5">✕</span>
-                                                        {item}
+                                                    <li key={index} className="flex items-start gap-2.5 text-sm text-gray-600">
+                                                        <X
+                                                            size={15}
+                                                            className="text-gray-400 shrink-0 mt-0.5"
+                                                            aria-hidden="true"
+                                                        />
+                                                        <span className="min-w-0 leading-relaxed">{item}</span>
                                                     </li>
                                                 ))}
                                             </ul>
                                         </div>
                                     )}
                                 </div>
-                            </div>
+                            </PackageSection>
+                        )}
+
+                        {/* --- Special Notes --- */}
+                        {tourData.specialNotes && (
+                            <PackageSection title="Good to know">
+                                <div className="flex gap-3 rounded-2xl border border-amber-200 bg-amber-50 p-4 md:p-5">
+                                    <Info size={18} className="text-amber-600 shrink-0 mt-0.5" aria-hidden="true" />
+                                    <p className="text-sm md:text-base text-amber-900 whitespace-pre-line leading-relaxed min-w-0">
+                                        {tourData.specialNotes}
+                                    </p>
+                                </div>
+                            </PackageSection>
                         )}
 
                         {/* Reviews Section */}
