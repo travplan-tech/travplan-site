@@ -56,20 +56,41 @@ const FAQS_BY_PLACE: Record<string, Faq[]> = {
     ],
 }
 
-export default function FAQ({ destination }: { destination?: string | null }) {
+export default function FAQ({
+    destination,
+    variant = "default",
+}: {
+    destination?: string | null
+    /** "featured" matches the redesigned destination page sections */
+    variant?: "default" | "featured"
+}) {
     const [open, setOpen] = useState<number | null>(0)
 
     const place = destination?.trim().replace(/\s*,\s*$/, "") || undefined
     const faqs = (place && FAQS_BY_PLACE[place.toLowerCase()]) || genericFaqs(place)
 
     return (
-        <section className="py-10 md:py-16">
-            <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-                <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-6 md:mb-8 text-center">
-                    {place
-                        ? `Frequently Asked Questions about traveling to ${place}`
-                        : "Frequently Asked Questions"}
-                </h2>
+        <section className={variant === "featured" ? "py-14 md:py-20" : "py-10 md:py-16"}>
+            <div className={variant === "featured" ? "max-w-3xl mx-auto px-4 sm:px-6 lg:px-8" : "max-w-3xl mx-auto px-4 sm:px-6 lg:px-8"}>
+                {variant === "featured" ? (
+                    <div className="mb-8 md:mb-10">
+                        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary mb-2">
+                            Good to know
+                        </p>
+                        <h2 className="font-heading text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 tracking-tight">
+                            {place ? `Planning a trip to ${place}` : "Frequently asked questions"}
+                        </h2>
+                        <p className="text-sm md:text-base text-gray-600 mt-2">
+                            The questions travellers ask us most before booking.
+                        </p>
+                    </div>
+                ) : (
+                    <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-6 md:mb-8 text-center">
+                        {place
+                            ? `Frequently Asked Questions about traveling to ${place}`
+                            : "Frequently Asked Questions"}
+                    </h2>
+                )}
 
                 <div className="space-y-3 md:space-y-4">
                     {faqs.map((faq, idx) => (

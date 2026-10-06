@@ -2,8 +2,7 @@
 import { Suspense, useMemo } from "react"
 import dynamic from "next/dynamic"
 import { useSearchParams } from "next/navigation"
-import DestinationHero from "@/components/destination-hero"
-import DestinationHeroFeatured from "@/components/destination-hero-featured"
+import DestinationHero from "@/components/destination-hero-featured"
 import { useGetDestinationQuery } from "@/lib/api/destinationsApi"
 import { useGetPackagesByDestinationQuery } from "@/lib/api/packagesApi"
 import {
@@ -12,27 +11,18 @@ import {
     CustomizeTripSkeleton,
 } from "@/components/loading-skeletons"
 
-/**
- * Destinations currently running the new hero and section layout. Everything
- * else keeps the original design until this is rolled out more widely.
- */
-const FEATURED_DESTINATION_IDS = [1, 5, 6]
-
 // Dynamic imports for below-the-fold components
-const BestTours = dynamic(() => import("@/components/best-tours"), {
+const DestinationTrips = dynamic(() => import("@/components/destination-trips"), {
     loading: () => <CarouselSkeleton items={3} />,
 })
-const TailoredTours = dynamic(() => import("@/components/tailored-tours"), {
+const DestinationInterests = dynamic(() => import("@/components/destination-interests"), {
     loading: () => <TourTypesSkeleton />,
 })
-const CustomizeTrip = dynamic(() => import("@/components/customize-trip"), {
+const DestinationPlan = dynamic(() => import("@/components/destination-plan"), {
     loading: () => <CustomizeTripSkeleton />,
 })
 const FAQ = dynamic(() => import("@/components/faq"), {
     loading: () => <FAQSkeleton />,
-})
-const TravelersPhotos = dynamic(() => import("@/components/travelers-photos"), {
-    loading: () => <GallerySmallSkeleton />,
 })
 
 function FAQSkeleton() {
@@ -45,21 +35,6 @@ function FAQSkeleton() {
                         <div key={i} className="bg-gray-100 rounded-lg p-4 animate-pulse">
                             <div className="h-5 w-3/4 bg-gray-200 rounded" />
                         </div>
-                    ))}
-                </div>
-            </div>
-        </section>
-    )
-}
-
-function GallerySmallSkeleton() {
-    return (
-        <section className="py-12 md:py-16">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="h-8 w-56 bg-gray-200 rounded animate-pulse mb-8" />
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    {Array.from({ length: 8 }).map((_, i) => (
-                        <div key={i} className="aspect-square rounded-lg bg-gray-200 animate-pulse" />
                     ))}
                 </div>
             </div>
@@ -129,7 +104,13 @@ function DestinationContent() {
     const stats = useMemo(() => {
         const list = Array.isArray(packages) ? packages : []
         if (list.length === 0) {
-            return { tripCount: undefined, fromPrice: undefined, dayRange: undefined }
+            return {
+                tripCount: undefined,
+                fromPrice: undefined,
+                dayRange: undefined,
+                rating: undefined,
+                reviewCount: undefined,
+            }
         }
 
         const prices = list.map((p) => p.price).filter((n): n is number => typeof n === "number" && n > 0)
@@ -137,26 +118,29 @@ function DestinationContent() {
             .map((p) => parseDays(p.duration))
             .filter((n): n is number => typeof n === "number" && n > 0)
 
+        // Ratings are shown only where real reviews exist; nothing is invented.
+        const rated = list.filter((p) => typeof p.rating === "number" && p.rating > 0)
+        const reviewTotal = list.reduce((sum, p) => sum + (p.reviewCount || 0), 0)
+
         return {
             tripCount: list.length,
             fromPrice: prices.length ? Math.min(...prices) : undefined,
             dayRange: days.length ? { min: Math.min(...days), max: Math.max(...days) } : undefined,
+            rating: rated.length
+                ? rated.reduce((sum, p) => sum + p.rating, 0) / rated.length
+                : undefined,
+            reviewCount: reviewTotal || undefined,
         }
     }, [packages])
 
     const country = destination?.country || undefined
-    const isFeatured = numericId !== undefined && FEATURED_DESTINATION_IDS.includes(numericId)
 
     return (
         <main className="w-full">
             {isLoading ? (
-                isFeatured ? <HeroSkeleton /> : (
-                    <div className="min-h-[400px] flex items-center justify-center">
-                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-                    </div>
-                )
-            ) : isFeatured ? (
-                <DestinationHeroFeatured
+                <HeroSkeleton />
+            ) : (
+                <DestinationHero
                     city={destination?.city || undefined}
                     title={destination?.name || "Destination"}
                     subhead="Tours & Trips"
@@ -167,38 +151,24 @@ function DestinationContent() {
                     tripCount={stats.tripCount}
                     fromPrice={stats.fromPrice}
                     dayRange={stats.dayRange}
-                />
-            ) : (
-                <DestinationHero
-                    title={`${destination?.name || "Destination"} Tours & Trips`}
-                    description={destination?.description || undefined}
-                    country={country}
-                    image={destination?.image || undefined}
+                    rating={stats.rating}
+                    reviewCount={stats.reviewCount}
                 />
             )}
 
-            {/* Featured pages get banded sections so each block reads separately;
-                every other destination keeps the original flat stack. */}
-            <section
-                id="best-tours"
-                className={isFeatured ? "scroll-mt-20 bg-gray-50/70 border-y border-gray-200" : undefined}
-            >
-                <BestTours
-                    destinationId={numericId}
-                    destinationName={isFeatured ? destination?.city || undefined : undefined}
-                />
-            </section>
+            <DestinationTrips
+                destinationId={numericId}
+                destinationName={destination?.city || undefined}
+            />
 
-            <section id="trip-types" className={isFeatured ? "scroll-mt-20" : undefined}>
-                <TailoredTours destinationId={numericId} />
-            </section>
+            <DestinationInterests
+                destinationId={numericId}
+                destinationName={destination?.city || undefined}
+            />
 
-            <section className={isFeatured ? "bg-gray-50/70 border-y border-gray-200" : undefined}>
-                <CustomizeTrip />
-            </section>
+            <DestinationPlan destinationName={destination?.city || undefined} country={country} />
 
-            <FAQ destination={isFeatured ? destination?.city || country : undefined} />
-            <TravelersPhotos />
+            <FAQ destination={destination?.city || country} variant="featured" />
         </main>
     )
 }
