@@ -61,7 +61,7 @@ const trustBadges = [
 
 export default function Footer() {
   return (
-    <footer className="bg-white border-t border-gray-200">
+    <footer className="bg-white border-t border-gray-200 pb-16 md:pb-0">
       {/* Trust Badges */}
       <div className="border-b border-gray-100 py-4">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 grid grid-cols-2 md:flex md:justify-between items-center gap-6 md:gap-4">

@@ -19,10 +19,14 @@ if (!globalForPrisma.pool) {
         ssl: isServerless || connectionString.includes("sslmode=require")
             ? { rejectUnauthorized: false }
             : undefined,
-        // Optimized pool settings for serverless environments
-        max: isServerless ? 5 : 2, // Reduced to 2 for development to prevent connection issues
-        min: 0, // Don't keep idle connections in development
-        idleTimeoutMillis: 10000, // Shorter timeout in dev
+        // The database allows only 20 connections in total, shared by every
+        // warm serverless instance plus any local dev server. At 5 per
+        // instance a handful of instances exhausts it and requests start
+        // failing with "remaining connection slots are reserved", so keep the
+        // per-instance ceiling low and release idle clients quickly.
+        max: isServerless ? 3 : 2,
+        min: 0, // Never hold idle connections open
+        idleTimeoutMillis: 5000, // Release an idle client after 5s
         connectionTimeoutMillis: 10000, // 10s for cold starts
         query_timeout: 15000, // 15s max query time
     });

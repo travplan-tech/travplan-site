@@ -39,11 +39,11 @@ export default function TourCategories() {
                     subtitle="Travel on your own dates at your own pace, or join a fixed departure and share the cost."
                 />
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
                     {sections.map((section) => (
-                        <div key={section.id} className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300">
+                        <div key={section.id} className="group bg-white rounded-2xl overflow-hidden border border-gray-200 hover:border-primary/40 hover:shadow-lg transition-all duration-300">
                             {/* Image Header */}
-                            <div className="relative h-48 md:h-56 overflow-hidden">
+                            <div className="relative h-36 md:h-44 overflow-hidden">
                                 <Image
                                     src={section.image}
                                     alt={section.title}
