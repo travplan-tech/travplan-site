@@ -382,18 +382,21 @@ const VideoTestimonialsSection = () => {
     return (
         <section
             ref={sectionRef}
-            className="py-16 md:py-24 bg-white overflow-hidden"
+            className="py-14 md:py-20 bg-white overflow-hidden"
         >
             <div className="container mx-auto px-4 md:px-8">
 
                 {/* Header */}
                 <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
                     <div className="max-w-xl">
-                        <h2 className="text-3xl md:text-5xl font-bold text-gray-900 tracking-tight">
-                            Real Stories, <span className="text-primary italic">Real Travelers</span>
+                        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary mb-2">
+                            Travellers
+                        </p>
+                        <h2 className="font-heading text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 tracking-tight">
+                            In their own words
                         </h2>
-                        <p className="mt-4 text-gray-500 text-lg">
-                            Hear directly from our community about their unforgettable journeys.
+                        <p className="text-sm md:text-base text-gray-600 mt-2">
+                            Travellers talking about the trips they actually took with us.
                         </p>
                     </div>
 

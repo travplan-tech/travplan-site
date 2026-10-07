@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { useGetBudgetStatsQuery } from "@/lib/api/packagesApi"
+import SectionHeading from "@/components/section-heading"
 
 interface BudgetSection {
   id: number
@@ -107,16 +108,13 @@ export default function ToursByBudget() {
   })
 
   return (
-    <section ref={sectionRef} className="py-12 md:py-16 bg-primary/10">
+    <section ref={sectionRef} className="py-14 md:py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center mb-6 md:mb-8">
-          <div>
-            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900">Choose by <span className="text-primary">Budget</span></h2>
-            <p className="text-sm md:text-base text-gray-600 mt-1 md:mt-2">
-              Explore our carefully curated selection of budget-friendly tours, designed to offer you the best value for money while ensuring a memorable and enriching experience.
-            </p>
-          </div>
-        </div>
+        <SectionHeading
+          eyebrow="Budget"
+          title="Trips that fit what you want to spend"
+          subtitle="Pick a price range and see everything we run within it — no hidden add-ons."
+        />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
           {sections.map((section) => (
@@ -147,7 +145,7 @@ export default function ToursByBudget() {
                     <Link
                       key={range.maxPrice}
                       href={`/tours?type=${section.budgetType}&maxPrice=${range.maxPrice}`}
-                      className="px-4 py-3  hover:bg-primary/20 bg-primary/10 text-primary border rounded-xl text-sm md:text-base font-semibold hover:border-transparent transition-all duration-500"
+                      className="flex items-center justify-center px-4 py-3 rounded-xl border border-gray-200 bg-white text-gray-800 text-sm font-semibold hover:border-primary hover:text-primary hover:bg-primary/5 transition-colors"
                     >
                       <p className="text-center">{range.label}</p>
                     </Link>

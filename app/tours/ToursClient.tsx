@@ -214,12 +214,18 @@ function ToursContent() {
         <main className="min-h-screen bg-gray-50">
             {/* Hero Section */}
             <section className="bg-white border-b">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
-                    <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900">
-                        {displayTitle} Travel Deals
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary mb-2">
+                        All trips
+                    </p>
+                    <h1 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 tracking-tight">
+                        {displayTitle && displayTitle !== "World"
+                            ? `${displayTitle} tour packages`
+                            : "Tour packages & group departures"}
                     </h1>
-                    <p className="text-gray-600 mt-2 text-sm md:text-base">
-                        Find the best prices on travel deals in {displayTitle}. Explore discounted tours and vacation packages, rated by travelers.
+                    <p className="text-sm md:text-base text-gray-600 mt-3 max-w-2xl">
+                        Filter by budget, duration and travel style to find the trip that fits — every
+                        itinerary below is one we run ourselves.
                     </p>
                 </div>
             </section>
@@ -469,9 +475,16 @@ function ToursContent() {
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                             <div>
                                 <p className="text-gray-900">
-                                    <span className="font-semibold">{pagination?.total || tours.length} Travel Deals Trips in {country}</span>
-                                    <span className="text-gray-600"> with </span>
-                                    <span className="text-primary font-medium">{totalReviews.toLocaleString()} Reviews</span>
+                                    <span className="font-semibold">
+                                        {pagination?.total || tours.length}{" "}
+                                        {(pagination?.total || tours.length) === 1 ? "trip" : "trips"}
+                                        {country ? ` in ${country}` : ""}
+                                    </span>
+                                    {totalReviews > 0 && (
+                                        <span className="text-gray-600">
+                                            {" "}· {totalReviews.toLocaleString()} reviews
+                                        </span>
+                                    )}
                                 </p>
                             </div>
                             <div className="flex items-center gap-2">
@@ -578,11 +591,15 @@ function ToursContent() {
 
                                                         {/* Rating and features */}
                                                         <div className="flex flex-wrap items-center gap-3 mb-3">
-                                                            <div className="flex items-center gap-1">
-                                                                <Star size={16} className="text-yellow-400 fill-yellow-400" />
-                                                                <span className="font-medium text-gray-900">{tour.rating?.toFixed(1) || "0.0"}</span>
-                                                                <span className="text-gray-500 text-sm">({tour.reviewCount || 0} reviews)</span>
-                                                            </div>
+                                                            {typeof tour.rating === "number" && tour.rating > 0 && (
+                                                                <div className="flex items-center gap-1">
+                                                                    <Star size={16} className="text-yellow-400 fill-yellow-400" />
+                                                                    <span className="font-medium text-gray-900">{tour.rating.toFixed(1)}</span>
+                                                                    {tour.reviewCount ? (
+                                                                        <span className="text-gray-500 text-sm">({tour.reviewCount} reviews)</span>
+                                                                    ) : null}
+                                                                </div>
+                                                            )}
                                                             {tour.isCustomizable && (
                                                                 <div className="flex items-center gap-1 text-sm text-primary">
                                                                     <Check size={14} />
@@ -602,22 +619,37 @@ function ToursContent() {
                                                             {tour.description || "Discover an unforgettable journey with our expertly curated tour package."}
                                                         </p>
 
-                                                        {/* Tags */}
-                                                        <div className="flex flex-wrap gap-2 mb-4">
-                                                            {(tour.tags || []).slice(0, 2).map((tag) => (
-                                                                <span
-                                                                    key={tag}
-                                                                    className="text-xs px-3 py-1 bg-gray-100 text-gray-700 rounded-full"
-                                                                >
-                                                                    {tag}
-                                                                </span>
-                                                            ))}
-                                                            {(tour.tags || []).length > 2 && (
-                                                                <span className="text-xs px-3 py-1 bg-gray-100 text-gray-500 rounded-full">
-                                                                    +{tour.tags.length - 2}
-                                                                </span>
-                                                            )}
-                                                        </div>
+                                                        {/* Tags. Some packages store every hashtag in one
+                                                            comma-free string, which rendered as a single
+                                                            chip wrapping over many lines, so split those out. */}
+                                                        {(() => {
+                                                            const tags = Array.from(
+                                                                new Set(
+                                                                    (tour.tags || [])
+                                                                        .flatMap((t) => t.split(/[,\s]+/))
+                                                                        .map((t) => t.replace(/^#/, "").trim())
+                                                                        .filter(Boolean)
+                                                                )
+                                                            )
+                                                            if (tags.length === 0) return null
+                                                            return (
+                                                                <div className="flex flex-wrap gap-2 mb-4">
+                                                                    {tags.slice(0, 3).map((tag) => (
+                                                                        <span
+                                                                            key={tag}
+                                                                            className="text-xs px-3 py-1 bg-gray-100 text-gray-700 rounded-full"
+                                                                        >
+                                                                            {tag}
+                                                                        </span>
+                                                                    ))}
+                                                                    {tags.length > 3 && (
+                                                                        <span className="text-xs px-3 py-1 text-gray-500">
+                                                                            +{tags.length - 3}
+                                                                        </span>
+                                                                    )}
+                                                                </div>
+                                                            )
+                                                        })()}
 
                                                         {/* Tour details grid */}
                                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1.5 sm:gap-y-2 text-xs sm:text-sm">

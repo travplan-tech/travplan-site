@@ -5,6 +5,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { Loader2 } from "lucide-react"
 import { useGetTourTypeStatsQuery } from "@/lib/api/packagesApi"
+import SectionHeading from "@/components/section-heading"
 
 interface TourType {
   id: number
@@ -132,18 +133,13 @@ export default function TailoredTours({ country, region, saleSlug, tourCategory,
   }, [statsData])
 
   return (
-    <section ref={sectionRef} className="py-12 md:py-16">
+    <section ref={sectionRef} className="py-14 md:py-20 bg-gray-50 border-y border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 md:mb-8 gap-4">
-          <div>
-            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900">
-              Tours as per <span className="text-primary">interest</span>
-            </h2>
-            <p className="text-sm md:text-base text-gray-600 mt-1 md:mt-2">
-              Discover tours tailored to your travel style - from private experiences to group adventures.
-            </p>
-          </div>
-        </div>
+        <SectionHeading
+          eyebrow="Interests"
+          title="Travel the way you like"
+          subtitle="Family holidays, couple escapes, pilgrimages or adventure — browse by what you are after."
+        />
 
         {(loading || !isInView) ? (
           <div className="flex justify-center items-center h-48">

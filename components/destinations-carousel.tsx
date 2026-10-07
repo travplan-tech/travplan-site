@@ -119,25 +119,35 @@ export default function DestinationsCarousel() {
                 }
             `}</style>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-4">
-                    <h2 className="text-2xl md:text-3xl font-bold text-gray-900 font-display">Explore <span className="text-primary">Destinations</span></h2>
-                    
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end mb-8 gap-5">
+                    <div className="max-w-2xl">
+                        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary mb-2">
+                            Where to
+                        </p>
+                        <h2 className="font-heading text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 tracking-tight">
+                            Explore destinations
+                        </h2>
+                        <p className="text-sm md:text-base text-gray-600 mt-2">
+                            From Himalayan valleys to island escapes — pick a place and see every trip we run there.
+                        </p>
+                    </div>
+
                     {/* Filter Toggle Buttons */}
-                    <div className="flex h-10 md:h-12">
+                    <div className="inline-flex shrink-0 rounded-xl bg-gray-100 p-1">
                         <button
                             onClick={() => setSelectedFilter('DOMESTIC')}
-                            className={`font-semibold px-3 md:px-6 rounded-l-md flex items-center transition-colors text-sm md:text-base ${selectedFilter === 'DOMESTIC'
-                                ? 'bg-primary text-white'
-                                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                            className={`font-semibold px-4 py-2 rounded-lg transition-colors text-sm ${selectedFilter === 'DOMESTIC'
+                                ? 'bg-white text-gray-900 shadow-sm'
+                                : 'text-gray-500 hover:text-gray-900'
                             }`}
                         >
                             <span>Domestic</span>
                         </button>
                         <button
                             onClick={() => setSelectedFilter('INTERNATIONAL')}
-                            className={`font-semibold px-3 md:px-6 rounded-r-md flex items-center transition-colors text-sm md:text-base ${selectedFilter === 'INTERNATIONAL'
-                                ? 'bg-primary text-white'
-                                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                            className={`font-semibold px-4 py-2 rounded-lg transition-colors text-sm ${selectedFilter === 'INTERNATIONAL'
+                                ? 'bg-white text-gray-900 shadow-sm'
+                                : 'text-gray-500 hover:text-gray-900'
                             }`}
                         >
                             <span>International</span>

@@ -131,12 +131,16 @@ export default function Gallery() {
     }, [startAnimations, cleanupAnimations]);
 
     return (
-        <section className="py-10 md:py-16 overflow-hidden">
-            <p className="w-full text-sm sm:text-base md:text-lg uppercase text-center text-gray-500 mb-1 md:mb-3">GALLERY</p>
-            <h2 className="font-bold text-2xl md:text-3xl lg:text-4xl w-full text-center leading-none mb-6 md:mb-10 px-4">
-                Travel <span className='text-primary'>Through </span>
-                Photos
-            </h2>
+        <section className="py-14 md:py-20 overflow-hidden">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-9 md:mb-12 text-center">
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary mb-2">Gallery</p>
+                <h2 className="font-heading text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 tracking-tight">
+                    Moments from our trips
+                </h2>
+                <p className="text-sm md:text-base text-gray-600 mt-2 max-w-xl mx-auto">
+                    Photographs sent in by travellers who have been out with us.
+                </p>
+            </div>
             <div className="gallery">
                 <div className="gallery__strip" ref={stripOneRef}>
                     {galleryData.stripOne.map((photo, index) => (

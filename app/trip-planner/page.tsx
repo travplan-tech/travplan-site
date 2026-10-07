@@ -252,6 +252,23 @@ function TripPlannerContent() {
 
     return (
         <main className="min-h-screen bg-gray-50">
+            {/* The page had no h1 at all, so it was unlabelled for search engines
+                and screen readers. */}
+            <section className="bg-white border-b border-gray-200">
+                <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 md:py-12 text-center">
+                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary mb-2">
+                        Trip planner
+                    </p>
+                    <h1 className="font-heading text-2xl md:text-4xl font-bold text-gray-900 tracking-tight">
+                        Tell us your trip, we will plan it
+                    </h1>
+                    <p className="text-sm md:text-base text-gray-600 mt-3 max-w-xl mx-auto">
+                        A few quick questions about where, when and who is travelling — then one of our
+                        travel experts builds the itinerary around you.
+                    </p>
+                </div>
+            </section>
+
             {/* Progress Bar */}
             <div className="bg-white border-b sticky top-0 z-40">
                 <div className="max-w-5xl mx-auto px-2 sm:px-4 py-3 sm:py-4">

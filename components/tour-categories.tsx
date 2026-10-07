@@ -2,6 +2,7 @@
 
 import Image from "next/image"
 import Link from "next/link"
+import SectionHeading from "@/components/section-heading"
 
 const sections = [
     {
@@ -30,16 +31,13 @@ const sections = [
 
 export default function TourCategories() {
     return (
-        <section className="py-12 md:py-16 bg-gray-50">
+        <section className="py-14 md:py-20 bg-gray-50 border-y border-gray-200">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex justify-between items-center mb-6 md:mb-8">
-                    <div>
-                        <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900">Choose Your Travel <span className="text-primary">Style</span></h2>
-                        <p className="text-sm md:text-base text-gray-600 mt-1 md:mt-2">
-                            Choose your preferred travel style - whether you want a private exclusive experience or joining a fun group of travelers.
-                        </p>
-                    </div>
-                </div>
+                <SectionHeading
+                    eyebrow="Travel style"
+                    title="Private trip or group departure?"
+                    subtitle="Travel on your own dates at your own pace, or join a fixed departure and share the cost."
+                />
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
                     {sections.map((section) => (
@@ -67,7 +65,7 @@ export default function TourCategories() {
                                         <Link
                                             key={option.label}
                                             href={`/destinations?tourCategory=${section.tourCategory}&${option.params}`}
-                                            className="flex items-center justify-center px-4 py-3  hover:bg-primary/20 bg-primary/10 text-primary border border-primary/20 rounded-xl text-sm md:text-base font-semibold hover:border-transparent transition-all duration-500"
+                                            className="flex items-center justify-center px-4 py-3 rounded-xl border border-gray-200 bg-white text-gray-800 text-sm font-semibold hover:border-primary hover:text-primary hover:bg-primary/5 transition-colors"
                                         >
                                             {option.label}
                                         </Link>

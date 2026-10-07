@@ -2,7 +2,7 @@
 import { Suspense, useMemo } from "react"
 import dynamic from "next/dynamic"
 import { useSearchParams } from "next/navigation"
-import DestinationHero from "@/components/destination-hero"
+import DestinationHero from "@/components/destination-hero-featured"
 import { useGetDestinationsQuery } from "@/lib/api/destinationsApi"
 import {
   CarouselSkeleton,
@@ -92,17 +92,26 @@ function DestinationContent() {
 
   return (
     <main className="w-full">
-      <DestinationHero country={country} region={region} image={destinationImage} />
-      <BestTours
+      <DestinationHero
+        title={country || region || "Explore"}
+        subhead="Tours & Trips"
         country={country}
         region={region}
-        tourCategory={tourCategory}
-        excludeCountry={excludeCountry}
-        tourType={tourType}
+        image={destinationImage}
       />
+      {/* Both components bring their own section padding and background */}
+      <div id="best-tours" className="scroll-mt-24">
+        <BestTours
+          country={country}
+          region={region}
+          tourCategory={tourCategory}
+          excludeCountry={excludeCountry}
+          tourType={tourType}
+        />
+      </div>
       <TailoredTours country={country} region={region} tourCategory={tourCategory} excludeCountry={excludeCountry} />
       <CustomizeTrip />
-      <FAQ destination={country || region} />
+      <FAQ destination={country || region} variant="featured" />
       <TravelersPhotos />
     </main>
   )

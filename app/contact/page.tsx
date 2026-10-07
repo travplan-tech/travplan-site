@@ -110,9 +110,9 @@ export default function ContactPage() {
 
           {/* --- Header Section --- */}
           <div className="text-center mb-8 md:mb-10 lg:mb-12">
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-gray-900">
-              Get in Touch
-            </h1>
+            <h1 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 tracking-tight">
+                        Get in touch
+                    </h1>
             <p className="mt-3 md:mt-4 text-base md:text-lg lg:text-xl text-gray-600">
               We're here to help you plan your next unforgettable journey.
             </p>
@@ -191,7 +191,7 @@ export default function ContactPage() {
                       value={formData.subject}
                       onChange={handleChange}
                       className="w-full border border-gray-300 rounded-md p-2.5 md:p-3 text-sm md:text-base focus:ring-primary focus:border-primary transition"
-                      placeholder="Inquiry about Kilimanjaro tour"
+                      placeholder="Enquiry about a Kashmir trip"
                     />
                   </div>
                 </div>
