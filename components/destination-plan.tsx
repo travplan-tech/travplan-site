@@ -44,8 +44,10 @@ export default function DestinationPlan({
 }) {
     const place = destinationName?.trim().replace(/\s*,\s*$/, "")
 
-    // India destinations should open on the domestic team, not international.
-    const defaultType = (country || "").trim().toLowerCase() === "india" ? "Domestic" : "International"
+    // Open on the domestic team for India and when no country is given (the
+    // homepage), since almost all inventory is domestic.
+    const countryKey = (country || "").trim().toLowerCase()
+    const defaultType = !countryKey || countryKey === "india" ? "Domestic" : "International"
     const [type, setType] = useState(defaultType)
     const [touched, setTouched] = useState(false)
 

@@ -3,6 +3,7 @@
 import { useGetDestinationsQuery } from "@/lib/api/destinationsApi"
 import Image from "next/image"
 import Link from "next/link"
+import DestinationMarqueeRow from "@/components/destination-marquee-row"
 import { useRef, useState, useEffect, useMemo } from "react"
 
 type FilterType = 'ALL' | 'DOMESTIC' | 'INTERNATIONAL';
@@ -10,8 +11,6 @@ type FilterType = 'ALL' | 'DOMESTIC' | 'INTERNATIONAL';
 export default function DestinationsCarousel() {
     // Fetch destinations
     const { data: destinations = [], isLoading } = useGetDestinationsQuery()
-    const scrollContainerRef = useRef<HTMLDivElement>(null)
-    const [scrollProgress, setScrollProgress] = useState(0)
     const [selectedFilter, setSelectedFilter] = useState<FilterType>('ALL')
 
     // Filter to ensure we have images and valid data
@@ -31,33 +30,6 @@ export default function DestinationsCarousel() {
         return validDestinations
     }, [validDestinations, selectedFilter])
 
-    // Handle scroll to update progress indicator
-    const handleScroll = () => {
-        if (scrollContainerRef.current) {
-            const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current
-            const maxScroll = scrollWidth - clientWidth
-            const progress = maxScroll > 0 ? (scrollLeft / maxScroll) * 100 : 0
-            setScrollProgress(progress)
-        }
-    }
-
-    useEffect(() => {
-        const container = scrollContainerRef.current
-        if (container) {
-            container.addEventListener('scroll', handleScroll)
-            // Initial calculation
-            handleScroll()
-            return () => container.removeEventListener('scroll', handleScroll)
-        }
-    }, [filteredDestinations])
-
-    // Reset scroll position when filter changes
-    useEffect(() => {
-        if (scrollContainerRef.current) {
-            scrollContainerRef.current.scrollLeft = 0
-            setScrollProgress(0)
-        }
-    }, [selectedFilter])
 
     // Skeleton loading state
     if (isLoading) {
@@ -156,71 +128,30 @@ export default function DestinationsCarousel() {
                 </div>
 
                 <div className="relative group">
-                    {/* Scrollable Container */}
-                    <div
-                        id="destinations-scroll-container"
-                        ref={scrollContainerRef}
-                        className="flex overflow-x-auto gap-x-8 gap-y-8 pb-4 pt-2 snap-x"
-                        style={{
-                            display: 'grid',
-                            gridTemplateRows: 'repeat(2, min-content)',
-                            gridAutoFlow: 'column',
-                            gridAutoColumns: 'min-content',
-                            scrollbarWidth: 'none', // Firefox
-                            msOverflowStyle: 'none', // IE/Edge
-                        }}
-                    >
-                        {filteredDestinations.map((dest) => (
-                            <Link
-                                key={dest.id}
-                                href={`/tours?search=${encodeURIComponent(dest.name)}`}
-                                className="flex flex-col items-center gap-3 group/item w-24 md:w-32 snap-start"
-                            >
-                                <div className="relative w-24 h-24 md:w-32 md:h-32 overflow-hidden rounded-full shadow-md border-2 border-transparent group-hover/item:border-primary transition-all duration-300">
-                                    <Image
-                                        src={dest.image || "/placeholder.jpg"}
-                                        alt={dest.name}
-                                        fill
-                                        sizes="(max-width: 768px) 96px, 128px"
-                                        className="object-cover transition-transform duration-500 group-hover/item:scale-110"
+                    {/* Two rows drifting in opposite directions; each stays
+                        draggable and scrollable by hand. */}
+                    <div className="space-y-6 md:space-y-8">
+                        {(() => {
+                            const half = Math.ceil(filteredDestinations.length / 2)
+                            const rows = [
+                                filteredDestinations.slice(0, half),
+                                filteredDestinations.slice(half),
+                            ]
+                            return rows.map((row, rowIndex) =>
+                                row.length === 0 ? null : (
+                                    <DestinationMarqueeRow
+                                        key={rowIndex}
+                                        destinations={row}
+                                        direction={rowIndex === 0 ? "right" : "left"}
                                     />
-                                </div>
-                                <span className="text-sm md:text-base font-medium text-gray-700 text-center group-hover/item:text-primary transition-colors w-full px-1">
-                                    {dest.name}
-                                </span>
-                            </Link>
-                        ))}
+                                )
+                            )
+                        })()}
                     </div>
 
-                    {/* Custom Scroll Progress Bar */}
-                    <div
-                        className="mt-4 h-2 bg-purple-100 rounded-full overflow-hidden cursor-pointer"
-                        onClick={(e) => {
-                            if (scrollContainerRef.current) {
-                                const bar = e.currentTarget;
-                                const rect = bar.getBoundingClientRect();
-                                const clickX = e.clientX - rect.left;
-                                const percent = clickX / rect.width;
-                                const { scrollWidth, clientWidth } = scrollContainerRef.current;
-                                scrollContainerRef.current.scrollTo({
-                                    left: percent * (scrollWidth - clientWidth),
-                                    behavior: 'smooth'
-                                });
-                            }
-                        }}
-                    >
-                        <div
-                            className="h-full rounded-full transition-all duration-150 ease-out"
-                            style={{
-                                width: '20%',
-                                marginLeft: `${scrollProgress * 0.8}%`,
-                                background: 'linear-gradient(90deg, #8745d1 0%, #a855f7 50%, #8745d1 100%)'
-                            }}
-                        />
-                    </div>
-
-                    {/* Fade effect on sides */}
-                    <div className="absolute top-0 right-0 h-[calc(100%-2rem)] w-24 bg-gradient-to-l from-white to-transparent pointer-events-none" />
+                    {/* Fade the edges so items enter and leave softly */}
+                    <div className="pointer-events-none absolute inset-y-0 left-0 w-16 md:w-24 bg-gradient-to-r from-white to-transparent z-10" />
+                    <div className="pointer-events-none absolute inset-y-0 right-0 w-16 md:w-24 bg-gradient-to-l from-white to-transparent z-10" />
                 </div>
             </div>
         </div>

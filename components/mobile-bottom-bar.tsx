@@ -1,6 +1,5 @@
 "use client"
 
-import { useEffect, useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Home, MapPin, Phone, Search } from "lucide-react"
@@ -13,22 +12,11 @@ const ITEMS = [
 ]
 
 /**
- * Fixed bottom navigation for phones.
- *
- * It slides up from the bottom once the visitor scrolls past the hero, and
- * slides away again at the very top so it never covers the hero search. Hidden
- * from md up, where the normal header is always visible.
+ * Fixed bottom navigation for phones — always visible, never tied to scroll.
+ * Hidden from md up, where the normal header is always on screen.
  */
 export default function MobileBottomBar() {
     const pathname = usePathname()
-    const [visible, setVisible] = useState(false)
-
-    useEffect(() => {
-        const onScroll = () => setVisible(window.scrollY > 240)
-        onScroll()
-        window.addEventListener("scroll", onScroll, { passive: true })
-        return () => window.removeEventListener("scroll", onScroll)
-    }, [])
 
     // Checkout and admin screens have their own controls at the bottom.
     if (pathname.startsWith("/admin") || pathname.startsWith("/checkout")) return null
@@ -36,8 +24,7 @@ export default function MobileBottomBar() {
     return (
         <nav
             aria-label="Primary"
-            className={`md:hidden fixed inset-x-0 bottom-0 z-50 transition-transform duration-300 ease-out ${visible ? "translate-y-0" : "translate-y-full"
-                }`}
+            className="md:hidden fixed inset-x-0 bottom-0 z-50"
         >
             <ul className="flex items-stretch justify-around bg-white/95 backdrop-blur-md border-t border-gray-200 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] pb-[env(safe-area-inset-bottom)]">
                 {ITEMS.map((item) => {

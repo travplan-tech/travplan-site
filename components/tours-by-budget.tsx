@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
+import Image from "next/image"
 import Link from "next/link"
 import { ArrowUpRight, IndianRupee } from "lucide-react"
 import { useGetBudgetStatsQuery } from "@/lib/api/packagesApi"
@@ -10,6 +11,7 @@ interface BudgetRange {
     label: string
     maxPrice: number
     count: number
+    image: string
 }
 
 interface BudgetGroup {
@@ -27,10 +29,10 @@ const DEFAULT_GROUPS: BudgetGroup[] = [
         blurb: "Himalayan valleys, backwaters, deserts and the North East.",
         tours: 0,
         ranges: [
-            { label: "10,000", maxPrice: 10000, count: 0 },
-            { label: "20,000", maxPrice: 20000, count: 0 },
-            { label: "30,000", maxPrice: 30000, count: 0 },
-            { label: "50,000", maxPrice: 50000, count: 0 },
+            { label: "10,000", maxPrice: 10000, count: 0, image: "/mountain-forest.jpg" },
+            { label: "20,000", maxPrice: 20000, count: 0, image: "/spiti-valley-mountains.jpg" },
+            { label: "30,000", maxPrice: 30000, count: 0, image: "/kerala-backwaters.jpg" },
+            { label: "50,000", maxPrice: 50000, count: 0, image: "/arunachal-pradesh-mountains.jpg" },
         ],
     },
     {
@@ -39,10 +41,10 @@ const DEFAULT_GROUPS: BudgetGroup[] = [
         blurb: "Short-haul escapes and long-haul holidays from India.",
         tours: 0,
         ranges: [
-            { label: "30,000", maxPrice: 30000, count: 0 },
-            { label: "50,000", maxPrice: 50000, count: 0 },
-            { label: "75,000", maxPrice: 75000, count: 0 },
-            { label: "1,00,000", maxPrice: 100000, count: 0 },
+            { label: "30,000", maxPrice: 30000, count: 0, image: "/thailand-beach.jpg" },
+            { label: "50,000", maxPrice: 50000, count: 0, image: "/nepal-kathmandu-himalaya.jpg" },
+            { label: "75,000", maxPrice: 75000, count: 0, image: "/buddhist-temple-golden-pagoda.jpg" },
+            { label: "1,00,000", maxPrice: 100000, count: 0, image: "/venice-italy-canal.jpg" },
         ],
     },
 ]
@@ -144,14 +146,24 @@ export default function ToursByBudget() {
                             <Link
                                 key={range.maxPrice}
                                 href={href}
-                                className={`group relative flex flex-col justify-between rounded-2xl border p-5 md:p-6 min-h-36 md:min-h-44 transition-all ${empty
-                                    ? "border-gray-200 bg-gray-50/60 hover:border-gray-300"
-                                    : "border-gray-200 bg-white hover:border-primary hover:-translate-y-0.5 hover:shadow-lg"
-                                    }`}
+                                className="group relative flex flex-col justify-end overflow-hidden rounded-2xl min-h-44 md:min-h-56 p-5 transition-transform hover:-translate-y-0.5"
                             >
-                                <div>
-                                    <p className="text-xs font-medium text-gray-500 mb-1">Under</p>
-                                    <p className="flex items-start text-2xl md:text-3xl font-bold text-gray-900 tracking-tight leading-none">
+                                <Image
+                                    src={range.image}
+                                    alt=""
+                                    fill
+                                    sizes="(max-width: 1024px) 50vw, 25vw"
+                                    className={`object-cover transition-transform duration-500 group-hover:scale-105 ${empty ? "grayscale opacity-60" : ""
+                                        }`}
+                                />
+                                <div
+                                    className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-black/10"
+                                    aria-hidden="true"
+                                />
+
+                                <div className="relative">
+                                    <p className="text-xs font-medium text-white/70 mb-1">Under</p>
+                                    <p className="flex items-start text-2xl md:text-3xl font-bold text-white tracking-tight leading-none drop-shadow">
                                         <IndianRupee
                                             size={18}
                                             className="mt-0.5 mr-0.5 shrink-0"
@@ -159,25 +171,19 @@ export default function ToursByBudget() {
                                         />
                                         {range.label}
                                     </p>
-                                </div>
 
-                                <div className="flex items-end justify-between gap-2 mt-5">
-                                    <span
-                                        className={`text-sm font-medium ${empty ? "text-gray-400" : "text-gray-600"
-                                            }`}
-                                    >
-                                        {empty
-                                            ? "None yet"
-                                            : `${range.count} ${range.count === 1 ? "trip" : "trips"}`}
-                                    </span>
-                                    <ArrowUpRight
-                                        size={18}
-                                        aria-hidden="true"
-                                        className={`shrink-0 transition-transform ${empty
-                                            ? "text-gray-300"
-                                            : "text-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-                                            }`}
-                                    />
+                                    <div className="flex items-end justify-between gap-2 mt-4 pt-3 border-t border-white/20">
+                                        <span className="text-sm font-medium text-white/85">
+                                            {empty
+                                                ? "None yet"
+                                                : `${range.count} ${range.count === 1 ? "trip" : "trips"}`}
+                                        </span>
+                                        <ArrowUpRight
+                                            size={18}
+                                            aria-hidden="true"
+                                            className="shrink-0 text-white transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                                        />
+                                    </div>
                                 </div>
                             </Link>
                         )

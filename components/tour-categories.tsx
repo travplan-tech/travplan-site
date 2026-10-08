@@ -1,5 +1,6 @@
 "use client"
 
+import Image from "next/image"
 import Link from "next/link"
 import { ArrowRight, CalendarCheck, Check, Lock, Users } from "lucide-react"
 import SectionHeading from "@/components/section-heading"
@@ -24,6 +25,7 @@ const OPTIONS = [
             { label: "In India", href: "/tours?tourCategory=PRIVATE&type=domestic" },
             { label: "Abroad", href: "/tours?tourCategory=PRIVATE&type=international" },
         ],
+        image: "/luxury.jpeg",
         featured: false,
     },
     {
@@ -40,6 +42,7 @@ const OPTIONS = [
             { label: "In India", href: "/tours?tourCategory=GROUP&type=domestic" },
             { label: "Abroad", href: "/tours?tourCategory=GROUP&type=international" },
         ],
+        image: "/adventure.jpeg",
         featured: true,
     },
 ]
@@ -60,23 +63,36 @@ export default function TourCategories() {
                         return (
                             <div
                                 key={option.key}
-                                className={`relative flex flex-col rounded-2xl border p-6 md:p-8 transition-colors ${option.featured
+                                className={`relative flex flex-col overflow-hidden rounded-2xl border p-6 md:p-8 transition-colors ${option.featured
                                     ? "border-primary/30 bg-white"
                                     : "border-gray-200 bg-white"
                                     }`}
                             >
                                 {option.featured && (
-                                    <span className="absolute -top-2.5 left-6 bg-primary text-white text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full">
+                                    <span className="absolute top-3 right-3 z-10 bg-primary text-white text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full shadow">
                                         Best value
                                     </span>
                                 )}
 
-                                <span
-                                    className={`inline-flex items-center justify-center w-11 h-11 rounded-xl mb-4 ${option.featured ? "bg-primary text-white" : "bg-gray-100 text-gray-700"
-                                        }`}
-                                >
-                                    <Icon size={20} aria-hidden="true" />
-                                </span>
+                                <div className="relative h-28 md:h-32 -mx-6 md:-mx-8 -mt-6 md:-mt-8 mb-5 overflow-hidden">
+                                    <Image
+                                        src={option.image}
+                                        alt=""
+                                        fill
+                                        sizes="(max-width: 768px) 100vw, 50vw"
+                                        className="object-cover"
+                                    />
+                                    <div
+                                        className="absolute inset-0 bg-gradient-to-t from-white via-white/40 to-transparent"
+                                        aria-hidden="true"
+                                    />
+                                    <span
+                                        className={`absolute bottom-3 left-6 md:left-8 inline-flex items-center justify-center w-11 h-11 rounded-xl shadow-md ${option.featured ? "bg-primary text-white" : "bg-white text-gray-800"
+                                            }`}
+                                    >
+                                        <Icon size={20} aria-hidden="true" />
+                                    </span>
+                                </div>
 
                                 <h3 className="text-xl md:text-2xl font-bold text-gray-900 tracking-tight">
                                     {option.title}

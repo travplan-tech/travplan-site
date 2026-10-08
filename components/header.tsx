@@ -119,7 +119,7 @@ export default function Header({ initialActiveSale }: HeaderProps = {}) {
   };
 
   return (
-    <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
+    <header className="bg-white/85 backdrop-blur-md border-b border-gray-200/80 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-2 lg:px-8">
         <div className="flex justify-between items-center">
           <Link
@@ -137,7 +137,7 @@ export default function Header({ initialActiveSale }: HeaderProps = {}) {
           </Link>
 
 
-          <nav className="hidden md:flex text-black font-medium items-center space-x-8">
+          <nav className="hidden md:flex text-gray-700 text-sm font-medium items-center gap-1">
             {/* Destinations Dropdown */}
             <div
               className="relative"
@@ -149,7 +149,7 @@ export default function Header({ initialActiveSale }: HeaderProps = {}) {
                   setShouldFetchDestinations(true);
                   setIsDestinationsOpen(!isDestinationsOpen);
                 }}
-                className="flex items-center gap-1 hover:text-primary transition"
+                className="flex items-center gap-1 px-3 py-2 rounded-lg hover:bg-gray-100 hover:text-gray-900 transition-colors"
               >
                 Destinations
                 <ChevronDown size={16} className={`transition-transform ${isDestinationsOpen ? 'rotate-180' : ''}`} />
@@ -335,7 +335,7 @@ export default function Header({ initialActiveSale }: HeaderProps = {}) {
             >
               <button
                 onClick={() => setIsGroupToursOpen(!isGroupToursOpen)}
-                className="flex items-center gap-1 hover:text-primary transition"
+                className="flex items-center gap-1 px-3 py-2 rounded-lg hover:bg-gray-100 hover:text-gray-900 transition-colors"
               >
                 Group Tours
                 <ChevronDown size={16} className={`transition-transform ${isGroupToursOpen ? 'rotate-180' : ''}`} />
@@ -364,13 +364,13 @@ export default function Header({ initialActiveSale }: HeaderProps = {}) {
               )}
             </div>
 
-            <Link href="/blog" className="hover:text-primary transition">
+            <Link href="/blog" className="px-3 py-2 rounded-lg hover:bg-gray-100 hover:text-gray-900 transition-colors">
               Travel Guides
             </Link>
-            <Link href="/about" className="hover:text-primary transition">
+            <Link href="/about" className="px-3 py-2 rounded-lg hover:bg-gray-100 hover:text-gray-900 transition-colors">
               About Us
             </Link>
-            <Link href="/contact" className="hover:text-primary transition">
+            <Link href="/contact" className="px-3 py-2 rounded-lg hover:bg-gray-100 hover:text-gray-900 transition-colors">
               Contact Us
             </Link>
 
@@ -393,7 +393,7 @@ export default function Header({ initialActiveSale }: HeaderProps = {}) {
               <div className="relative">
                 <button
                   onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                  className="flex items-center space-x-2 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/80 transition"
+                  className="flex items-center gap-2 bg-gray-900 hover:bg-gray-800 text-white text-sm font-semibold px-4 py-2.5 rounded-xl transition-colors"
                 >
                   <User size={18} />
                   <span>{session.user?.name || "Account"}</span>
@@ -450,7 +450,7 @@ export default function Header({ initialActiveSale }: HeaderProps = {}) {
               /* Not logged in - Show Login Button only */
               <Link
                 href="/auth/signin"
-                className="flex items-center space-x-2 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/80 transition"
+                className="flex items-center gap-2 bg-gray-900 hover:bg-gray-800 text-white text-sm font-semibold px-4 py-2.5 rounded-xl transition-colors"
               >
                 <User size={18} />
                 <span>Login</span>

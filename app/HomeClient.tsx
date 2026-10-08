@@ -32,7 +32,8 @@ const TravelInfoSection = dynamic(() => import("@/components/travel-info"), {
     ssr: false,
 });
 
-const CustomizeTrip = dynamic(() => import("@/components/customize-trip"), {
+// The redesigned enquiry block, shared with the destination pages
+const PlanWithUs = dynamic(() => import("@/components/destination-plan"), {
     loading: () => <CustomizeTripSkeleton />,
     ssr: false,
 });
@@ -72,7 +73,7 @@ export default function HomeClient() {
             <TourCategories />
             <DestinationsCarousel />
             <TravelInfoSection />
-            <CustomizeTrip />
+            <PlanWithUs />
             {/* <TopRated /> */}
             <TailoredTours />
             <VideoTestimonialsSection />

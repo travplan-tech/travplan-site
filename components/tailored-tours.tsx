@@ -126,10 +126,9 @@ export default function TailoredTours({ country, region, saleSlug, tourCategory,
     if (!statsData) return defaultTourTypes
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const stats = statsData as any
-    return defaultTourTypes.map(type => ({
-      ...type,
-      tours: stats[type.type] || 0
-    }))
+    return defaultTourTypes
+      .map(type => ({ ...type, tours: stats[type.type] || 0 }))
+      .filter(type => type.tours > 0)
   }, [statsData])
 
   return (
@@ -146,8 +145,16 @@ export default function TailoredTours({ country, region, saleSlug, tourCategory,
             <Loader2 className="w-8 h-8 animate-spin text-primary" />
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-            {tourTypes.map((type) => {
+          <div className="grid grid-flow-dense grid-cols-2 lg:grid-cols-4 auto-rows-[170px] md:auto-rows-[200px] gap-3 md:gap-4">
+            {tourTypes.map((type, index) => {
+              // 0 and 5 run tall, 3 runs wide — gives the grid a bento rhythm
+              const span =
+                index === 0 || index === 5
+                  ? "row-span-2"
+                  : index === 3
+                    ? "lg:col-span-2"
+                    : ""
+
               const href = `/destinations?tourType=${encodeURIComponent(type.type)}` +
                 (destinationId ? `&destinationId=${destinationId}` : "") +
                 (country ? `&country=${encodeURIComponent(country)}` : "") +
@@ -160,9 +167,9 @@ export default function TailoredTours({ country, region, saleSlug, tourCategory,
                 <Link
                   key={type.id}
                   href={href}
-                  className="group bg-white rounded-xl overflow-hidden shadow hover:shadow-xl transition-all duration-300"
+                  className={`group relative bg-white rounded-2xl overflow-hidden border border-gray-200 hover:border-primary/40 hover:shadow-lg transition-all duration-300 ${span}`}
                 >
-                  <div className="relative aspect-square">
+                  <div className="relative w-full h-full">
                     <Image
                       src={type.image || "/placeholder.svg"}
                       alt={type.type}
