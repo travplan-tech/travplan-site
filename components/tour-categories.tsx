@@ -1,31 +1,46 @@
 "use client"
 
-import Image from "next/image"
 import Link from "next/link"
+import { ArrowRight, CalendarCheck, Check, Lock, Users } from "lucide-react"
 import SectionHeading from "@/components/section-heading"
 
-const sections = [
+/**
+ * Private vs group, as a side-by-side comparison rather than two image cards.
+ * The two options differ in how they work, not in how they look, so the layout
+ * leads with the differences.
+ */
+const OPTIONS = [
     {
-        id: 1,
-        image: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=2070&auto=format&fit=crop",
-        title: "Private Tours",
-        subtitle: "Flexible dates, custom stays, personal pace",
-        tourCategory: "PRIVATE",
-        options: [
-            { label: "Domestic Tours", params: "country=India" },
-            { label: "International Tours", params: "excludeCountry=India" },
-        ]
+        key: "private",
+        icon: Lock,
+        title: "Private trip",
+        pitch: "Just your group. Your dates, your pace, your hotels.",
+        points: [
+            "Travel on the dates you pick",
+            "Change the route or stay longer anywhere",
+            "Choose your own hotel category",
+        ],
+        links: [
+            { label: "In India", href: "/tours?tourCategory=PRIVATE&type=domestic" },
+            { label: "Abroad", href: "/tours?tourCategory=PRIVATE&type=international" },
+        ],
+        featured: false,
     },
     {
-        id: 2,
-        image: "https://images.unsplash.com/photo-1530789253388-582c481c54b0?q=80&w=2070&auto=format&fit=crop",
-        title: "Group Tours",
-        subtitle: "Fixed dates, better values, social experience",
-        tourCategory: "GROUP",
-        options: [
-            { label: "Domestic Tours", params: "country=India" },
-            { label: "International Tours", params: "excludeCountry=India" },
-        ]
+        key: "group",
+        icon: Users,
+        title: "Group departure",
+        pitch: "Fixed dates, a set route, and the cost shared with others.",
+        points: [
+            "Lower cost per person",
+            "Meet other travellers on the road",
+            "Everything planned and led for you",
+        ],
+        links: [
+            { label: "In India", href: "/tours?tourCategory=GROUP&type=domestic" },
+            { label: "Abroad", href: "/tours?tourCategory=GROUP&type=international" },
+        ],
+        featured: true,
     },
 ]
 
@@ -36,45 +51,76 @@ export default function TourCategories() {
                 <SectionHeading
                     eyebrow="Travel style"
                     title="Private trip or group departure?"
-                    subtitle="Travel on your own dates at your own pace, or join a fixed departure and share the cost."
+                    subtitle="Two ways to travel with us. The difference is who you travel with and who picks the dates."
                 />
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
-                    {sections.map((section) => (
-                        <div key={section.id} className="group bg-white rounded-2xl overflow-hidden border border-gray-200 hover:border-primary/40 hover:shadow-lg transition-all duration-300">
-                            {/* Image Header */}
-                            <div className="relative h-36 md:h-44 overflow-hidden">
-                                <Image
-                                    src={section.image}
-                                    alt={section.title}
-                                    fill
-                                    sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 640px"
-                                    className="object-cover group-hover:scale-105 transition-transform duration-500"
-                                />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
-                                <div className="absolute bottom-4 left-4 right-4 text-white">
-                                    <h3 className="text-xl md:text-2xl font-bold drop-shadow-lg">{section.title}</h3>
-                                    <p className="text-sm opacity-90 mt-1">{section.subtitle}</p>
-                                </div>
-                            </div>
+                <div className="grid md:grid-cols-2 gap-4 md:gap-5">
+                    {OPTIONS.map((option) => {
+                        const Icon = option.icon
+                        return (
+                            <div
+                                key={option.key}
+                                className={`relative flex flex-col rounded-2xl border p-6 md:p-8 transition-colors ${option.featured
+                                    ? "border-primary/30 bg-white"
+                                    : "border-gray-200 bg-white"
+                                    }`}
+                            >
+                                {option.featured && (
+                                    <span className="absolute -top-2.5 left-6 bg-primary text-white text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full">
+                                        Best value
+                                    </span>
+                                )}
 
-                            {/* Options */}
-                            <div className="p-4 md:p-5">
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                    {section.options.map((option) => (
+                                <span
+                                    className={`inline-flex items-center justify-center w-11 h-11 rounded-xl mb-4 ${option.featured ? "bg-primary text-white" : "bg-gray-100 text-gray-700"
+                                        }`}
+                                >
+                                    <Icon size={20} aria-hidden="true" />
+                                </span>
+
+                                <h3 className="text-xl md:text-2xl font-bold text-gray-900 tracking-tight">
+                                    {option.title}
+                                </h3>
+                                <p className="text-sm md:text-base text-gray-600 mt-1.5">{option.pitch}</p>
+
+                                <ul className="space-y-2.5 mt-6 mb-7 grow">
+                                    {option.points.map((point) => (
+                                        <li key={point} className="flex items-start gap-2.5 text-sm text-gray-700">
+                                            <Check
+                                                size={15}
+                                                strokeWidth={3}
+                                                className="text-primary shrink-0 mt-0.5"
+                                                aria-hidden="true"
+                                            />
+                                            <span className="min-w-0 leading-relaxed">{point}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+
+                                <div className="flex flex-wrap gap-2 pt-5 border-t border-gray-100">
+                                    {option.links.map((link, index) => (
                                         <Link
-                                            key={option.label}
-                                            href={`/destinations?tourCategory=${section.tourCategory}&${option.params}`}
-                                            className="flex items-center justify-center px-4 py-3 rounded-xl border border-gray-200 bg-white text-gray-800 text-sm font-semibold hover:border-primary hover:text-primary hover:bg-primary/5 transition-colors"
+                                            key={link.href}
+                                            href={link.href}
+                                            className={`inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors ${index === 0
+                                                ? "bg-gray-900 text-white hover:bg-gray-800"
+                                                : "border border-gray-300 text-gray-800 hover:border-gray-900"
+                                                }`}
                                         >
-                                            {option.label}
+                                            {link.label}
+                                            <ArrowRight size={15} aria-hidden="true" />
                                         </Link>
                                     ))}
                                 </div>
                             </div>
-                        </div>
-                    ))}
+                        )
+                    })}
                 </div>
+
+                <p className="flex items-center justify-center gap-1.5 text-xs text-gray-500 mt-6">
+                    <CalendarCheck size={13} aria-hidden="true" />
+                    Not sure which suits you? Tell us your dates and we will suggest one.
+                </p>
             </div>
         </section>
     )
