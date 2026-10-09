@@ -8,12 +8,21 @@ import {
     Download,
     Check,
     ChevronDown,
+    AlertCircle,
+    Baby,
+    CalendarDays,
     ChevronRight,
     Clock,
+    CreditCard,
     Info,
+    MessageCircle,
+    Minus,
     MapPin,
+    ShieldCheck,
+    Sparkles,
     Star,
     Users,
+    Wallet,
     X,
 } from "lucide-react";
 import {
@@ -128,6 +137,19 @@ export default function TripDetailClient({ tourData }: TripDetailClientProps) {
 
     // "Tawang, India" -> "Tawang · India", with the stray space tidied.
     // destination.name arrives as "Tawang, India"; show it as "Tawang · India".
+    // Stored inclusion/exclusion lists contain repeated lines, so collapse them.
+    const uniqueLines = (lines: string[]) =>
+        Array.from(new Map(lines.map((l) => [l.trim().toLowerCase(), l.trim()])).values()).filter(
+            Boolean
+        )
+    const inclusions = uniqueLines(tourData.inclusions)
+    const exclusions = uniqueLines(tourData.exclusions)
+
+    const saving =
+        tourData.originalPrice && tourData.originalPrice > tourData.price
+            ? tourData.originalPrice - tourData.price
+            : 0
+
     const destinationLabel =
         (tourData.destination?.name || "")
             .split(",")
@@ -305,62 +327,73 @@ export default function TripDetailClient({ tourData }: TripDetailClientProps) {
 
                     {/* RIGHT COLUMN - Booking Sidebar */}
                     <div className="lg:col-span-1 order-2 lg:row-span-2">
-                        <div className="lg:sticky lg:top-20 bg-white border border-gray-200 rounded-lg p-4 md:p-5 lg:p-6 shadow-lg">
-                            {/* Price and Availability */}
-                            <div className="mb-4 md:mb-6">
-                                {tourData.originalPrice && tourData.originalPrice > tourData.price && (
-                                    <p className="text-sm text-gray-400 line-through">
-                                        ₹{tourData.originalPrice.toLocaleString("en-IN")}
-                                    </p>
+                        <div className="lg:sticky lg:top-20 rounded-2xl border border-gray-200 bg-white overflow-hidden shadow-sm">
+                            {/* Price header, set apart from the actions below it */}
+                            <div className="bg-gradient-to-r from-[#6d28d9] via-[#5b21b6] to-[#3b1370] px-5 py-5 md:px-6">
+                                {saving > 0 && (
+                                    <span className="inline-block bg-white text-primary text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full mb-3">
+                                        Save ₹{saving.toLocaleString("en-IN")}
+                                    </span>
                                 )}
-                                <p className="text-xs md:text-sm text-gray-500">From</p>
-                                <p className="text-2xl md:text-3xl font-bold text-gray-900">
-                                    ₹{tourData.price.toLocaleString("en-IN")}
+                                <p className="text-xs text-white/60">Starting from</p>
+                                <p className="flex items-baseline gap-2 mt-1">
+                                    <span className="text-3xl md:text-4xl font-bold text-white leading-none">
+                                        ₹{tourData.price.toLocaleString("en-IN")}
+                                    </span>
+                                    {saving > 0 && tourData.originalPrice && (
+                                        <span className="text-base text-white/45 line-through">
+                                            ₹{tourData.originalPrice.toLocaleString("en-IN")}
+                                        </span>
+                                    )}
                                 </p>
-                                <p className="text-xs text-gray-500">per person</p>
+                                <p className="text-xs text-white/60 mt-1.5">per person · {tourData.duration}</p>
                             </div>
 
-                            <Link href="#availability">
-                                <button className="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-2.5 md:py-3 rounded-md mb-2 md:mb-3 transition text-sm md:text-base">
-                                    Check Availability
+                            <div className="p-5 md:p-6">
+                                <Link
+                                    href="#availability"
+                                    className="flex items-center justify-center gap-2 w-full bg-primary hover:bg-primary/90 text-white font-semibold py-3 rounded-xl transition-colors"
+                                >
+                                    <CalendarDays size={17} aria-hidden="true" />
+                                    Check availability
+                                </Link>
+                                <button
+                                    type="button"
+                                    onClick={() => setShowEnquiryDialog(true)}
+                                    className="flex items-center justify-center gap-2 w-full border border-gray-300 hover:border-gray-900 hover:bg-gray-50 text-gray-900 font-semibold py-3 rounded-xl transition-colors mt-2.5"
+                                >
+                                    <MessageCircle size={17} aria-hidden="true" />
+                                    Ask a question
                                 </button>
-                            </Link>
-                            <button
-                                onClick={() => setShowEnquiryDialog(true)}
-                                className="w-full bg-white border border-primary text-primary hover:bg-primary/5 font-semibold py-2.5 md:py-3 rounded-md transition text-sm md:text-base"
-                            >
-                                Make an Enquiry
-                            </button>
 
-                            {/* Guarantees and Benefits */}
-                            <div className="mt-4 md:mt-6 pt-3 md:pt-4 border-t border-gray-200 space-y-2 md:space-y-3">
-                                {tourData.bestPrice && (
-                                    <div className="flex items-center text-xs md:text-sm text-gray-700">
-                                        <Check className="w-3 h-3 md:w-4 md:h-4 text-primary mr-2 shrink-0" />
-                                        Best price guaranteed
-                                    </div>
-                                )}
-                                <div className="flex items-center text-xs md:text-sm text-gray-700">
-                                    <Check className="w-3 h-3 md:w-4 md:h-4 text-primary mr-2 shrink-0" />
-                                    Book your package at 30% Now
-                                </div>
-                                <div className="flex items-center text-xs md:text-sm text-gray-700">
-                                    <Check className="w-3 h-3 md:w-4 md:h-4 text-primary mr-2 shrink-0" />
-                                    EMI options available
-                                </div>
-                                {tourData.isCustomizable && (
-                                    <div className="flex items-center text-xs md:text-sm text-gray-700">
-                                        <Check className="w-3 h-3 md:w-4 md:h-4 text-primary mr-2 shrink-0" />
-                                        Trip is customizable
-                                    </div>
-                                )}
-                            </div>
+                                <ul className="space-y-2.5 mt-5 pt-5 border-t border-gray-100">
+                                    {tourData.bestPrice && (
+                                        <li className="flex items-center gap-2.5 text-sm text-gray-700">
+                                            <ShieldCheck size={16} className="text-primary shrink-0" aria-hidden="true" />
+                                            Best price guaranteed
+                                        </li>
+                                    )}
+                                    <li className="flex items-center gap-2.5 text-sm text-gray-700">
+                                        <Wallet size={16} className="text-primary shrink-0" aria-hidden="true" />
+                                        Book with 30% now
+                                    </li>
+                                    <li className="flex items-center gap-2.5 text-sm text-gray-700">
+                                        <CreditCard size={16} className="text-primary shrink-0" aria-hidden="true" />
+                                        EMI options available
+                                    </li>
+                                    {tourData.isCustomizable && (
+                                        <li className="flex items-center gap-2.5 text-sm text-gray-700">
+                                            <Sparkles size={16} className="text-primary shrink-0" aria-hidden="true" />
+                                            Itinerary can be customised
+                                        </li>
+                                    )}
+                                </ul>
 
-                            {/* Child Policy Notice */}
-                            <div className="mt-4 pt-3 md:pt-4 border-t border-gray-200">
-                                <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
-                                    <p className="text-xs md:text-sm text-amber-800">
-                                        <span className="font-semibold">Child Policy:</span> Children aged 6-12 years may incur additional charges. Children below 6 years are complimentary.
+                                <div className="flex gap-2.5 mt-5 pt-5 border-t border-gray-100">
+                                    <Baby size={16} className="text-gray-400 shrink-0 mt-0.5" aria-hidden="true" />
+                                    <p className="text-xs text-gray-500 leading-relaxed">
+                                        <span className="font-semibold text-gray-700">Children:</span> ages 6–12 may
+                                        incur extra charges; under 6 travel free.
                                     </p>
                                 </div>
                             </div>
@@ -408,48 +441,63 @@ export default function TripDetailClient({ tourData }: TripDetailClientProps) {
                         )}
 
                         {/* --- Inclusions & Exclusions --- */}
-                        {(tourData.inclusions.length > 0 || tourData.exclusions.length > 0) && (
-                            <PackageSection title="What's included">
+                        {(inclusions.length > 0 || exclusions.length > 0) && (
+                            <PackageSection title="What's included" eyebrow="The fine print">
                                 <div className="grid md:grid-cols-2 gap-4 md:gap-5 items-start">
-                                    {tourData.inclusions.length > 0 && (
-                                        <div className="rounded-2xl border border-emerald-200 bg-emerald-50/50 p-5">
-                                            <h3 className="flex items-center gap-2 text-sm font-bold text-emerald-800 mb-3">
-                                                <span className="w-6 h-6 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center">
-                                                    <Check size={14} strokeWidth={3} aria-hidden="true" />
+                                    {inclusions.length > 0 && (
+                                        <div className="rounded-2xl border border-gray-200 overflow-hidden">
+                                            <div className="flex items-center gap-2.5 bg-emerald-50 border-b border-emerald-100 px-5 py-3.5">
+                                                <span className="w-7 h-7 rounded-lg bg-emerald-600 text-white flex items-center justify-center shrink-0">
+                                                    <Check size={15} strokeWidth={3} aria-hidden="true" />
                                                 </span>
-                                                Included
-                                            </h3>
-                                            <ul className="space-y-2.5">
-                                                {tourData.inclusions.map((item, index) => (
-                                                    <li key={index} className="flex items-start gap-2.5 text-sm text-gray-700">
+                                                <h3 className="text-sm font-bold text-emerald-900">
+                                                    Included in the price
+                                                </h3>
+                                                <span className="ml-auto text-xs font-semibold text-emerald-700 bg-white px-2 py-0.5 rounded-full">
+                                                    {inclusions.length}
+                                                </span>
+                                            </div>
+                                            <ul className="divide-y divide-gray-100">
+                                                {inclusions.map((item, index) => (
+                                                    <li key={index} className="flex items-start gap-3 px-5 py-3">
                                                         <Check
                                                             size={15}
+                                                            strokeWidth={2.5}
                                                             className="text-emerald-600 shrink-0 mt-0.5"
                                                             aria-hidden="true"
                                                         />
-                                                        <span className="min-w-0 leading-relaxed">{item}</span>
+                                                        <span className="text-sm text-gray-700 leading-relaxed min-w-0">
+                                                            {item}
+                                                        </span>
                                                     </li>
                                                 ))}
                                             </ul>
                                         </div>
                                     )}
-                                    {tourData.exclusions.length > 0 && (
-                                        <div className="rounded-2xl border border-gray-200 bg-gray-50 p-5">
-                                            <h3 className="flex items-center gap-2 text-sm font-bold text-gray-800 mb-3">
-                                                <span className="w-6 h-6 rounded-lg bg-gray-200 text-gray-600 flex items-center justify-center">
-                                                    <X size={14} strokeWidth={3} aria-hidden="true" />
+
+                                    {exclusions.length > 0 && (
+                                        <div className="rounded-2xl border border-gray-200 overflow-hidden">
+                                            <div className="flex items-center gap-2.5 bg-gray-50 border-b border-gray-200 px-5 py-3.5">
+                                                <span className="w-7 h-7 rounded-lg bg-gray-400 text-white flex items-center justify-center shrink-0">
+                                                    <Minus size={15} strokeWidth={3} aria-hidden="true" />
                                                 </span>
-                                                Not included
-                                            </h3>
-                                            <ul className="space-y-2.5">
-                                                {tourData.exclusions.map((item, index) => (
-                                                    <li key={index} className="flex items-start gap-2.5 text-sm text-gray-600">
+                                                <h3 className="text-sm font-bold text-gray-800">Not included</h3>
+                                                <span className="ml-auto text-xs font-semibold text-gray-600 bg-white px-2 py-0.5 rounded-full">
+                                                    {exclusions.length}
+                                                </span>
+                                            </div>
+                                            <ul className="divide-y divide-gray-100">
+                                                {exclusions.map((item, index) => (
+                                                    <li key={index} className="flex items-start gap-3 px-5 py-3">
                                                         <X
                                                             size={15}
+                                                            strokeWidth={2.5}
                                                             className="text-gray-400 shrink-0 mt-0.5"
                                                             aria-hidden="true"
                                                         />
-                                                        <span className="min-w-0 leading-relaxed">{item}</span>
+                                                        <span className="text-sm text-gray-600 leading-relaxed min-w-0">
+                                                            {item}
+                                                        </span>
                                                     </li>
                                                 ))}
                                             </ul>
@@ -461,19 +509,39 @@ export default function TripDetailClient({ tourData }: TripDetailClientProps) {
 
                         {/* --- Special Notes --- */}
                         {tourData.specialNotes && (
-                            <PackageSection title="Good to know">
-                                <div className="flex gap-3 rounded-2xl border border-amber-200 bg-amber-50 p-4 md:p-5">
-                                    <Info size={18} className="text-amber-600 shrink-0 mt-0.5" aria-hidden="true" />
-                                    <p className="text-sm md:text-base text-amber-900 whitespace-pre-line leading-relaxed min-w-0">
-                                        {tourData.specialNotes}
-                                    </p>
+                            <PackageSection title="Good to know" eyebrow="Before you book">
+                                <div className="rounded-2xl border border-amber-200 bg-amber-50/60 overflow-hidden">
+                                    <div className="flex items-center gap-2.5 bg-amber-100/70 border-b border-amber-200 px-5 py-3.5">
+                                        <span className="w-7 h-7 rounded-lg bg-amber-500 text-white flex items-center justify-center shrink-0">
+                                            <Info size={15} aria-hidden="true" />
+                                        </span>
+                                        <h3 className="text-sm font-bold text-amber-900">Worth reading first</h3>
+                                    </div>
+                                    <ul className="divide-y divide-amber-200/60">
+                                        {tourData.specialNotes
+                                            .split(/\n+/)
+                                            .map((line) => line.replace(/^[-•*]\s*/, "").trim())
+                                            .filter(Boolean)
+                                            .map((line, index) => (
+                                                <li key={index} className="flex items-start gap-3 px-5 py-3">
+                                                    <AlertCircle
+                                                        size={15}
+                                                        className="text-amber-600 shrink-0 mt-0.5"
+                                                        aria-hidden="true"
+                                                    />
+                                                    <span className="text-sm text-amber-900 leading-relaxed min-w-0">
+                                                        {line}
+                                                    </span>
+                                                </li>
+                                            ))}
+                                    </ul>
                                 </div>
                             </PackageSection>
                         )}
 
                         {/* Reviews Section */}
                         <TourDetailsFooter
-                            title={tourData.title}
+                            title={readableTitle(tourData.title, tourData.duration)}
                             itineraryPdf={tourData.itineraryPdf}
                             reviews={tourData.reviews || []}
                             rating={tourData.rating}

@@ -102,7 +102,7 @@ export default function ToursByBudget() {
                         <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary mb-2">
                             Budget
                         </p>
-                        <h2 className="font-heading text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 tracking-tight">
+                        <h2 className="font-heading text-[2rem] leading-[1.1] sm:text-4xl md:text-5xl lg:text-[3.25rem] font-bold text-gray-900 tracking-tight">
                             Trips that fit what you want to spend
                         </h2>
                         <p className="text-sm md:text-base text-gray-600 mt-2">{current.blurb}</p>

@@ -134,7 +134,7 @@ export default function Gallery() {
         <section className="py-14 md:py-20 overflow-hidden">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-9 md:mb-12 text-center">
                 <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary mb-2">Gallery</p>
-                <h2 className="font-heading text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 tracking-tight">
+                <h2 className="font-heading text-[2rem] leading-[1.1] sm:text-4xl md:text-5xl lg:text-[3.25rem] font-bold text-gray-900 tracking-tight">
                     Moments from our trips
                 </h2>
                 <p className="text-sm md:text-base text-gray-600 mt-2 max-w-xl mx-auto">

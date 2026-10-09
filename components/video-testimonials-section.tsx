@@ -150,7 +150,9 @@ const VideoModal = ({
                 {/* Info Bar */}
                 <div className="p-6 bg-linear-to-t from-black to-black/50 text-white">
                     <h3 className="text-xl font-bold">{name}</h3>
-                    <p className="text-white/70 text-sm mt-1">{destination}</p>
+                    {destination && destination.toLowerCase() !== "unknown" && (
+                        <p className="text-white/70 text-sm mt-1">{destination}</p>
+                    )}
                 </div>
             </div>
         </div>
@@ -227,7 +229,7 @@ const VideoCard = ({
             onClick={onClick}
         >
             <div
-                className="w-[280px] md:w-[280px] aspect-[9/16] bg-gray-950 rounded-[2.5rem] overflow-hidden relative shadow-lg ring-1 ring-black/5 group-hover:shadow-2xl group-hover:-translate-y-2 transition-all"
+                className="w-full aspect-[9/16] bg-gray-950 rounded-[2.5rem] overflow-hidden relative shadow-lg ring-1 ring-black/5 group-hover:shadow-2xl group-hover:-translate-y-2 transition-all"
                 style={{
                     // Fix iOS Safari black-video bug when border-radius is applied
                     WebkitMaskImage: '-webkit-radial-gradient(white, black)',
@@ -298,7 +300,9 @@ const VideoCard = ({
 
                 {/* Content */}
                 <div className="absolute bottom-0 left-0 right-0 p-6 text-white transform transition-transform duration-300">
-                    <p className="text-xs font-semibold text-primary mb-1 uppercase tracking-widest">{destination}</p>
+                    {destination && destination.toLowerCase() !== "unknown" && (
+                        <p className="text-xs font-semibold text-primary mb-1 uppercase tracking-widest">{destination}</p>
+                    )}
                     <h4 className="text-lg font-bold leading-tight">{name}</h4>
                 </div>
 
@@ -324,7 +328,7 @@ const VideoCard = ({
 
 const VideoTestimonialsSection = () => {
     const [emblaRef, emblaApi] = useEmblaCarousel({
-        align: 'center',
+        align: 'start',
         containScroll: 'trimSnaps',
         dragFree: false,
         loop: false
@@ -384,7 +388,7 @@ const VideoTestimonialsSection = () => {
             ref={sectionRef}
             className="py-14 md:py-20 bg-white overflow-hidden"
         >
-            <div className="container mx-auto px-4 md:px-8">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
                 {/* Header */}
                 <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
@@ -392,7 +396,7 @@ const VideoTestimonialsSection = () => {
                         <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary mb-2">
                             Travellers
                         </p>
-                        <h2 className="font-heading text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 tracking-tight">
+                        <h2 className="font-heading text-[2rem] leading-[1.1] sm:text-4xl md:text-5xl lg:text-[3.25rem] font-bold text-gray-900 tracking-tight">
                             In their own words
                         </h2>
                         <p className="text-sm md:text-base text-gray-600 mt-2">
@@ -424,16 +428,16 @@ const VideoTestimonialsSection = () => {
 
                 {/* Carousel Container */}
                 {isLoading ? (
-                    <div className="flex gap-6">
-                        {[1, 2, 3, 4].map(i => (
-                            <div key={i} className="w-[280px] aspect-[9/16] bg-gray-100 rounded-[2.5rem] animate-pulse" />
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                        {[1, 2, 3].map(i => (
+                            <div key={i} className="w-full aspect-[9/16] bg-gray-100 rounded-[2.5rem] animate-pulse" />
                         ))}
                     </div>
                 ) : testimonials.length > 0 ? (
                     <div className="embla w-full overflow-hidden" ref={emblaRef}>
-                        <div className="embla__container flex">
+                        <div className="embla__container flex -mx-2 sm:-mx-3">
                             {testimonials.map((testimonial, idx) => (
-                                <div key={testimonial.id} className="embla__slide flex-[0_0_100%] md:flex-none md:mr-6 flex justify-center md:block">
+                                <div key={testimonial.id} className="embla__slide flex-[0_0_100%] sm:flex-[0_0_50%] lg:flex-[0_0_33.3333%] px-2 sm:px-3">
                                     <VideoCard
                                         {...testimonial}
                                         onClick={() => setSelectedVideo(testimonial)}
