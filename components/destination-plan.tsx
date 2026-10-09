@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react"
 import Image from "next/image"
 import { CalendarCheck, MessageCircle, Route, ShieldCheck } from "lucide-react"
-import { useGetExpertsQuery } from "@/lib/api/publicApi"
+import { useGetExpertsQuery, useGetDestinationExpertsQuery } from "@/lib/api/publicApi"
 import SectionHeading from "@/components/section-heading"
 
 interface Expert {
@@ -38,9 +38,12 @@ const REASONS = [
 export default function DestinationPlan({
     destinationName,
     country,
+    destinationId,
 }: {
     destinationName?: string | null
     country?: string | null
+    /** When given, this destination's own named expert is shown first */
+    destinationId?: number
 }) {
     const place = destinationName?.trim().replace(/\s*,\s*$/, "")
 
@@ -58,11 +61,21 @@ export default function DestinationPlan({
     }, [defaultType, touched])
 
     const { data, isLoading } = useGetExpertsQuery(type)
+    const { data: destinationExperts } = useGetDestinationExpertsQuery(destinationId as number, {
+        skip: !destinationId,
+    })
+
+    const named = useMemo(
+        () => ((destinationExperts as Expert[] | undefined) || []).filter((e) => e.isActive !== false),
+        [destinationExperts]
+    )
 
     const experts = useMemo(() => {
-        const list = (data as Expert[] | undefined) || []
-        return list.filter((e) => e.isActive !== false)
-    }, [data])
+        const list = ((data as Expert[] | undefined) || []).filter((e) => e.isActive !== false)
+        // The destination's own expert leads, then the rest of that team.
+        const namedIds = new Set(named.map((e) => e.id))
+        return [...named, ...list.filter((e) => !namedIds.has(e.id))]
+    }, [data, named])
 
     return (
         <section
@@ -155,7 +168,14 @@ export default function DestinationPlan({
                                             ) : null}
                                         </div>
                                         <div className="min-w-0 grow">
-                                            <p className="font-semibold text-gray-900 truncate">{expert.name}</p>
+                                            <p className="font-semibold text-gray-900 truncate">
+                                                {expert.name}
+                                                {named.some((n) => n.id === expert.id) && place && (
+                                                    <span className="ml-2 align-middle text-[11px] font-bold uppercase tracking-wider text-primary bg-primary/10 px-2 py-0.5 rounded-full">
+                                                        {place} expert
+                                                    </span>
+                                                )}
+                                            </p>
                                             {expert.bio && (
                                                 <p className="text-xs text-gray-600 line-clamp-2 mt-0.5">{expert.bio}</p>
                                             )}

@@ -20,6 +20,7 @@ model Destination {
     tours       Int       @default(0)
     packages    Package[]
     blogs       Blog[]
+    experts     TripExpert[]
     createdAt   DateTime  @default(now())
     updatedAt   DateTime  @updatedAt
 
@@ -295,12 +296,16 @@ model TripExpert {
     type           String   @default("INTERNATIONAL") // DOMESTIC or INTERNATIONAL
     isActive       Boolean  @default(true)
     order          Int      @default(0)
+    /// Set when this person is the named expert for one destination
+    destinationId  Int?
+    destination    Destination? @relation(fields: [destinationId], references: [id], onDelete: SetNull)
     createdAt      DateTime @default(now())
     updatedAt      DateTime @updatedAt
 
     @@index([isActive])
     @@index([type])
     @@index([order])
+    @@index([destinationId])
     @@map("TripExpert")
 }
 

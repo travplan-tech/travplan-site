@@ -20,7 +20,7 @@ interface Destination {
 export default function DestinationMarqueeRow({
     destinations,
     direction = "left",
-    speed = 0.35,
+    speed = 0.4,
 }: {
     destinations: Destination[]
     /** "left" drifts right-to-left, "right" drifts left-to-right */
@@ -28,7 +28,13 @@ export default function DestinationMarqueeRow({
     speed?: number
 }) {
     const scrollRef = useRef<HTMLDivElement>(null)
+
+    // Two copies is the minimum for a seamless wrap, but a short list on a wide
+    // screen would not overflow at all, so repeat until there is plenty to move.
+    const copies = Math.max(2, Math.ceil(14 / Math.max(destinations.length, 1)) * 2)
+    const items = Array.from({ length: copies }, () => destinations).flat()
     const pausedUntil = useRef(0)
+    const position = useRef(0)
     const dragging = useRef(false)
     const dragStart = useRef({ x: 0, scroll: 0 })
 
@@ -38,28 +44,41 @@ export default function DestinationMarqueeRow({
 
         if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return
 
-        // Start the "right" direction mid-way so it has somewhere to drift from.
-        if (direction === "right") el.scrollLeft = el.scrollWidth / 2
+        // Start part-way in so the "right" direction has room to drift into.
+        el.scrollLeft = el.scrollWidth / copies
+        position.current = el.scrollLeft
 
         let frame = 0
         const step = () => {
             frame = requestAnimationFrame(step)
-            if (!el || dragging.current || Date.now() < pausedUntil.current) return
+            if (!el) return
 
-            const half = el.scrollWidth / 2
-            if (half <= 0) return
+            // While the visitor is in control, follow the element rather than
+            // driving it, so the drift resumes from wherever they left it.
+            if (dragging.current || Date.now() < pausedUntil.current) {
+                position.current = el.scrollLeft
+                return
+            }
 
-            el.scrollLeft += direction === "left" ? speed : -speed
+            // One copy's width: wrapping by exactly this is invisible because
+            // the next copy is identical.
+            const span = el.scrollWidth / copies
+            if (span <= 0 || el.scrollWidth <= el.clientWidth) return
 
-            // The list is rendered twice, so wrapping at the halfway point is
-            // invisible to the eye.
-            if (el.scrollLeft >= half) el.scrollLeft -= half
-            else if (el.scrollLeft <= 0) el.scrollLeft += half
+            // scrollLeft is rounded to whole pixels by the browser, so a
+            // sub-pixel step added straight to it would never accumulate and
+            // the row would sit still. Keep the real position here instead.
+            position.current += direction === "left" ? speed : -speed
+
+            if (position.current >= span * (copies - 1)) position.current -= span
+            else if (position.current <= 0) position.current += span
+
+            el.scrollLeft = position.current
         }
 
         frame = requestAnimationFrame(step)
         return () => cancelAnimationFrame(frame)
-    }, [direction, speed, destinations.length])
+    }, [direction, speed, destinations.length, copies])
 
     // Any manual interaction wins; drift resumes 2s after it stops.
     const hold = () => {
@@ -72,7 +91,6 @@ export default function DestinationMarqueeRow({
             onWheel={hold}
             onTouchStart={hold}
             onTouchMove={hold}
-            onMouseEnter={hold}
             onMouseMove={() => {
                 if (dragging.current) hold()
             }}
@@ -97,9 +115,10 @@ export default function DestinationMarqueeRow({
                 dragging.current = false
                 hold()
             }}
+            style={{ touchAction: "pan-x", overscrollBehaviorX: "contain" }}
             className="flex gap-6 md:gap-8 overflow-x-auto cursor-grab active:cursor-grabbing select-none [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
         >
-            {[...destinations, ...destinations].map((dest, i) => (
+            {items.map((dest, i) => (
                 <Link
                     key={`${dest.id}-${i}`}
                     href={`/tours?search=${encodeURIComponent(dest.name)}`}

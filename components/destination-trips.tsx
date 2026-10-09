@@ -98,124 +98,110 @@ export default function DestinationTrips({ destinationId, destinationName }: Des
                             return (
                                 <article
                                     key={pkg.id}
-                                    className="group flex flex-col rounded-2xl border border-gray-200 bg-white overflow-hidden hover:border-primary/40 hover:shadow-xl transition-all duration-300"
+                                    className="group relative flex flex-col justify-end overflow-hidden rounded-3xl min-h-[420px] md:min-h-[460px] bg-gray-900 transition-transform duration-300 hover:-translate-y-1"
                                 >
-                                    <div className="relative h-52 overflow-hidden bg-gray-100">
-                                        <Image
-                                            src={pkg.image || "/placeholder.jpg"}
-                                            alt={pkg.title}
-                                            fill
-                                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                                            className="object-cover group-hover:scale-105 transition-transform duration-500"
-                                        />
-                                        <div
-                                            className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/60 to-transparent"
-                                            aria-hidden="true"
-                                        />
+                                    {/* The photograph fills the card; everything else sits over it */}
+                                    <Image
+                                        src={pkg.image || "/placeholder.jpg"}
+                                        alt={pkg.title}
+                                        fill
+                                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                                        className="object-cover transition-transform duration-700 group-hover:scale-105"
+                                    />
+                                    <div
+                                        className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/45 to-black/10"
+                                        aria-hidden="true"
+                                    />
 
-                                        <FavoriteButton
-                                            packageId={pkg.id}
-                                            size="sm"
-                                            className="absolute top-3 right-3 z-10"
-                                        />
-
-                                        {saving > 0 && (
-                                            <span className="absolute top-3 left-3 bg-primary text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg">
-                                                Save ₹{saving.toLocaleString("en-IN")}
-                                            </span>
-                                        )}
-
-                                        {pkg.duration && (
-                                            <span className="absolute bottom-3 left-3 inline-flex items-center gap-1.5 bg-white/95 text-gray-900 text-xs font-semibold px-2.5 py-1.5 rounded-lg">
-                                                <Clock size={12} aria-hidden="true" />
-                                                {pkg.duration}
-                                            </span>
-                                        )}
-                                    </div>
-
-                                    <div className="flex flex-col grow p-5">
-                                        <div className="flex items-start gap-2 mb-2">
-                                            <h3 className="text-base md:text-lg font-bold text-gray-900 leading-snug line-clamp-2 min-h-12 grow">
-                                                {pkg.title}
-                                            </h3>
-                                            {hasRating && (
-                                                <span className="shrink-0 inline-flex items-center gap-1 bg-amber-50 text-amber-700 text-xs font-bold px-2 py-1 rounded-md">
-                                                    <Star size={11} className="fill-amber-500 text-amber-500" aria-hidden="true" />
-                                                    {pkg.rating.toFixed(1)}
+                                    {/* Top row: duration and saving */}
+                                    <div className="absolute top-4 left-4 right-4 flex items-start justify-between gap-2">
+                                        <div className="flex flex-wrap gap-2">
+                                            {pkg.duration && (
+                                                <span className="inline-flex items-center gap-1.5 bg-white/20 backdrop-blur-md border border-white/25 text-white text-xs font-semibold px-2.5 py-1.5 rounded-full">
+                                                    <Clock size={12} aria-hidden="true" />
+                                                    {pkg.duration}
+                                                </span>
+                                            )}
+                                            {pkg.tourCategory && (
+                                                <span className="inline-flex items-center gap-1.5 bg-white/20 backdrop-blur-md border border-white/25 text-white text-xs font-semibold px-2.5 py-1.5 rounded-full">
+                                                    <Users size={12} aria-hidden="true" />
+                                                    {pkg.tourCategory === "PRIVATE" ? "Private" : "Group"}
                                                 </span>
                                             )}
                                         </div>
+                                        <FavoriteButton packageId={pkg.id} size="sm" className="shrink-0" />
+                                    </div>
+
+                                    {saving > 0 && (
+                                        <span className="absolute top-16 left-4 bg-primary text-white text-xs font-bold px-2.5 py-1.5 rounded-full shadow-lg">
+                                            Save ₹{saving.toLocaleString("en-IN")}
+                                        </span>
+                                    )}
+
+                                    {/* Content panel */}
+                                    <div className="relative p-5 md:p-6">
+                                        <div className="flex items-center gap-2 mb-2">
+                                            {hasRating && (
+                                                <span className="inline-flex items-center gap-1 text-xs font-bold text-white">
+                                                    <Star size={12} className="fill-amber-400 text-amber-400" aria-hidden="true" />
+                                                    {pkg.rating.toFixed(1)}
+                                                </span>
+                                            )}
+                                            {tourTypes.slice(0, 2).map((type) => (
+                                                <span key={type} className="text-xs text-white/70">
+                                                    {type}
+                                                </span>
+                                            ))}
+                                        </div>
+
+                                        <h3 className="text-lg md:text-xl font-bold text-white leading-snug line-clamp-2 drop-shadow">
+                                            {pkg.title}
+                                        </h3>
 
                                         {pkg.description && (
-                                            <p className="text-sm text-gray-600 leading-relaxed line-clamp-3 min-h-15">
+                                            <p className="text-sm text-white/70 leading-relaxed line-clamp-2 mt-2">
                                                 {pkg.description}
                                             </p>
                                         )}
 
-                                        {/* tourType is stored comma-separated, so split it into
-                                            individual chips and cap the row rather than letting
-                                            one long string wrap across lines. */}
-                                        <div className="flex flex-wrap gap-2 mt-4">
-                                            {pkg.tourCategory && (
-                                                <span className="inline-flex items-center gap-1 text-xs font-medium text-primary bg-primary/10 px-2.5 py-1 rounded-md">
-                                                    <Users size={11} aria-hidden="true" />
-                                                    {pkg.tourCategory === "PRIVATE" ? "Private" : "Group"}
-                                                </span>
-                                            )}
-                                            {tourTypes.slice(0, 2).map((type) => (
-                                                <span
-                                                    key={type}
-                                                    className="text-xs font-medium text-gray-700 bg-gray-100 px-2.5 py-1 rounded-md"
-                                                >
-                                                    {type}
-                                                </span>
-                                            ))}
-                                            {tourTypes.length > 2 && (
-                                                <span className="text-xs font-medium text-gray-500 px-1 py-1">
-                                                    +{tourTypes.length - 2}
-                                                </span>
-                                            )}
-                                        </div>
-
-                                        <div className="mt-auto pt-5">
-                                            <div className="flex items-end justify-between gap-2 pt-4 border-t border-gray-100">
-                                                <div>
-                                                    <p className="text-xs text-gray-500">per person from</p>
-                                                    <p className="text-xl font-bold text-gray-900 leading-tight">
+                                        <div className="flex items-end justify-between gap-3 mt-5 pt-4 border-t border-white/20">
+                                            <div>
+                                                <p className="text-[11px] text-white/60">per person from</p>
+                                                <p className="flex items-baseline gap-2">
+                                                    <span className="text-2xl font-bold text-white leading-none">
                                                         ₹{pkg.price.toLocaleString("en-IN")}
-                                                    </p>
-                                                </div>
-                                                {saving > 0 && pkg.originalPrice && (
-                                                    <p className="text-sm text-gray-400 line-through pb-1">
-                                                        ₹{pkg.originalPrice.toLocaleString("en-IN")}
-                                                    </p>
-                                                )}
+                                                    </span>
+                                                    {saving > 0 && pkg.originalPrice && (
+                                                        <span className="text-sm text-white/50 line-through">
+                                                            ₹{pkg.originalPrice.toLocaleString("en-IN")}
+                                                        </span>
+                                                    )}
+                                                </p>
                                             </div>
 
-                                            <div className="flex gap-2 mt-4">
-                                                <button
-                                                    type="button"
-                                                    onClick={() =>
-                                                        setBrochure({
-                                                            isOpen: true,
-                                                            packageId: pkg.id,
-                                                            packageName: pkg.title,
-                                                            brochureUrl: pkg.itineraryPdf ?? null,
-                                                        })
-                                                    }
-                                                    className="flex-1 py-2.5 px-3 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
-                                                >
-                                                    Itinerary
-                                                </button>
-                                                <Link
-                                                    href={`/destinations/trip/${pkg.id}`}
-                                                    className="flex-1 inline-flex items-center justify-center gap-1.5 py-2.5 px-3 bg-primary hover:bg-primary/90 text-white rounded-lg text-sm font-semibold transition-colors"
-                                                >
-                                                    View trip
-                                                    <ArrowRight size={15} aria-hidden="true" />
-                                                </Link>
-                                            </div>
+                                            <Link
+                                                href={`/destinations/trip/${pkg.id}`}
+                                                className="shrink-0 inline-flex items-center gap-1.5 bg-white hover:bg-white/90 text-gray-900 rounded-xl px-4 py-2.5 text-sm font-bold transition-colors"
+                                            >
+                                                View
+                                                <ArrowRight size={15} aria-hidden="true" />
+                                            </Link>
                                         </div>
+
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                setBrochure({
+                                                    isOpen: true,
+                                                    packageId: pkg.id,
+                                                    packageName: pkg.title,
+                                                    brochureUrl: pkg.itineraryPdf ?? null,
+                                                })
+                                            }
+                                            className="w-full mt-2.5 py-2 text-xs font-semibold text-white/80 hover:text-white underline underline-offset-4 transition-colors"
+                                        >
+                                            Download itinerary
+                                        </button>
                                     </div>
                                 </article>
                             )

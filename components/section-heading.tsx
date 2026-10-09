@@ -27,15 +27,19 @@ export default function SectionHeading({
         >
             <div className={centered ? "max-w-2xl" : "max-w-2xl"}>
                 {eyebrow && (
-                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary mb-2">
+                    <p
+                        className={`inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.14em] text-primary mb-3 ${centered ? "justify-center" : ""
+                            }`}
+                    >
+                        <span className="h-px w-6 bg-primary/40" aria-hidden="true" />
                         {eyebrow}
                     </p>
                 )}
-                <h2 className="font-heading text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 tracking-tight">
+                <h2 className="font-heading text-[1.75rem] leading-tight md:text-4xl lg:text-[2.75rem] font-bold text-gray-900 tracking-tight">
                     {title}
                 </h2>
                 {subtitle && (
-                    <p className="text-sm md:text-base text-gray-600 mt-2 leading-relaxed">{subtitle}</p>
+                    <p className="text-base md:text-lg text-gray-600 mt-3 leading-relaxed">{subtitle}</p>
                 )}
             </div>
 

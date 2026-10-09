@@ -66,6 +66,12 @@ export const publicApi = api.injectEndpoints({
             providesTags: ["Expert"],
         }),
 
+        // The named expert(s) for one destination
+        getDestinationExperts: builder.query<Expert[], number>({
+            query: (destinationId) => `/admin/experts?destinationId=${destinationId}`,
+            providesTags: ["Expert"],
+        }),
+
         // Enquiry
         submitEnquiry: builder.mutation<{ success: boolean }, {
             name: string
@@ -116,6 +122,7 @@ export const {
     useGetSaleBySlugQuery,
     useGetFeatureBoxesQuery,
     useGetExpertsQuery,
+    useGetDestinationExpertsQuery,
     useSubmitEnquiryMutation,
     useRequestBrochureMutation,
     useSubmitTripPlanMutation,

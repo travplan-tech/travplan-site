@@ -166,7 +166,11 @@ function DestinationContent() {
                 destinationName={destination?.city || undefined}
             />
 
-            <DestinationPlan destinationName={destination?.city || undefined} country={country} />
+            <DestinationPlan
+                destinationName={destination?.city || undefined}
+                country={country}
+                destinationId={numericId}
+            />
 
             <FAQ destination={destination?.city || country} variant="featured" />
         </main>

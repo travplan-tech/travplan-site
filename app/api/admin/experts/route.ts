@@ -9,8 +9,9 @@ export async function GET(request: NextRequest) {
         const { searchParams } = new URL(request.url)
         const type = searchParams.get("type") // DOMESTIC or INTERNATIONAL
         const all = searchParams.get("all") // If "true", return all experts including inactive (for admin)
+        const destinationId = searchParams.get("destinationId")
 
-        const whereClause: { isActive?: boolean; type?: string } = {}
+        const whereClause: { isActive?: boolean; type?: string; destinationId?: number } = {}
 
         // Only filter by isActive for public requests (when all is not "true")
         if (all !== "true") {
@@ -19,6 +20,11 @@ export async function GET(request: NextRequest) {
 
         if (type) {
             whereClause.type = type.toUpperCase()
+        }
+
+        // Named destination experts, e.g. the Tawang expert on the Tawang page
+        if (destinationId && !Number.isNaN(Number(destinationId))) {
+            whereClause.destinationId = Number(destinationId)
         }
 
         const experts = await prisma.tripExpert.findMany({
@@ -35,6 +41,7 @@ export async function GET(request: NextRequest) {
                 type: true,
                 isActive: true,
                 order: true,
+                destinationId: true,
                 createdAt: true,
             }
         })
