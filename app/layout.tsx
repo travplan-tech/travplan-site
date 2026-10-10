@@ -7,7 +7,7 @@ import { Providers } from "./providers";
 import { LayoutWrapper } from "@/components/layout-wrapper";
 import MobileBottomBar from "@/components/mobile-bottom-bar";
 import { prisma } from "@/lib/prisma";
-import { unstable_noStore as noStore } from "next/cache";
+import { unstable_cache } from "next/cache";
 import { SITE_URL, SITE_NAME } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -97,20 +97,26 @@ export const metadata: Metadata = {
 };
 
 // Fetch active sale data server-side
-async function getActiveSale() {
-  noStore(); // Prevent caching - always fetch fresh sale data
-  try {
-    const activeSale = await prisma.sale.findFirst({
-      where: { isActive: true },
-      orderBy: { createdAt: 'desc' },
-      select: { name: true, slug: true }
-    });
-    return activeSale;
-  } catch (error) {
-    console.error("Error fetching active sale:", error);
-    return null;
-  }
-}
+// This runs in the root layout, so noStore() here forced a database query on
+// every request for every page - a round trip before any HTML could be sent,
+// and a steady drain on a connection pool capped at 20. Sales change rarely,
+// so cache it for a minute instead.
+const getActiveSale = unstable_cache(
+  async () => {
+    try {
+      return await prisma.sale.findFirst({
+        where: { isActive: true },
+        orderBy: { createdAt: 'desc' },
+        select: { name: true, slug: true }
+      });
+    } catch (error) {
+      console.error("Error fetching active sale:", error);
+      return null;
+    }
+  },
+  ["active-sale"],
+  { revalidate: 60, tags: ["active-sale"] }
+);
 
 export default async function RootLayout({
   children,
