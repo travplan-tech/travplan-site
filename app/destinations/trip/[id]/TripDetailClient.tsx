@@ -277,7 +277,7 @@ export default function TripDetailClient({ tourData }: TripDetailClientProps) {
                 {/* --- Content/Sidebar Split --- */}
                 <div className="flex flex-col lg:grid lg:grid-cols-3 gap-6 md:gap-8">
                     {/* LEFT/MIDDLE COLUMN - Tour Details (Part 1: Up to Route Map) */}
-                    <div className="lg:col-span-2 space-y-6 md:space-y-8 order-1">
+                    <div className="lg:col-span-2 space-y-6 md:space-y-8 order-2 lg:order-1">
                         {tourData.tags.length > 0 && (
                             <div className="flex flex-wrap gap-2">
                                 {tourData.tags.map((tag, index) => (
@@ -326,7 +326,7 @@ export default function TripDetailClient({ tourData }: TripDetailClientProps) {
                     </div>
 
                     {/* RIGHT COLUMN - Booking Sidebar */}
-                    <div className="lg:col-span-1 order-2 lg:row-span-2">
+                    <div className="lg:col-span-1 order-1 lg:order-2 lg:row-span-2">
                         <div className="lg:sticky lg:top-20 rounded-2xl border border-gray-200 bg-white overflow-hidden shadow-sm">
                             {/* Price header, set apart from the actions below it */}
                             <div className="bg-gradient-to-r from-[#6d28d9] via-[#5b21b6] to-[#3b1370] px-5 py-5 md:px-6">

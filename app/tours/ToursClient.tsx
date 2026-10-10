@@ -470,7 +470,7 @@ function ToursContent() {
                     </aside>
 
                     {/* Main Content */}
-                    <div className="flex-1">
+                    <div className="flex-1 min-w-0">
                         {/* Results Header */}
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                             <div>
@@ -582,7 +582,7 @@ function ToursContent() {
                                             <div className="flex-1 p-2 lg:p-4">
                                                 <div className="flex flex-col lg:flex-row gap-4">
                                                     {/* Left content */}
-                                                    <div className="flex-1">
+                                                    <div className="flex-1 min-w-0">
                                                         <h3 className="text-lg lg:text-xl font-bold text-gray-900 mb-2 hover:text-primary transition-colors">
                                                             <Link href={`/destinations/trip/${tour.id}`}>
                                                                 {tour.title}
@@ -764,7 +764,7 @@ function ToursContent() {
                         {/* Pagination */}
                         {pagination && pagination.totalPages > 1 && (
                             <div className="mt-8 flex justify-center">
-                                <nav className="flex items-center gap-2">
+                                <nav className="flex items-center gap-1.5 sm:gap-2 flex-wrap justify-center max-w-full">
                                     <button
                                         onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                                         disabled={currentPage === 1}

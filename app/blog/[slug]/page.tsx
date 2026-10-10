@@ -9,6 +9,20 @@ import { SITE_URL, SITE_NAME } from "@/lib/site"
 import BlogContent from "@/components/blog-content"
 
 export const revalidate = 300
+export const dynamicParams = true
+
+export async function generateStaticParams() {
+    try {
+        const blogs = await prisma.blog.findMany({
+            where: { isPublished: true },
+            select: { slug: true },
+        })
+        return blogs.map((b) => ({ slug: b.slug }))
+    } catch (error) {
+        console.error("generateStaticParams (blogs) failed", error)
+        return []
+    }
+}
 
 // Shared between generateMetadata and the page so the row is fetched once.
 const getBlog = cache(async (slug: string) => {

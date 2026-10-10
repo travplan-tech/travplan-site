@@ -6,12 +6,30 @@ import TripDetailClient, { TourData } from "./TripDetailClient";
 import { SITE_URL } from "@/lib/site"
 import { upcomingDeparturesOnly, parseDepartureDates } from "@/lib/departures"
 import { packagePageTitle, packagePageDescription, readableTitle } from "@/lib/package-title"
+import Link from "next/link";
 
 // Force dynamic rendering so admin changes (e.g., brochure PDF uploads) are reflected immediately
-export const dynamic = "force-dynamic";
+// Pre-render every package at build time and refresh in the background, so a
+// visitor is served static HTML instead of waiting on a database round trip.
+export const revalidate = 300;
+export const dynamicParams = true;
+
+export async function generateStaticParams() {
+    try {
+        const packages = await prisma.package.findMany({ select: { id: true } });
+        return packages.map((p) => ({ id: String(p.id) }));
+    } catch (error) {
+        // No database at build time: fall back to rendering on demand.
+        console.error("generateStaticParams (packages) failed", error);
+        return [];
+    }
+}
 
 // Cache the package fetch to avoid duplicate calls between generateMetadata and page
+class PackageUnavailableError extends Error {}
+
 const getPackage = cache(async (id: number) => {
+  try {
     const pkg = await prisma.package.findUnique({
         where: { id },
         select: {
@@ -159,6 +177,12 @@ const getPackage = cache(async (id: number) => {
     };
 
     return transformedPackage;
+  } catch (error) {
+    // Distinguish "no such package" (handled with notFound) from the database
+    // being unreachable, which should not look like a missing page.
+    console.error("Error loading package", id, error);
+    throw new PackageUnavailableError();
+  }
 });
 
 // Generate metadata for SEO
@@ -170,7 +194,13 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
         return { title: "Tour Not Found" };
     }
 
-    const pkg = await getPackage(packageId);
+    let pkg: Awaited<ReturnType<typeof getPackage>> = null;
+    try {
+        pkg = await getPackage(packageId);
+    } catch {
+        // The database was unreachable; fall back rather than failing the route.
+        return { title: "Tour Package" };
+    }
 
     if (!pkg) {
         return { title: "Tour Not Found" };
@@ -328,7 +358,28 @@ export default async function TripDetailPage({ params }: { params: Promise<{ id:
         notFound();
     }
 
-    const tourData = await getPackage(packageId);
+    let tourData: Awaited<ReturnType<typeof getPackage>> = null;
+    try {
+        tourData = await getPackage(packageId);
+    } catch {
+        return (
+            <main className="max-w-3xl mx-auto px-4 py-24 text-center">
+                <h1 className="font-heading text-2xl md:text-3xl font-bold text-gray-900">
+                    This trip could not be loaded
+                </h1>
+                <p className="text-gray-600 mt-3">
+                    Something went wrong on our side. Please refresh in a moment, or browse our
+                    other trips.
+                </p>
+                <Link
+                    href="/tours"
+                    className="inline-flex items-center justify-center bg-primary hover:bg-primary/90 text-white font-semibold py-3 px-6 rounded-xl transition-colors mt-6"
+                >
+                    Browse all trips
+                </Link>
+            </main>
+        );
+    }
 
     if (!tourData) {
         notFound();
