@@ -52,7 +52,7 @@ export const metadata: Metadata = {
       "Book curated India and international tour packages with Travplan. Explore group departures, custom holidays, expert support and easy WhatsApp enquiries.",
     images: [
       {
-        url: "/og-image.jpg",
+        url: "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1920,c_limit/v1791880449/TravPlan/site/og-image.jpg",
         width: 1200,
         height: 630,
         alt: "Travplan - Your Gateway to Amazing Travel Experiences",
@@ -64,7 +64,7 @@ export const metadata: Metadata = {
     title: "Travplan Tour Packages | Group Trips & Custom Holidays",
     description:
       "Book curated India and international tour packages with Travplan. Explore group departures, custom holidays, expert support and easy WhatsApp enquiries.",
-    images: ["/og-image.jpg"],
+    images: ["https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1920,c_limit/v1791880449/TravPlan/site/og-image.jpg"],
     creator: "@Travplan",
   },
   robots: {

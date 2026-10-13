@@ -11,34 +11,34 @@ export default function Gallery() {
     // Gallery data organized by strips
     const galleryData = {
         stripOne: [
-            { src: "https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?q=80&w=1000&auto=format&fit=crop", name: "Indonesia" },
-            { src: "https://images.unsplash.com/photo-1596422846543-75c6fc197f07?w=1000&auto=format&fit=crop&q=60", name: "Malaysia" },
-            { src: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=1000&auto=format&fit=crop", name: "Dubai" },
-            { src: "https://images.unsplash.com/photo-1528127269322-539801943592?w=1000&auto=format&fit=crop&q=60", name: "Vietnam" },
-            { src: "https://images.unsplash.com/photo-1573843981267-be1999ff37cd?w=1000&auto=format&fit=crop&q=60", name: "Maldives" },
-            { src: "https://images.unsplash.com/photo-1483070472046-4defb528eff3?w=1000&auto=format&fit=crop&q=60", name: "Singapore" },
-            { src: "https://images.unsplash.com/photo-1534008897995-27a23e859048?w=1000&auto=format&fit=crop&q=60", name: "Thailand" },
-            { src: "https://images.unsplash.com/photo-1497256654106-4a29efafb831?w=1000&auto=format&fit=crop&q=60", name: "Andaman" }
+            { src: "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1000,c_limit/v1791880469/TravPlan/stock/unsplash-1518548419970-58e3b4079ab2.jpg", name: "Indonesia" },
+            { src: "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1000,c_limit/v1791880470/TravPlan/stock/unsplash-1596422846543-75c6fc197f07.jpg", name: "Malaysia" },
+            { src: "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1000,c_limit/v1791880471/TravPlan/stock/unsplash-1512453979798-5ea266f8880c.jpg", name: "Dubai" },
+            { src: "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1000,c_limit/v1791880472/TravPlan/stock/unsplash-1528127269322-539801943592.jpg", name: "Vietnam" },
+            { src: "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1000,c_limit/v1791880473/TravPlan/stock/unsplash-1573843981267-be1999ff37cd.jpg", name: "Maldives" },
+            { src: "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1000,c_limit/v1791880474/TravPlan/stock/unsplash-1483070472046-4defb528eff3.jpg", name: "Singapore" },
+            { src: "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1000,c_limit/v1791880475/TravPlan/stock/unsplash-1534008897995-27a23e859048.jpg", name: "Thailand" },
+            { src: "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1000,c_limit/v1791880476/TravPlan/stock/unsplash-1497256654106-4a29efafb831.jpg", name: "Andaman" }
         ],
         stripTwo: [
-            { src: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=1000&auto=format&fit=crop&q=60", name: "Goa" },
-            { src: "https://images.unsplash.com/photo-1620103143245-9efb3e4a7553?w=1000&auto=format&fit=crop&q=60", name: "Gujarat" },
-            { src: "https://images.unsplash.com/photo-1581791534721-e599df4417f7?w=1000&auto=format&fit=crop&q=60", name: "Himachal" },
-            { src: "https://images.unsplash.com/photo-1600100397849-3a782cfd8492?w=1000&auto=format&fit=crop&q=60", name: "Karnataka" },
-            { src: "https://images.unsplash.com/photo-1715457573748-8e8a70b2c1be?w=1000&auto=format&fit=crop&q=60", name: "Kashmir" },
-            { src: "https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=1000&auto=format&fit=crop&q=60", name: "Kerala" },
-            { src: "https://images.unsplash.com/photo-1631867675167-90a456a90863?w=1000&auto=format&fit=crop&q=60", name: "Rajasthan" },
-            { src: "https://images.unsplash.com/photo-1585914285309-4b1fe30b53ed?w=1000&auto=format&fit=crop&q=60", name: "Sikkim" }
+            { src: "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1000,c_limit/v1791880477/TravPlan/stock/unsplash-1512343879784-a960bf40e7f2.jpg", name: "Goa" },
+            { src: "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1000,c_limit/v1791880478/TravPlan/stock/unsplash-1620103143245-9efb3e4a7553.jpg", name: "Gujarat" },
+            { src: "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1000,c_limit/v1791880481/TravPlan/stock/unsplash-1581791534721-e599df4417f7.jpg", name: "Himachal" },
+            { src: "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1000,c_limit/v1791880482/TravPlan/stock/unsplash-1600100397849-3a782cfd8492.jpg", name: "Karnataka" },
+            { src: "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1000,c_limit/v1791880484/TravPlan/stock/unsplash-1715457573748-8e8a70b2c1be.jpg", name: "Kashmir" },
+            { src: "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1000,c_limit/v1791880485/TravPlan/stock/unsplash-1602216056096-3b40cc0c9944.jpg", name: "Kerala" },
+            { src: "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1000,c_limit/v1791880486/TravPlan/stock/unsplash-1631867675167-90a456a90863.jpg", name: "Rajasthan" },
+            { src: "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1000,c_limit/v1791880488/TravPlan/stock/unsplash-1585914285309-4b1fe30b53ed.jpg", name: "Sikkim" }
         ],
         stripThree: [
-            { src: "https://images.unsplash.com/photo-1634148551170-d37d021e0cc9?w=1000&auto=format&fit=crop&q=60", name: "Dubai" },
-            { src: "https://images.unsplash.com/photo-1547378809-db8f9515a63b?w=1000&auto=format&fit=crop&q=60", name: "Uttarakhand" },
-            { src: "https://images.unsplash.com/photo-1566914447826-bf04e54bf1be?w=1000&auto=format&fit=crop&q=60", name: "Malaysia" },
-            { src: "https://images.unsplash.com/photo-1600402808924-9c591a6dace8?w=1000&auto=format&fit=crop&q=60", name: "Sikkim" },
-            { src: "https://images.unsplash.com/photo-1544644181-1484b3fdfc62?w=1000&auto=format&fit=crop&q=60", name: "Indonesia" },
-            { src: "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=1000&auto=format&fit=crop&q=60", name: "Singapore" },
-            { src: "https://images.unsplash.com/photo-1467377791767-c929b5dc9a23?w=1000&auto=format&fit=crop&q=60", name: "Maldives" },
-            { src: "https://images.unsplash.com/photo-1589983846997-04788035bc83?w=1000&auto=format&fit=crop&q=60", name: "Kerala" }
+            { src: "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1000,c_limit/v1791880489/TravPlan/stock/unsplash-1634148551170-d37d021e0cc9.jpg", name: "Dubai" },
+            { src: "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1000,c_limit/v1791880491/TravPlan/stock/unsplash-1547378809-db8f9515a63b.jpg", name: "Uttarakhand" },
+            { src: "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1000,c_limit/v1791880492/TravPlan/stock/unsplash-1566914447826-bf04e54bf1be.jpg", name: "Malaysia" },
+            { src: "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1000,c_limit/v1791880495/TravPlan/stock/unsplash-1600402808924-9c591a6dace8.jpg", name: "Sikkim" },
+            { src: "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1000,c_limit/v1791880496/TravPlan/stock/unsplash-1544644181-1484b3fdfc62.jpg", name: "Indonesia" },
+            { src: "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1000,c_limit/v1791880497/TravPlan/stock/unsplash-1525625293386-3f8f99389edd.jpg", name: "Singapore" },
+            { src: "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1000,c_limit/v1791880498/TravPlan/stock/unsplash-1467377791767-c929b5dc9a23.jpg", name: "Maldives" },
+            { src: "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1000,c_limit/v1791880499/TravPlan/stock/unsplash-1589983846997-04788035bc83.jpg", name: "Kerala" }
         ]
     };
 

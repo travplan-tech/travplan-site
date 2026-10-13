@@ -20,7 +20,7 @@ export default function DestinationHero({ country, region, title, description, i
       ? `Explore incredible destinations across ${region}. From historic sites to modern marvels, discover the unique culture and landscapes that make this region special.`
       : "Discover rich adventure and culture around the world. Find the perfect tour for your next holiday.")
 
-  const bgImage = image || "/mountain-lake-landscape.jpg"
+  const bgImage = image || "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1920,c_limit/v1791880445/TravPlan/site/mountain-lake-landscape.jpg"
 
   return (
     <section className="w-full bg-white pb-6 pt-2">

@@ -24,7 +24,7 @@ export default function AboutPage() {
                             <div className="flex flex-col items-center gap-4 md:hidden">
                                 <div className="w-40 h-40 sm:w-48 sm:h-48 bg-orange-50 rounded-2xl overflow-hidden relative shadow-inner">
                                     <Image
-                                        src="/gaurav.png"
+                                        src="https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1920,c_limit/v1791880437/TravPlan/site/gaurav.png"
                                         alt="Gaurav Singhal"
                                         width={400}
                                         height={400}
@@ -62,7 +62,7 @@ export default function AboutPage() {
                                 {/* Right - Photo */}
                                 <div className="w-36 h-44 lg:w-44 lg:h-52 bg-orange-50 rounded-2xl overflow-hidden relative shadow-inner shrink-0">
                                     <Image
-                                        src="/gaurav.png"
+                                        src="https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1920,c_limit/v1791880437/TravPlan/site/gaurav.png"
                                         alt="Gaurav Singhal"
                                         width={400}
                                         height={400}
@@ -83,7 +83,7 @@ export default function AboutPage() {
                             <div className="flex flex-col items-center gap-4 md:hidden">
                                 <div className="w-40 h-40 sm:w-48 sm:h-48 bg-yellow-50 rounded-2xl overflow-hidden relative shadow-inner">
                                     <Image
-                                        src="/rohit.png"
+                                        src="https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1920,c_limit/v1791880453/TravPlan/site/rohit.png"
                                         alt="Rohit Kumar"
                                         width={400}
                                         height={400}
@@ -108,7 +108,7 @@ export default function AboutPage() {
                                 {/* Left - Photo */}
                                 <div className="w-36 h-44 lg:w-44 lg:h-52 bg-yellow-50 rounded-2xl overflow-hidden relative shadow-inner shrink-0">
                                     <Image
-                                        src="/rohit.png"
+                                        src="https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1920,c_limit/v1791880453/TravPlan/site/rohit.png"
                                         alt="Rohit Kumar"
                                         width={400}
                                         height={400}

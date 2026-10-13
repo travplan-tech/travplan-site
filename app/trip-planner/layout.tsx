@@ -23,7 +23,7 @@ export const metadata: Metadata = {
             "Plan a custom holiday with Travplan. Share your destination, budget and travel dates to get itinerary support.",
         url: "/trip-planner",
         type: "website",
-        images: ["/og-image.jpg"],
+        images: ["https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1920,c_limit/v1791880449/TravPlan/site/og-image.jpg"],
     },
 }
 

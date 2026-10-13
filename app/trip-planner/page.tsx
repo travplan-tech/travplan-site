@@ -241,11 +241,11 @@ function TripPlannerContent() {
     // Country image based on selection
     const getCountryImage = () => {
         const images: Record<string, string> = {
-            "India": "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=400",
-            "Thailand": "https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?w=400",
-            "Japan": "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=400",
-            "Bali": "https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=400",
-            "default": "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400"
+            "India": "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_400,c_limit/v1791880460/TravPlan/stock/unsplash-1524492412937-b28074a5d7da.jpg",
+            "Thailand": "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_400,c_limit/v1791880462/TravPlan/stock/unsplash-1552465011-b4e21bf6e79a.jpg",
+            "Japan": "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_400,c_limit/v1791880463/TravPlan/stock/unsplash-1493976040374-85c8e12f0c0e.jpg",
+            "Bali": "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_400,c_limit/v1791880465/TravPlan/stock/unsplash-1537996194471-e657df975ab4.jpg",
+            "default": "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_400,c_limit/v1791880466/TravPlan/stock/unsplash-1488646953014-85cb44e25828.jpg"
         }
         return images[tripPlan.country] || images["default"]
     }

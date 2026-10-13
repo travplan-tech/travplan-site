@@ -25,7 +25,7 @@ const OPTIONS = [
             { label: "In India", href: "/tours?tourCategory=PRIVATE&type=domestic" },
             { label: "Abroad", href: "/tours?tourCategory=PRIVATE&type=international" },
         ],
-        image: "/luxury.jpeg",
+        image: "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1920,c_limit/v1791880443/TravPlan/site/luxury.jpg",
         featured: false,
     },
     {
@@ -42,7 +42,7 @@ const OPTIONS = [
             { label: "In India", href: "/tours?tourCategory=GROUP&type=domestic" },
             { label: "Abroad", href: "/tours?tourCategory=GROUP&type=international" },
         ],
-        image: "/adventure.jpeg",
+        image: "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1920,c_limit/v1791880426/TravPlan/site/adventure.jpg",
         featured: true,
     },
 ]

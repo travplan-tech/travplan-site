@@ -171,7 +171,11 @@ export default function AdminDestinations() {
                     if (!open) resetForm();
                 }}
             >
-                <DialogContent className="max-w-2xl">
+                {/* sm:max-w- is what the dialog's own default sets, so the
+                    override has to use the same responsive variant — a plain
+                    max-w-2xl loses to sm:max-w-lg above 640px and the modal
+                    stays narrow. */}
+                <DialogContent className="w-[95vw] sm:max-w-3xl max-h-[90vh] overflow-y-auto">
                     <DialogHeader>
                         <DialogTitle>
                             {editingDestination

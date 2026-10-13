@@ -11,7 +11,7 @@ const sectionConfig = [
     title: "Domestic Group Tours",
     subtitle: "Explore India's hidden gems",
     tripType: "domestic",
-    defaultImage: "https://images.unsplash.com/photo-1764014588235-d339ae275f19?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHx0b3BpYy1mZWVkfDM1fGJvOGpRS1RhRTBZfHxlbnwwfHx8fHw%3D",
+    defaultImage: "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_600,c_limit/v1791880500/TravPlan/stock/unsplash-1764014588235-d339ae275f19.jpg",
     durationRanges: [
       { label: "Short weekend trips (2-3 Days)", duration: "1-3" },
       { label: "Long weekend trips (4-7 Days)", duration: "4-7" },
@@ -22,7 +22,7 @@ const sectionConfig = [
     title: "International Group Trips",
     subtitle: "Discover the world affordably",
     tripType: "international",
-    defaultImage: "https://images.unsplash.com/photo-1764071289023-227898d0d827?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHx0b3BpYy1mZWVkfDE3fGJvOGpRS1RhRTBZfHxlbnwwfHx8fHw%3D",
+    defaultImage: "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_600,c_limit/v1791880502/TravPlan/stock/unsplash-1764071289023-227898d0d827.jpg",
     durationRanges: [
       { label: "Short Trips (2-4 Days)", duration: "1-3" },
       { label: "Long Vacations (5+ Days)", duration: "4-7" },

@@ -67,13 +67,13 @@ export async function generateMetadata({
             url: `/blog/${blog.slug}`,
             type: "article",
             publishedTime: blog.publishedAt?.toISOString(),
-            images: blog.coverImage ? [blog.coverImage] : ["/og-image.jpg"],
+            images: blog.coverImage ? [blog.coverImage] : ["https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1920,c_limit/v1791880449/TravPlan/site/og-image.jpg"],
         },
         twitter: {
             card: "summary_large_image",
             title,
             description,
-            images: blog.coverImage ? [blog.coverImage] : ["/og-image.jpg"],
+            images: blog.coverImage ? [blog.coverImage] : ["https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1920,c_limit/v1791880449/TravPlan/site/og-image.jpg"],
         },
     }
 }

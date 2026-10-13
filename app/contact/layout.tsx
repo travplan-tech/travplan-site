@@ -13,7 +13,7 @@ export const metadata: Metadata = {
             "Contact Travplan for India and international tour packages, custom holidays, group trips and travel planning support.",
         url: "/contact",
         type: "website",
-        images: ["/og-image.jpg"],
+        images: ["https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1920,c_limit/v1791880449/TravPlan/site/og-image.jpg"],
     },
 }
 

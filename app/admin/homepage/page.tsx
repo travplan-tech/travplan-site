@@ -66,8 +66,8 @@ export default function HomepageManagement() {
     // Hero background image state
     const [heroBackgroundImage, setHeroBackgroundImage] = useState("")
     const [bannerImage, setBannerImage] = useState("")
-    const defaultHeroImage = "https://images.unsplash.com/photo-1764276266750-4d6316e972e0?q=80&w=1173&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-    const defaultBannerImage = "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=2070&auto=format&fit=crop"
+    const defaultHeroImage = "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1173,c_limit/v1791880458/TravPlan/stock/unsplash-1764276266750-4d6316e972e0.jpg"
+    const defaultBannerImage = "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_2070,c_limit/v1791880459/TravPlan/stock/unsplash-1542314831-068cd1dbfeeb.jpg"
 
     // Update hero background image and banner when settings load
     useEffect(() => {
@@ -330,7 +330,7 @@ export default function HomepageManagement() {
                     if (!open) resetForm()
                 }}
             >
-                <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                <DialogContent className="w-[95vw] sm:max-w-3xl max-h-[90vh] overflow-y-auto">
                     <DialogHeader>
                         <DialogTitle>
                             {editingBox ? "Edit Feature Box" : "Add New Feature Box"}

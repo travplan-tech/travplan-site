@@ -7,26 +7,26 @@ import { useGetTourTypeStatsQuery } from "@/lib/api/packagesApi"
 import SectionHeading from "@/components/section-heading"
 
 const TOUR_TYPES = [
-    { type: "Family", image: "/family.jpeg", description: "Fun for the whole family" },
-    { type: "Couples", image: "/couple.jpeg", description: "Romantic getaways for two" },
+    { type: "Family", image: "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1920,c_limit/v1791880434/TravPlan/site/family.jpg", description: "Fun for the whole family" },
+    { type: "Couples", image: "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1920,c_limit/v1791880430/TravPlan/site/couple.jpg", description: "Romantic getaways for two" },
     {
         type: "Friends",
         image:
-            "https://images.unsplash.com/photo-1539635278303-d4002c07eae3?w=600&auto=format&fit=crop&q=60",
+            "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_600,c_limit/v1791880467/TravPlan/stock/unsplash-1539635278303-d4002c07eae3.jpg",
         description: "Adventure with your squad",
     },
-    { type: "Adventure", image: "/adventure.jpeg", description: "Thrilling experiences await" },
+    { type: "Adventure", image: "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1920,c_limit/v1791880426/TravPlan/site/adventure.jpg", description: "Thrilling experiences await" },
     {
         type: "Cultural & Architecture",
         image:
-            "https://images.unsplash.com/photo-1548013146-72479768bada?w=600&auto=format&fit=crop&q=60",
+            "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_600,c_limit/v1791880468/TravPlan/stock/unsplash-1548013146-72479768bada.jpg",
         description: "Explore heritage and history",
     },
-    { type: "Pilgrim Tours", image: "/pilgrim.jpeg", description: "Meet new travel companions" },
-    { type: "Luxury", image: "/luxury.jpeg", description: "Relax, rejuvenate, refresh" },
+    { type: "Pilgrim Tours", image: "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1920,c_limit/v1791880450/TravPlan/site/pilgrim.jpg", description: "Meet new travel companions" },
+    { type: "Luxury", image: "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1920,c_limit/v1791880443/TravPlan/site/luxury.jpg", description: "Relax, rejuvenate, refresh" },
     {
         type: "Instagrammable",
-        image: "/Instagrammable.jpeg",
+        image: "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1920,c_limit/v1791880424/TravPlan/site/instagrammable.jpg",
         description: "Picture-perfect destinations",
     },
 ]

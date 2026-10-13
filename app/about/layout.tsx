@@ -15,7 +15,7 @@ export const metadata: Metadata = {
             "Learn about Travplan, a Delhi-based travel planning team for curated group tours, custom holidays and India and international trips.",
         url: "/about",
         type: "website",
-        images: ["/og-image.jpg"],
+        images: ["https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1920,c_limit/v1791880449/TravPlan/site/og-image.jpg"],
     },
 }
 

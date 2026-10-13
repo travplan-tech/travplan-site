@@ -51,7 +51,7 @@ export default function DestinationHeroFeatured({
             ? `Browse our curated collection of trips across ${country}, each one planned with local operators and flexible departures.`
             : "Discover handpicked trips, planned with local operators and flexible departures.")
 
-    const bgImage = image || "/mountain-lake-landscape.jpg"
+    const bgImage = image || "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1920,c_limit/v1791880445/TravPlan/site/mountain-lake-landscape.jpg"
 
     const stats = [
         tripCount
