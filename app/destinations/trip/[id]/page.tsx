@@ -1,7 +1,8 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { cache } from "react";
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/lib/prisma"
+import { withDbRetry } from "@/lib/db-retry";
 import TripDetailClient, { TourData } from "./TripDetailClient";
 import { SITE_URL } from "@/lib/site"
 import { upcomingDeparturesOnly, parseDepartureDates } from "@/lib/departures"
@@ -30,7 +31,7 @@ class PackageUnavailableError extends Error {}
 
 const getPackage = cache(async (id: number) => {
   try {
-    const pkg = await prisma.package.findUnique({
+    const pkg = await withDbRetry(() => prisma.package.findUnique({
         where: { id },
         select: {
             id: true,
@@ -111,7 +112,7 @@ const getPackage = cache(async (id: number) => {
                 }
             }
         }
-    });
+    }), { label: `package ${id}` });
 
     if (!pkg) return null;
 
@@ -197,9 +198,11 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     let pkg: Awaited<ReturnType<typeof getPackage>> = null;
     try {
         pkg = await getPackage(packageId);
-    } catch {
-        // The database was unreachable; fall back rather than failing the route.
-        return { title: "Tour Package" };
+    } catch (error) {
+        // Rethrow for the same reason as the page body: a generic title must
+        // not get baked into the cache in place of the real one.
+        console.error("generateMetadata: could not load package", packageId, error);
+        throw error;
     }
 
     if (!pkg) {
@@ -358,28 +361,12 @@ export default async function TripDetailPage({ params }: { params: Promise<{ id:
         notFound();
     }
 
-    let tourData: Awaited<ReturnType<typeof getPackage>> = null;
-    try {
-        tourData = await getPackage(packageId);
-    } catch {
-        return (
-            <main className="max-w-3xl mx-auto px-4 py-24 text-center">
-                <h1 className="font-heading text-2xl md:text-3xl font-bold text-gray-900">
-                    This trip could not be loaded
-                </h1>
-                <p className="text-gray-600 mt-3">
-                    Something went wrong on our side. Please refresh in a moment, or browse our
-                    other trips.
-                </p>
-                <Link
-                    href="/tours"
-                    className="inline-flex items-center justify-center bg-primary hover:bg-primary/90 text-white font-semibold py-3 px-6 rounded-xl transition-colors mt-6"
-                >
-                    Browse all trips
-                </Link>
-            </main>
-        );
-    }
+    // Deliberately not caught. A database failure here must not render a
+    // friendly 200 page: under ISR that empty page gets cached for the whole
+    // revalidation window and search engines index it. Letting the error
+    // propagate means Next keeps serving the last good prerendered HTML, or
+    // returns a 500, which tells a crawler to come back later.
+    const tourData = await getPackage(packageId);
 
     if (!tourData) {
         notFound();
