@@ -1,10 +1,12 @@
 "use client"
 
-import { Upload, X, Link as LinkIcon, FileText } from "lucide-react"
+import { Upload, X, Link as LinkIcon, FileText, Images } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useState, useRef, useEffect } from "react"
 import { useGetUploadSignatureMutation } from "@/lib/api/adminApi"
+import { usePathname } from "next/navigation"
+import MediaPicker from "@/components/admin/media-picker"
 
 interface CloudinaryUploadProps {
     value?: string
@@ -15,24 +17,35 @@ interface CloudinaryUploadProps {
     resourceType?: "image" | "raw" | "video" | "auto"
     onUploadStatusChange?: (isUploading: boolean) => void
     aspectRatio?: string
+    /**
+     * Shows the "Cloudinary" button that opens the media library. Defaults to
+     * on inside /admin and off elsewhere: the library lists (and can delete)
+     * every asset, so it must not appear on the public review upload form.
+     */
+    allowLibrary?: boolean
 }
 
 export default function CloudinaryUpload({
     value,
     onChange,
     onRemove,
-    folder = "Travplan",
+    folder = "TravPlan/site",
     acceptPdf = false,
     resourceType: propResourceType,
     onUploadStatusChange,
-    aspectRatio
+    aspectRatio,
+    allowLibrary
 }: CloudinaryUploadProps) {
     const [uploadedUrl, setUploadedUrl] = useState(value || "")
     const [isUploading, setIsUploading] = useState(false)
     const [showUrlInput, setShowUrlInput] = useState(false)
+    const [libraryOpen, setLibraryOpen] = useState(false)
     const [urlInput, setUrlInput] = useState("")
     const [fileType, setFileType] = useState<"image" | "pdf" | "video">("image")
     const fileInputRef = useRef<HTMLInputElement>(null)
+
+    const pathname = usePathname()
+    const showLibrary = allowLibrary ?? pathname?.startsWith("/admin") ?? false
 
     // RTK Query mutation for getting upload signature
     const [getUploadSignature] = useGetUploadSignatureMutation()
@@ -188,6 +201,17 @@ export default function CloudinaryUpload({
                     <Upload size={16} />
                     {isUploading ? "Uploading..." : "Browse Files"}
                 </Button>
+                {showLibrary && (
+                    <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => setLibraryOpen(true)}
+                        className="gap-2"
+                    >
+                        <Images size={16} />
+                        Cloudinary
+                    </Button>
+                )}
                 <Button
                     type="button"
                     variant="outline"
@@ -198,6 +222,21 @@ export default function CloudinaryUpload({
                     URL
                 </Button>
             </div>
+
+            {showLibrary && (
+                <MediaPicker
+                    open={libraryOpen}
+                    onClose={() => setLibraryOpen(false)}
+                    onSelect={(urls) => {
+                        const [url] = urls
+                        if (!url) return
+                        setUploadedUrl(url)
+                        onChange(url)
+                    }}
+                    type={propResourceType === "video" ? "video" : "image"}
+                    folder={folder}
+                />
+            )}
 
             {/* URL Input */}
             {showUrlInput && (

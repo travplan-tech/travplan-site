@@ -16,7 +16,8 @@ import {
     Home,
     UserCheck,
     HelpCircle,
-    Percent
+    Percent,
+    HardDrive
 } from "lucide-react"
 import { useState, useEffect } from "react"
 import { useSession } from "next-auth/react"
@@ -30,6 +31,7 @@ const navigation = [
     { name: "Enquiries", href: "/admin/enquiries", icon: HelpCircle },
     { name: "Packages", href: "/admin/packages", icon: Package },
     { name: "Destinations", href: "/admin/destinations", icon: MapPin },
+    { name: "Media", href: "/admin/media", icon: HardDrive },
     { name: "Trip Experts", href: "/admin/experts", icon: UserCheck },
     { name: "Users", href: "/admin/users", icon: Users },
     { name: "Sales", href: "/admin/sales", icon: Percent },

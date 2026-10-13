@@ -11,8 +11,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Badge } from "@/components/ui/badge"
-import { ArrowLeft, Loader2, Plus, Trash2, ChevronDown, ChevronUp } from "lucide-react"
+import { ArrowLeft, Loader2, Plus, Trash2, ChevronDown, ChevronUp, ImagePlus } from "lucide-react"
 import CloudinaryUpload from "@/components/admin/cloudinary-upload"
+import MediaPicker from "@/components/admin/media-picker"
 import Link from "next/link"
 import { useGetDestinationsQuery } from "@/lib/api/destinationsApi"
 import { useCreatePackageMutation } from "@/lib/api/packagesApi"
@@ -116,6 +117,7 @@ export default function CreatePackage() {
 
     // Gallery images state
     const [galleryImages, setGalleryImages] = useState<string[]>([])
+    const [mediaPickerOpen, setMediaPickerOpen] = useState(false)
 
     // Departure dates state
     const [departureDates, setDepartureDates] = useState<DepartureDate[]>([
@@ -163,9 +165,14 @@ export default function CreatePackage() {
 
     // Gallery handlers
     const addGalleryImage = (url: string) => {
-        if (url && !galleryImages.includes(url) && galleryImages.length < 2) {
+        if (url && !galleryImages.includes(url)) {
             setGalleryImages(prev => [...prev, url])
         }
+    }
+
+    // Several at once, from the media library
+    const addGalleryImages = (urls: string[]) => {
+        setGalleryImages(prev => Array.from(new Set([...prev, ...urls])))
     }
 
     const removeGalleryImage = (index: number) => {
@@ -786,8 +793,21 @@ No refund if cancelled within 7 days of departure"
                         />
                         {expandedSections.gallery && (
                             <div className="p-6 pt-4 space-y-4">
-                                <div>
-                                    <Label className="mb-2 block">Add Gallery Image ({galleryImages.length}/2)</Label>
+                                <div className="space-y-3">
+                                    <div className="flex items-center justify-between gap-3">
+                                        <Label className="block">
+                                            Gallery images ({galleryImages.length})
+                                        </Label>
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            size="sm"
+                                            onClick={() => setMediaPickerOpen(true)}
+                                        >
+                                            <ImagePlus size={15} className="mr-1.5" />
+                                            Choose from library
+                                        </Button>
+                                    </div>
                                     <CloudinaryUpload
                                         value=""
                                         onChange={(url) => addGalleryImage(url)}
@@ -797,7 +817,7 @@ No refund if cancelled within 7 days of departure"
                                 </div>
 
                                 {galleryImages.length > 0 && (
-                                    <div className="grid grid-cols-2 gap-3">
+                                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                                         {galleryImages.map((url, index) => (
                                             <div key={index} className="relative group">
                                                 <img
@@ -960,6 +980,14 @@ No refund if cancelled within 7 days of departure"
                     </Button>
                 </div>
             </form>
+
+            <MediaPicker
+                open={mediaPickerOpen}
+                onClose={() => setMediaPickerOpen(false)}
+                onSelect={addGalleryImages}
+                multiple
+                folder="packages/gallery"
+            />
         </div>
     )
 }
