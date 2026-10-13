@@ -65,7 +65,16 @@ const defaultFeatureBoxes: FeatureBox[] = [
   },
 ]
 
-const TravelInfoSection: React.FC = () => {
+interface TravelInfoProps {
+  /** Server-rendered feature boxes and hero settings. */
+  initialFeatureBoxes?: FeatureBox[]
+  initialSettings?: Record<string, string>
+}
+
+const TravelInfoSection: React.FC<TravelInfoProps> = ({
+  initialFeatureBoxes,
+  initialSettings,
+}) => {
   const sectionRef = useRef<HTMLDivElement>(null)
   const [isInView, setIsInView] = useState(false)
 
@@ -122,16 +131,21 @@ const TravelInfoSection: React.FC = () => {
   }, [])
 
   // RTK Query hook - only fetch when in view
-  const { data: apiFeatureBoxes, isLoading: loading } = useGetFeatureBoxesQuery(undefined, {
-    skip: !isInView
+  const { data: fetchedBoxes, isLoading: fetchingBoxes } = useGetFeatureBoxesQuery(undefined, {
+    skip: !isInView || !!initialFeatureBoxes
   })
 
   // Homepage settings for banner image
-  const { data: homepageSettings } = useGetHomepageSettingsQuery(undefined, {
-    skip: !isInView
+  const { data: fetchedSettings } = useGetHomepageSettingsQuery(undefined, {
+    skip: !isInView || !!initialSettings
   })
 
-  // Use API data if available, otherwise fallback
+  // Prefer the server-rendered data, then the client query, then the built-in
+  // defaults so the section is never empty.
+  const apiFeatureBoxes = initialFeatureBoxes ?? fetchedBoxes
+  const homepageSettings = initialSettings ?? fetchedSettings
+  const loading = initialFeatureBoxes ? false : fetchingBoxes
+
   const featureBoxes = (apiFeatureBoxes && apiFeatureBoxes.length > 0)
     ? apiFeatureBoxes
     : defaultFeatureBoxes
@@ -140,7 +154,7 @@ const TravelInfoSection: React.FC = () => {
     return iconMap[iconName] || Award
   }
 
-  const defaultBannerImage = "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=2070&auto=format&fit=crop"
+  const defaultBannerImage = "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_2070,c_limit/v1791880459/TravPlan/stock/unsplash-1542314831-068cd1dbfeeb.jpg"
   const bannerImage = homepageSettings?.bannerImage || defaultBannerImage
 
   return (

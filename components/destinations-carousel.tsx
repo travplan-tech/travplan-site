@@ -4,13 +4,25 @@ import { useGetDestinationsQuery } from "@/lib/api/destinationsApi"
 import Image from "next/image"
 import Link from "next/link"
 import DestinationMarqueeRow from "@/components/destination-marquee-row"
+import type { DestinationCard } from "@/lib/home-data"
 import { useRef, useState, useEffect, useMemo } from "react"
 
 type FilterType = 'ALL' | 'DOMESTIC' | 'INTERNATIONAL';
 
-export default function DestinationsCarousel() {
-    // Fetch destinations
-    const { data: destinations = [], isLoading } = useGetDestinationsQuery()
+/**
+ * `initialDestinations` is the server-rendered list; when present the client
+ * query is skipped so the carousel is in the HTML with no loading pass.
+ */
+export default function DestinationsCarousel({
+    initialDestinations,
+}: {
+    initialDestinations?: DestinationCard[]
+} = {}) {
+    const { data: fetched = [], isLoading: fetching } = useGetDestinationsQuery(undefined, {
+        skip: !!initialDestinations,
+    })
+    const destinations = initialDestinations ?? fetched
+    const isLoading = initialDestinations ? false : fetching
     const [selectedFilter, setSelectedFilter] = useState<FilterType>('ALL')
 
     // Filter to ensure we have images and valid data

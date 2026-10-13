@@ -1,7 +1,10 @@
 import type { Metadata } from "next"
+import { unstable_cache } from "next/cache"
 import { prisma } from "@/lib/prisma"
 import { getDestinationSeo } from "./destination-seo"
 import DestinationsClient from "./DestinationsClient"
+import { PAGE_REVALIDATE, getDestinations } from "@/lib/home-data"
+import { getPackagesList } from "@/lib/packages-data"
 
 type SearchParams = Record<string, string | string[] | undefined>
 
@@ -10,19 +13,27 @@ function first(value: string | string[] | undefined): string | undefined {
     return value || undefined
 }
 
-/** Counts live packages for a country or region, used to avoid indexing empty pages. */
-async function countPackages(where: { country?: string; region?: string }): Promise<number | null> {
-    try {
-        return await prisma.package.count({
-            where: { destination: { is: where } },
-        })
-    } catch (error) {
-        // If the database is unreachable, fall back to indexing rather than
-        // accidentally de-indexing a page that does have inventory.
-        console.error("destinations metadata: package count failed", error)
-        return null
-    }
-}
+/**
+ * Counts live packages for a country or region, used to avoid indexing empty
+ * pages. Cached per country/region: this runs on every request to
+ * /destinations, and the count only moves when inventory changes.
+ */
+const countPackages = unstable_cache(
+    async (where: { country?: string; region?: string }): Promise<number | null> => {
+        try {
+            return await prisma.package.count({
+                where: { destination: { is: where } },
+            })
+        } catch (error) {
+            // If the database is unreachable, fall back to indexing rather than
+            // accidentally de-indexing a page that does have inventory.
+            console.error("destinations metadata: package count failed", error)
+            return null
+        }
+    },
+    ["destinations-package-count"],
+    { revalidate: PAGE_REVALIDATE, tags: ["packages"] }
+)
 
 export async function generateMetadata({
     searchParams,
@@ -53,7 +64,7 @@ export async function generateMetadata({
                     "Explore Travplan tour packages by destination. Compare India and international trips, routes, durations and inclusions.",
                 url: "/destinations",
                 type: "website",
-                images: ["/og-image.jpg"],
+                images: ["https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1920,c_limit/v1791880449/TravPlan/site/og-image.jpg"],
             },
         }
     }
@@ -81,11 +92,45 @@ export async function generateMetadata({
             description: seo.description,
             url: canonical,
             type: "website",
-            images: ["/og-image.jpg"],
+            images: ["https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1920,c_limit/v1791880449/TravPlan/site/og-image.jpg"],
         },
     }
 }
 
-export default function DestinationsPage() {
-    return <DestinationsClient />
+export default async function DestinationsPage({
+    searchParams,
+}: {
+    searchParams: Promise<SearchParams>
+}) {
+    const params = await searchParams
+    const country = first(params.country)
+    const region = first(params.region)
+
+    // Mirrors the query BestTours builds, so the cards are in the HTML rather
+    // than fetched after hydration.
+    const [result, destinations] = [
+        await getPackagesList({
+            country,
+            region,
+            tourCategory: first(params.tourCategory),
+            excludeCountry: first(params.excludeCountry),
+            tourType: first(params.tourType),
+            limit: 6,
+        }),
+        // Only needed to resolve the hero image for a country or region page.
+        country || region ? await getDestinations() : null,
+    ]
+
+    const heroImage = destinations?.find((d) =>
+        country
+            ? d.country?.toLowerCase() === country.toLowerCase()
+            : d.region?.toLowerCase() === region?.toLowerCase()
+    )?.image
+
+    return (
+        <DestinationsClient
+            initialPackages={result?.packages}
+            initialImage={heroImage ?? undefined}
+        />
+    )
 }

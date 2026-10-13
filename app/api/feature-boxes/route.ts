@@ -1,31 +1,16 @@
 import { NextResponse } from "next/server"
-import { prisma } from "@/lib/prisma"
+import { getFeatureBoxes, PAGE_REVALIDATE } from "@/lib/home-data"
 
 // GET - Public API to fetch active feature boxes
 export async function GET() {
-    try {
-        const featureBoxes = await prisma.featureBox.findMany({
-            where: { isActive: true },
-            orderBy: { order: "asc" },
-            select: {
-                id: true,
-                title: true,
-                description: true,
-                icon: true,
-            }
-        })
-
-        // Cache for 5 minutes, stale-while-revalidate for 1 hour (rarely changes)
-        return NextResponse.json(featureBoxes, {
-            headers: {
-                'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=3600',
-            }
-        })
-    } catch (error) {
-        console.error("Error fetching feature boxes:", error)
-        return NextResponse.json(
-            { error: "Failed to fetch feature boxes" },
-            { status: 500 }
-        )
+    const featureBoxes = await getFeatureBoxes()
+    if (!featureBoxes) {
+        // The component falls back to its own defaults on an empty list.
+        return NextResponse.json([], { headers: { "Cache-Control": "no-store" } })
     }
+    return NextResponse.json(featureBoxes, {
+        headers: {
+            "Cache-Control": `public, s-maxage=${PAGE_REVALIDATE}, stale-while-revalidate=3600`,
+        },
+    })
 }

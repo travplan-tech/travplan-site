@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
+import { getDestinations, PAGE_REVALIDATE } from "@/lib/home-data"
 import { requireAdmin } from "@/lib/auth-helpers"
 
 export async function GET(request: Request) {
@@ -13,6 +14,21 @@ export async function GET(request: Request) {
         const tourCategory = searchParams.get('tourCategory')
         const excludeCountry = searchParams.get('excludeCountry')
         const saleSlug = searchParams.get('saleSlug')
+
+        // The plain "all destinations" call powers the homepage carousel and the
+        // navbar, so serve it from the shared cache.
+        if (!groupByRegion && !country && !region && !tourType && !tourCategory
+            && !excludeCountry && !saleSlug) {
+            const cached = await getDestinations()
+            // On a failed read fall through to the live query below.
+            if (cached) {
+                return NextResponse.json(cached, {
+                    headers: {
+                        "Cache-Control": `public, s-maxage=${PAGE_REVALIDATE}, stale-while-revalidate=3600`,
+                    },
+                })
+            }
+        }
 
         // Build where clause
         const where: any = {}

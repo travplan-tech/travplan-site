@@ -326,7 +326,12 @@ const VideoCard = ({
 
 // --- Main Section Component ---
 
-const VideoTestimonialsSection = () => {
+const VideoTestimonialsSection = ({
+    initialTestimonials,
+}: {
+    /** Server-rendered video reviews; skips the client fetch when present. */
+    initialTestimonials?: VideoTestimonial[]
+} = {}) => {
     const [emblaRef, emblaApi] = useEmblaCarousel({
         align: 'start',
         containScroll: 'trimSnaps',
@@ -344,9 +349,11 @@ const VideoTestimonialsSection = () => {
     const sectionRef = useRef<HTMLElement>(null)
 
     // Fetch reviews
-    const { data: testimonials = [], isLoading } = useGetVideoReviewsQuery(undefined, {
-        skip: !sectionInView
+    const { data: fetched = [], isLoading: fetching } = useGetVideoReviewsQuery(undefined, {
+        skip: !sectionInView || !!initialTestimonials
     })
+    const testimonials = initialTestimonials ?? fetched
+    const isLoading = initialTestimonials ? false : fetching
 
     // Scroll detection logic
     const onSelect = useCallback((api: any) => {

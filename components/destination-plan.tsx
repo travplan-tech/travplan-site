@@ -12,7 +12,9 @@ interface Expert {
     name: string
     bio?: string | null
     avatar?: string | null
-    expertise?: string | null
+    // The API returns this split into an array; older callers pass the raw
+    // comma-separated string. ExpertCarousel accepts either.
+    expertise?: string[] | string | null
     whatsappNumber?: string | null
     type?: string | null
     isActive?: boolean
@@ -40,11 +42,17 @@ export default function DestinationPlan({
     destinationName,
     country,
     destinationId,
+    initialExperts,
 }: {
     destinationName?: string | null
     country?: string | null
     /** When given, this destination's own named expert is shown first */
     destinationId?: number
+    /**
+     * Experts for the tab that opens first, rendered on the server. Switching
+     * tabs falls through to the client query as before.
+     */
+    initialExperts?: Expert[]
 }) {
     const place = destinationName?.trim().replace(/\s*,\s*$/, "")
 
@@ -61,7 +69,12 @@ export default function DestinationPlan({
         if (!touched) setType(defaultType)
     }, [defaultType, touched])
 
-    const { data, isLoading } = useGetExpertsQuery(type)
+    const showingInitial = !!initialExperts && type === defaultType
+    const { data: fetchedExperts, isLoading: fetching } = useGetExpertsQuery(type, {
+        skip: showingInitial,
+    })
+    const data = showingInitial ? initialExperts : fetchedExperts
+    const isLoading = showingInitial ? false : fetching
     const { data: destinationExperts } = useGetDestinationExpertsQuery(destinationId as number, {
         skip: !destinationId,
     })

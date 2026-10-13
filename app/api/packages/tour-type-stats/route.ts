@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
+import { getTourTypeStats, PAGE_REVALIDATE } from "@/lib/home-data"
 
 export async function GET(request: Request) {
     try {
@@ -11,6 +12,24 @@ export async function GET(request: Request) {
 
         const tourCategory = searchParams.get("tourCategory")
         const excludeCountry = searchParams.get("excludeCountry")
+
+        // The homepage asks for the unfiltered counts, which is by far the most
+        // common call, so serve those from the shared cache instead of
+        // re-reading every package row.
+        const hasFilter =
+            destinationId || country || region || saleSlug || tourCategory || excludeCountry
+        if (!hasFilter) {
+            const cached = await getTourTypeStats()
+            // On a failed read fall through to the live query below rather than
+            // answering with nothing.
+            if (cached) {
+                return NextResponse.json(cached, {
+                    headers: {
+                        "Cache-Control": `public, s-maxage=${PAGE_REVALIDATE}, stale-while-revalidate=3600`,
+                    },
+                })
+            }
+        }
 
         const where: any = {}
         const destFilter: any = {}

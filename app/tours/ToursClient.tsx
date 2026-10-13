@@ -50,7 +50,19 @@ interface PackagesResponse {
     }
 }
 
-function ToursContent() {
+interface ServerPackages {
+    packages: unknown[]
+    pagination: { page: number; limit: number; total: number; totalPages: number }
+}
+
+interface ToursProps {
+    /** First page of results, prefetched on the server for the URL's filters. */
+    initialData?: ServerPackages
+    /** Which filter combination initialData was fetched for. */
+    initialSignature?: string
+}
+
+function ToursContent({ initialData, initialSignature }: ToursProps) {
     const searchParams = useSearchParams()
     const destinationId = searchParams.get("destinationId") || ""
     const budgetType = searchParams.get("type") // domestic or international
@@ -130,7 +142,23 @@ function ToursContent() {
         return params
     }, [destinationId, country, region, excludeCountry, saleSlug, currentPage, sortBy, debouncedMaxPrice, selectedTourTypes, selectedDurations, selectedDepartureTypes, initialApiMax, searchQuery])
 
-    const { data: packagesData, isLoading: loading } = useGetPackagesQuery(packageQueryParams)
+    // Canonical signature so key order cannot make an identical filter set look
+    // different from the one the server prefetched.
+    const signature = useMemo(
+        () => JSON.stringify(
+            Object.entries(packageQueryParams)
+                .filter(([, v]) => v !== undefined)
+                .sort(([a], [b]) => a.localeCompare(b))
+        ),
+        [packageQueryParams]
+    )
+    const usingInitial = !!initialData && signature === initialSignature
+
+    const { data: fetchedPackages, isLoading: fetching } = useGetPackagesQuery(packageQueryParams, {
+        skip: usingInitial,
+    })
+    const packagesData = usingInitial ? initialData : fetchedPackages
+    const loading = usingInitial ? false : fetching
 
     // Extract tours and pagination from response
     const tours = useMemo(() => {
@@ -824,14 +852,20 @@ function ToursContent() {
     )
 }
 
-export default function ToursClient() {
+/**
+ * `initialData` is the first page of results, fetched on the server for the
+ * exact filters in the URL. `initialSignature` identifies which filters it was
+ * fetched for, so it is only used while the UI is still asking for that same
+ * combination — change a filter and the normal client query takes over.
+ */
+export default function ToursClient({ initialData, initialSignature }: ToursProps = {}) {
     return (
         <Suspense fallback={
             <div className="min-h-screen flex items-center justify-center">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
             </div>
         }>
-            <ToursContent />
+            <ToursContent initialData={initialData} initialSignature={initialSignature} />
         </Suspense>
     )
 }

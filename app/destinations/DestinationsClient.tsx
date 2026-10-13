@@ -61,7 +61,14 @@ function GallerySmallSkeleton() {
   )
 }
 
-function DestinationContent() {
+interface DestinationsProps {
+  /** Packages prefetched on the server for the URL's filters. */
+  initialPackages?: unknown[]
+  /** Destination image resolved on the server, so the hero needs no fetch. */
+  initialImage?: string
+}
+
+function DestinationContent({ initialPackages, initialImage }: DestinationsProps) {
   const searchParams = useSearchParams()
   const country = searchParams.get("country")
   const region = searchParams.get("region")
@@ -79,16 +86,17 @@ function DestinationContent() {
 
   // RTK Query hook for fetching destinations
   const { data: destinationsData } = useGetDestinationsQuery(queryParams, {
-    skip: !country && !region
+    skip: (!country && !region) || !!initialImage
   })
 
   // Extract destination image from the first result
   const destinationImage = useMemo(() => {
+    if (initialImage) return initialImage
     if (Array.isArray(destinationsData) && destinationsData.length > 0) {
       return (destinationsData[0] as { image?: string }).image
     }
     return undefined
-  }, [destinationsData])
+  }, [destinationsData, initialImage])
 
   return (
     <main className="w-full">
@@ -102,6 +110,7 @@ function DestinationContent() {
       {/* Both components bring their own section padding and background */}
       <div id="best-tours" className="scroll-mt-24">
         <BestTours
+          initialPackages={initialPackages}
           country={country}
           region={region}
           tourCategory={tourCategory}
@@ -117,14 +126,17 @@ function DestinationContent() {
   )
 }
 
-export default function DestinationsClient() {
+export default function DestinationsClient({
+  initialPackages,
+  initialImage,
+}: DestinationsProps = {}) {
   return (
     <Suspense fallback={
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
       </div>
     }>
-      <DestinationContent />
+      <DestinationContent initialPackages={initialPackages} initialImage={initialImage} />
     </Suspense>
   )
 }

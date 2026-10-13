@@ -20,56 +20,56 @@ const defaultTourTypes: TourType[] = [
     id: 1,
     type: "Family",
     tours: 0,
-    image: "/family.jpeg",
+    image: "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1920,c_limit/v1791880434/TravPlan/site/family.jpg",
     description: "Fun for the whole family"
   },
   {
     id: 2,
     type: "Couples",
     tours: 0,
-    image: "/couple.jpeg",
+    image: "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1920,c_limit/v1791880430/TravPlan/site/couple.jpg",
     description: "Romantic getaways for two"
   },
   {
     id: 3,
     type: "Friends",
     tours: 0,
-    image: "https://images.unsplash.com/photo-1539635278303-d4002c07eae3?w=600&auto=format&fit=crop&q=60",
+    image: "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_600,c_limit/v1791880467/TravPlan/stock/unsplash-1539635278303-d4002c07eae3.jpg",
     description: "Adventure with your squad"
   },
   {
     id: 4,
     type: "Adventure",
     tours: 0,
-    image: "/adventure.jpeg",
+    image: "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1920,c_limit/v1791880426/TravPlan/site/adventure.jpg",
     description: "Thrilling experiences await"
   },
   {
     id: 5,
     type: "Cultural & Architecture",
     tours: 0,
-    image: "https://images.unsplash.com/photo-1548013146-72479768bada?w=600&auto=format&fit=crop&q=60",
+    image: "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_600,c_limit/v1791880468/TravPlan/stock/unsplash-1548013146-72479768bada.jpg",
     description: "Explore heritage and history"
   },
   {
     id: 6,
     type: "Pilgrim Tours",
     tours: 0,
-    image: "/pilgrim.jpeg",
+    image: "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1920,c_limit/v1791880450/TravPlan/site/pilgrim.jpg",
     description: "Meet new travel companions"
   },
   {
     id: 7,
     type: "Luxury",
     tours: 0,
-    image: "/luxury.jpeg",
+    image: "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1920,c_limit/v1791880443/TravPlan/site/luxury.jpg",
     description: "Relax, rejuvenate, refresh"
   },
   {
     id: 8,
     type: "Instagrammable",
     tours: 0,
-    image: "/Instagrammable.jpeg",
+    image: "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1920,c_limit/v1791880424/TravPlan/site/instagrammable.jpg",
     description: "Picture-perfect destinations"
   },
 ]
@@ -81,9 +81,11 @@ interface TailoredToursProps {
   tourCategory?: string | null
   excludeCountry?: string | null
   destinationId?: number
+  /** Server-rendered tour-type counts, keyed by tour type. */
+  initialStats?: Record<string, number>
 }
 
-export default function TailoredTours({ country, region, saleSlug, tourCategory, excludeCountry, destinationId }: TailoredToursProps = {}) {
+export default function TailoredTours({ country, region, saleSlug, tourCategory, excludeCountry, destinationId, initialStats }: TailoredToursProps = {}) {
   const sectionRef = useRef<HTMLElement>(null)
   const [isInView, setIsInView] = useState(false)
 
@@ -117,9 +119,12 @@ export default function TailoredTours({ country, region, saleSlug, tourCategory,
   }), [destinationId, country, region, saleSlug, tourCategory, excludeCountry])
 
   // RTK Query hook - only fetch when in view
-  const { data: statsData, isLoading: loading } = useGetTourTypeStatsQuery(queryParams, {
-    skip: !isInView
+  const { data: fetchedStats, isLoading: fetching } = useGetTourTypeStatsQuery(queryParams, {
+    skip: !isInView || !!initialStats
   })
+  // Server-rendered counts arrive as a prop, so there is nothing to wait for.
+  const statsData = initialStats ?? fetchedStats
+  const loading = initialStats ? false : fetching
 
   // Merge API stats with default tour types
   const tourTypes = useMemo(() => {

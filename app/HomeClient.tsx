@@ -1,83 +1,61 @@
-"use client";
+/**
+ * The homepage sections below the hero.
+ *
+ * These used to be loaded with next/dynamic and `ssr: false`, which meant none
+ * of the content existed in the HTML: a visitor got skeletons, then waited for
+ * JS, then for each section to scroll into view, then for an API round trip.
+ * They are now rendered on the server from prefetched data, so the page is
+ * complete in the static HTML and the client queries are skipped entirely.
+ *
+ * This is a server component — the sections themselves are still client
+ * components for their carousels and observers, but they receive their data as
+ * props rather than fetching it.
+ */
+import ToursByBudget from "@/components/tours-by-budget"
+import TourCategories from "@/components/tour-categories"
+import DestinationsCarousel from "@/components/destinations-carousel"
+import TravelInfoSection from "@/components/travel-info"
+import PlanWithUs from "@/components/destination-plan"
+import TailoredTours from "@/components/tailored-tours"
+import VideoTestimonialsSection from "@/components/video-testimonials-section"
+import Gallery from "@/components/gallery"
+import type {
+    BudgetStats,
+    DestinationCard,
+    ExpertCard,
+    FeatureBox,
+    VideoReview,
+} from "@/lib/home-data"
 
-import dynamic from "next/dynamic";
-import {
-    CardGridSkeleton,
-    TourTypesSkeleton,
-    TravelInfoSkeleton,
-    CustomizeTripSkeleton,
-    CarouselSkeleton,
-    VideoTestimonialsSkeleton,
-    GallerySkeleton,
-} from "@/components/loading-skeletons";
+/**
+ * Every field is optional. A loader returns null when the database was
+ * unreachable, and the section then falls back to fetching on the client
+ * rather than rendering empty.
+ */
+export interface HomeData {
+    budgetStats?: BudgetStats
+    tourTypeStats?: Record<string, number>
+    destinations?: DestinationCard[]
+    featureBoxes?: FeatureBox[]
+    homepageSettings?: Record<string, string>
+    videoReviews?: VideoReview[]
+    experts?: ExpertCard[]
+}
 
-// Dynamic imports with ssr: false to reduce initial load time
-const ToursByBudget = dynamic(() => import("@/components/tours-by-budget"), {
-    loading: () => <CardGridSkeleton cards={2} />,
-    ssr: false,
-});
-
-const TourCategories = dynamic(() => import("@/components/tour-categories"), {
-    loading: () => <CardGridSkeleton cards={2} />,
-    ssr: false,
-});
-
-const GroupTours = dynamic(() => import("@/components/group-tours"), {
-    loading: () => <CardGridSkeleton cards={2} />,
-    ssr: false,
-});
-
-const TravelInfoSection = dynamic(() => import("@/components/travel-info"), {
-    loading: () => <TravelInfoSkeleton />,
-    ssr: false,
-});
-
-// The redesigned enquiry block, shared with the destination pages
-const PlanWithUs = dynamic(() => import("@/components/destination-plan"), {
-    loading: () => <CustomizeTripSkeleton />,
-    ssr: false,
-});
-
-const TopRated = dynamic(() => import("@/components/top-rated"), {
-    loading: () => <CarouselSkeleton items={3} />,
-    ssr: false,
-});
-
-const TailoredTours = dynamic(() => import("@/components/tailored-tours"), {
-    loading: () => <TourTypesSkeleton />,
-    ssr: false,
-});
-
-const VideoTestimonialsSection = dynamic(
-    () => import("@/components/video-testimonials-section"),
-    {
-        loading: () => <VideoTestimonialsSkeleton />,
-        ssr: false
-    }
-);
-
-const Gallery = dynamic(() => import("@/components/gallery"), {
-    loading: () => <GallerySkeleton />,
-    ssr: false,
-});
-
-const DestinationsCarousel = dynamic(() => import("@/components/destinations-carousel"), {
-    loading: () => <CarouselSkeleton />,
-    ssr: false,
-});
-
-export default function HomeClient() {
+export default function HomeClient({ data }: { data: HomeData }) {
     return (
         <>
-            <ToursByBudget />
+            <ToursByBudget initialStats={data.budgetStats} />
             <TourCategories />
-            <DestinationsCarousel />
-            <TravelInfoSection />
-            <PlanWithUs />
-            {/* <TopRated /> */}
-            <TailoredTours />
-            <VideoTestimonialsSection />
+            <DestinationsCarousel initialDestinations={data.destinations} />
+            <TravelInfoSection
+                initialFeatureBoxes={data.featureBoxes}
+                initialSettings={data.homepageSettings}
+            />
+            <PlanWithUs initialExperts={data.experts} />
+            <TailoredTours initialStats={data.tourTypeStats} />
+            <VideoTestimonialsSection initialTestimonials={data.videoReviews} />
             <Gallery />
         </>
-    );
+    )
 }

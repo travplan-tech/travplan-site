@@ -42,6 +42,8 @@ interface BestToursProps {
   destinationId?: number;
   /** Human label for the destination, e.g. "Tawang" */
   destinationName?: string | null;
+  /** Server-rendered packages; skips the client fetch when present. */
+  initialPackages?: unknown[];
 }
 
 const RatingStars: React.FC<{ rating: number }> = ({ rating }) => {
@@ -61,7 +63,7 @@ const RatingStars: React.FC<{ rating: number }> = ({ rating }) => {
   return <div className="flex items-center space-x-0.5">{stars}</div>;
 };
 
-export default function BestTours({ country, region, saleSlug, tourCategory, excludeCountry, tourType, destinationId, destinationName }: BestToursProps) {
+export default function BestTours({ country, region, saleSlug, tourCategory, excludeCountry, tourType, destinationId, destinationName, initialPackages }: BestToursProps) {
   const [brochureDialog, setBrochureDialog] = useState<{
     isOpen: boolean;
     packageId: number;
@@ -69,8 +71,9 @@ export default function BestTours({ country, region, saleSlug, tourCategory, exc
     brochureUrl: string | null;
   }>({ isOpen: false, packageId: 0, packageName: "", brochureUrl: null });
 
-  // RTK Query hook with filters
-  const { data: packagesData, isLoading } = useGetPackagesQuery({
+  // RTK Query hook with filters. Skipped when the server already rendered the
+  // same six packages, which is the case on a first page load.
+  const { data: packagesData, isLoading: fetching } = useGetPackagesQuery({
     country: country || undefined,
     region: region || undefined,
     saleSlug: saleSlug || undefined,
@@ -79,13 +82,17 @@ export default function BestTours({ country, region, saleSlug, tourCategory, exc
     tourType: tourType || undefined,
     destinationId: destinationId || undefined,
     limit: 6
-  });
+  }, { skip: !!initialPackages });
+
+  const isLoading = initialPackages ? false : fetching;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const rawData = packagesData as any;
-  const packages: Package[] = Array.isArray(rawData)
-    ? rawData.slice(0, 6)
-    : rawData?.packages?.slice(0, 6) || [];
+  const packages: Package[] = initialPackages
+    ? (initialPackages as Package[]).slice(0, 6)
+    : Array.isArray(rawData)
+      ? rawData.slice(0, 6)
+      : rawData?.packages?.slice(0, 6) || [];
 
   const displayName = saleSlug
     ? "Sale"

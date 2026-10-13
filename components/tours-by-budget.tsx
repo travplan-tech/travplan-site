@@ -6,6 +6,7 @@ import Link from "next/link"
 import { ArrowUpRight, IndianRupee } from "lucide-react"
 import { useGetBudgetStatsQuery } from "@/lib/api/packagesApi"
 import SectionHeading from "@/components/section-heading"
+import type { BudgetStats } from "@/lib/home-data"
 
 interface BudgetRange {
     label: string
@@ -29,10 +30,10 @@ const DEFAULT_GROUPS: BudgetGroup[] = [
         blurb: "Himalayan valleys, backwaters, deserts and the North East.",
         tours: 0,
         ranges: [
-            { label: "10,000", maxPrice: 10000, count: 0, image: "/mountain-forest.jpg" },
-            { label: "20,000", maxPrice: 20000, count: 0, image: "/spiti-valley-mountains.jpg" },
-            { label: "30,000", maxPrice: 30000, count: 0, image: "/kerala-backwaters.jpg" },
-            { label: "50,000", maxPrice: 50000, count: 0, image: "/arunachal-pradesh-mountains.jpg" },
+            { label: "10,000", maxPrice: 10000, count: 0, image: "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1920,c_limit/v1791880444/TravPlan/site/mountain-forest.jpg" },
+            { label: "20,000", maxPrice: 20000, count: 0, image: "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1920,c_limit/v1791880455/TravPlan/site/spiti-valley-mountains.jpg" },
+            { label: "30,000", maxPrice: 30000, count: 0, image: "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1920,c_limit/v1791880441/TravPlan/site/kerala-backwaters.jpg" },
+            { label: "50,000", maxPrice: 50000, count: 0, image: "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1920,c_limit/v1791880427/TravPlan/site/arunachal-pradesh-mountains.jpg" },
         ],
     },
     {
@@ -41,15 +42,20 @@ const DEFAULT_GROUPS: BudgetGroup[] = [
         blurb: "Short-haul escapes and long-haul holidays from India.",
         tours: 0,
         ranges: [
-            { label: "30,000", maxPrice: 30000, count: 0, image: "/thailand-beach.jpg" },
-            { label: "50,000", maxPrice: 50000, count: 0, image: "/nepal-kathmandu-himalaya.jpg" },
-            { label: "75,000", maxPrice: 75000, count: 0, image: "/buddhist-temple-golden-pagoda.jpg" },
-            { label: "1,00,000", maxPrice: 100000, count: 0, image: "/venice-italy-canal.jpg" },
+            { label: "30,000", maxPrice: 30000, count: 0, image: "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1920,c_limit/v1791880456/TravPlan/site/thailand-beach.jpg" },
+            { label: "50,000", maxPrice: 50000, count: 0, image: "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1920,c_limit/v1791880448/TravPlan/site/nepal-kathmandu-himalaya.jpg" },
+            { label: "75,000", maxPrice: 75000, count: 0, image: "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1920,c_limit/v1791880428/TravPlan/site/buddhist-temple-golden-pagoda.jpg" },
+            { label: "1,00,000", maxPrice: 100000, count: 0, image: "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1920,c_limit/v1791880457/TravPlan/site/venice-italy-canal.jpg" },
         ],
     },
 ]
 
-export default function ToursByBudget() {
+/**
+ * `initialStats` comes from the server render. When it is present the client
+ * query is skipped entirely: the numbers are already in the HTML and are as
+ * fresh as the page's revalidation window.
+ */
+export default function ToursByBudget({ initialStats }: { initialStats?: BudgetStats }) {
     const sectionRef = useRef<HTMLElement>(null)
     const [isInView, setIsInView] = useState(false)
     const [active, setActive] = useState<"domestic" | "international">("domestic")
@@ -76,7 +82,10 @@ export default function ToursByBudget() {
         return () => cancelAnimationFrame(rafId)
     }, [])
 
-    const { data: budgetData } = useGetBudgetStatsQuery(undefined, { skip: !isInView })
+    const { data: fetchedData } = useGetBudgetStatsQuery(undefined, {
+        skip: !isInView || !!initialStats,
+    })
+    const budgetData = initialStats ?? fetchedData
 
     const groups = DEFAULT_GROUPS.map((group) => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any

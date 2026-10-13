@@ -2,6 +2,20 @@ import { Metadata } from "next"
 import Hero from "@/components/hero"
 import HomeClient from "./HomeClient"
 import { SITE_URL } from "@/lib/site"
+import {
+  getBudgetStats,
+  getDestinations,
+  getFeatureBoxes,
+  getHomepageSettings,
+  getTourTypeStats,
+  getVideoReviews,
+  getExperts,
+} from "@/lib/home-data"
+
+// Prerendered at build time and rebuilt in the background every 5 minutes, so
+// a visitor is never waiting on the database. Next.js reads this statically, so
+// it has to be a literal and cannot reference PAGE_REVALIDATE.
+export const revalidate = 300
 
 export const metadata: Metadata = {
   title: { absolute: "Travplan Tour Packages | Group Trips & Custom Holidays" },
@@ -17,7 +31,7 @@ export const metadata: Metadata = {
     url: "/",
     type: "website",
     // Page-level openGraph replaces the root layout's, so the image is restated
-    images: ["/og-image.jpg"],
+    images: ["https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1920,c_limit/v1791880449/TravPlan/site/og-image.jpg"],
   },
 }
 
@@ -92,7 +106,40 @@ const jsonLd = {
   ],
 }
 
-export default function Home() {
+export default async function Home() {
+  // Deliberately sequential. Issuing all six at once needs six connections,
+  // and the database allows only 20 across every build worker and running
+  // instance; overshooting makes the queries fail and an empty homepage gets
+  // prerendered. These are cached, so the cost is paid once per revalidation,
+  // not per request.
+  const budgetStats = await getBudgetStats()
+  const tourTypeStats = await getTourTypeStats()
+  const destinations = await getDestinations()
+  const featureBoxes = await getFeatureBoxes()
+  const homepageSettings = await getHomepageSettings()
+  const videoReviews = await getVideoReviews()
+  // The homepage opens on the domestic team, so only those are needed up front.
+  const experts = await getExperts({ type: "DOMESTIC" })
+
+  // A build that cannot read the database would otherwise prerender a homepage
+  // with zeroed counts and no testimonials, exit 0, and deploy silently. Fail
+  // the build instead: a failed deploy is recoverable, a live empty homepage
+  // cached for the revalidation window is not. At request time the page still
+  // degrades gracefully, falling back to client-side fetching.
+  if (process.env.NEXT_PHASE === "phase-production-build") {
+    const missing = Object.entries({ budgetStats, destinations, tourTypeStats })
+      .filter(([, value]) => value === null)
+      .map(([name]) => name)
+
+    if (missing.length > 0) {
+      throw new Error(
+        `Refusing to prerender the homepage without ${missing.join(", ")}. ` +
+        `The database was unreachable during the build — most likely its ` +
+        `connection limit. Retry the deploy once connections free up.`
+      )
+    }
+  }
+
   return (
     <>
       <script
@@ -103,7 +150,19 @@ export default function Home() {
         {/* Hero loads immediately - above the fold */}
         <Hero />
         {/* Below-the-fold components loaded via HomeClient */}
-        <HomeClient />
+        <HomeClient
+          data={{
+            // null means the load failed, so drop the prop and let the
+            // section fetch client-side instead of showing an empty one.
+            budgetStats: budgetStats ?? undefined,
+            tourTypeStats: tourTypeStats ?? undefined,
+            destinations: destinations ?? undefined,
+            featureBoxes: featureBoxes ?? undefined,
+            homepageSettings: homepageSettings ?? undefined,
+            videoReviews: videoReviews ?? undefined,
+            experts: experts ?? undefined,
+          }}
+        />
       </main>
     </>
   )
