@@ -3,6 +3,8 @@ import CredentialsProvider from "next-auth/providers/credentials"
 import type { NextAuthOptions } from "next-auth"
 import bcrypt from "bcryptjs"
 import { prisma } from "./prisma"
+import { withDbRetry } from "./db-retry"
+import { resolveRole } from "./admin-allowlist"
 
 declare module "next-auth" {
     interface Session {
@@ -44,9 +46,21 @@ export const authOptions: NextAuthOptions = {
                     throw new Error("Invalid credentials")
                 }
 
-                const user = await prisma.user.findUnique({
-                    where: { email: credentials.email },
-                })
+                // Retried: the database's connection limit is routinely reached,
+                // and signing in is the one thing that must not fail because of
+                // it. A failure here is also reported distinctly — telling
+                // someone with the right password that their credentials are
+                // invalid would send them off resetting a working password.
+                let user
+                try {
+                    user = await withDbRetry(
+                        () => prisma.user.findUnique({ where: { email: credentials.email } }),
+                        { label: "signin" }
+                    )
+                } catch (error) {
+                    console.error("Sign-in failed: could not reach the database", error)
+                    throw new Error("Service temporarily unavailable. Please try again in a moment.")
+                }
 
                 if (!user || !user.password) {
                     throw new Error("Invalid credentials")
@@ -61,7 +75,9 @@ export const authOptions: NextAuthOptions = {
                     id: user.id.toString(),
                     email: user.email,
                     name: user.name,
-                    role: user.role,
+                    // Not user.role directly: an ADMIN row whose address is not
+                    // on the allowlist signs in as an ordinary customer.
+                    role: resolveRole(user.email, user.role),
                 }
             },
         }),

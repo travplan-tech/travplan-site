@@ -2,6 +2,7 @@ import { NextResponse, NextRequest } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
+import { requireAdmin } from "@/lib/auth-helpers"
 
 // GET - Fetch single expert
 export async function GET(
@@ -40,9 +41,9 @@ export async function PUT(
     { params }: { params: Promise<{ id: string }> }
 ) {
     try {
-        const session = await getServerSession(authOptions)
-        if (!session || session.user?.role !== "ADMIN") {
-            return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+        const { error, status } = await requireAdmin()
+        if (error) {
+            return NextResponse.json({ error }, { status })
         }
 
         const { id } = await params
@@ -85,9 +86,9 @@ export async function DELETE(
     { params }: { params: Promise<{ id: string }> }
 ) {
     try {
-        const session = await getServerSession(authOptions)
-        if (!session || session.user?.role !== "ADMIN") {
-            return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+        const { error, status } = await requireAdmin()
+        if (error) {
+            return NextResponse.json({ error }, { status })
         }
 
         const { id } = await params

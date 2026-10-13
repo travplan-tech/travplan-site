@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { v2 as cloudinary } from "cloudinary"
-import { requireAuth } from "@/lib/auth-helpers"
+import { requireAdmin } from "@/lib/auth-helpers"
 
 // Configure Cloudinary
 cloudinary.config({
@@ -12,8 +12,8 @@ cloudinary.config({
 export async function POST(request: Request) {
     try {
         // Check admin authorization
-        const { user, error, status } = await requireAuth()
-        if (error || !user || user.role !== "ADMIN") {
+        const { user, error, status } = await requireAdmin()
+        if (error || !user) {
             return NextResponse.json(
                 { error: error || "Unauthorized - Admin access required" },
                 { status: status || 403 }

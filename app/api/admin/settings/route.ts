@@ -2,6 +2,7 @@ import { NextResponse, NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma"
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { requireAdmin } from "@/lib/auth-helpers"
 
 // GET - Fetch site settings (public for sale button)
 export async function GET(request: NextRequest) {
@@ -39,9 +40,9 @@ export async function GET(request: NextRequest) {
 // POST - Update/Create site setting (admin only)
 export async function POST(request: NextRequest) {
     try {
-        const session = await getServerSession(authOptions);
-        if (!session || session.user?.role !== "ADMIN") {
-            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        const { error, status } = await requireAdmin()
+        if (error) {
+            return NextResponse.json({ error }, { status })
         }
 
         const { key, value } = await request.json();

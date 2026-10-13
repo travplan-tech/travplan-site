@@ -1,11 +1,17 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
+import { requireAdmin } from "@/lib/auth-helpers"
 
 // Prevent Next.js from caching this route
 export const dynamic = "force-dynamic"
 
 export async function GET() {
     try {
+    const { error, status } = await requireAdmin()
+    if (error) {
+        return NextResponse.json({ error }, { status })
+    }
+
         const sales = await prisma.sale.findMany({
             orderBy: { createdAt: 'desc' },
             select: {
@@ -29,6 +35,11 @@ export async function GET() {
 
 export async function POST(request: Request) {
     try {
+    const { error, status } = await requireAdmin()
+    if (error) {
+        return NextResponse.json({ error }, { status })
+    }
+
         const body = await request.json()
         const { name, slug, description, isActive } = body
 

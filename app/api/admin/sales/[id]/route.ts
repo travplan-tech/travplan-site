@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
+import { requireAdmin } from "@/lib/auth-helpers"
 
 // Prevent Next.js from caching this route
 export const dynamic = "force-dynamic"
@@ -7,6 +8,11 @@ export const dynamic = "force-dynamic"
 
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
+    const { error, status } = await requireAdmin()
+    if (error) {
+        return NextResponse.json({ error }, { status })
+    }
+
         const { id: idStr } = await params
         const id = parseInt(idStr)
         if (isNaN(id)) return NextResponse.json({ error: "Invalid ID" }, { status: 400 })
@@ -36,6 +42,11 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 
 export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
+    const { error, status } = await requireAdmin()
+    if (error) {
+        return NextResponse.json({ error }, { status })
+    }
+
         const { id: idStr } = await params
         const id = parseInt(idStr)
         if (isNaN(id)) return NextResponse.json({ error: "Invalid ID" }, { status: 400 })
@@ -83,6 +94,11 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
 
 export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
+    const { error, status } = await requireAdmin()
+    if (error) {
+        return NextResponse.json({ error }, { status })
+    }
+
         const { id: idStr } = await params
         const id = parseInt(idStr)
         if (isNaN(id)) return NextResponse.json({ error: "Invalid ID" }, { status: 400 })
