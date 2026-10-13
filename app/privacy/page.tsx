@@ -6,6 +6,15 @@ export const metadata = {
     description:
         'Read Travplan privacy policy to understand how enquiry details, contact information and website data are collected and used.',
     alternates: { canonical: '/privacy' },
+    // Without its own openGraph block this page inherits the root
+    // layout's og:url, which points at the homepage.
+    openGraph: {
+        title: 'Privacy Policy | Travplan',
+        description:
+            'Read Travplan privacy policy to understand how enquiry details, contact information and website data are collected and used.',
+        url: '/privacy',
+        type: 'website',
+    },
 };
 
 export default function PrivacyPolicyPage() {

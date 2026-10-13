@@ -115,15 +115,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Fetch destinations for country-based pages
     let destinationPages: MetadataRoute.Sitemap = []
     try {
+        // Only countries that actually have packages. Submitting a country
+        // with no inventory sends Google to a page that says "no tours
+        // available", which is a thin page: 11 of 13 destination URLs here
+        // were empty before this filter.
         const destinations = await prisma.destination.findMany({
             select: {
                 country: true,
                 updatedAt: true,
             },
             where: {
-                country: {
-                    not: null,
-                },
+                country: { not: null },
+                packages: { some: {} },
             },
             orderBy: {
                 updatedAt: "desc",

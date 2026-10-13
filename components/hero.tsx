@@ -21,11 +21,13 @@ const EMPTY_ARRAY: Destination[] = [];
 
 const TRUST_POINTS = ["Best price guarantee", "Verified local operators", "Fully customisable"];
 
+// Each link has to actually filter to its own place. These all pointed at
+// /tours?country=India, so every chip showed the same unfiltered India list.
 const QUICK_LINKS = [
-  { label: "Kashmir", href: "/tours?country=India" },
-  { label: "Ladakh", href: "/tours?country=India" },
-  { label: "Meghalaya", href: "/tours?country=India" },
-  { label: "Kerala", href: "/tours?country=India" },
+  { label: "Kashmir", href: "/tours?search=Kashmir" },
+  { label: "Ladakh", href: "/tours?search=Ladakh" },
+  { label: "Meghalaya", href: "/tours?search=Meghalaya" },
+  { label: "Kerala", href: "/tours?search=Kerala" },
   { label: "Vietnam", href: "/destinations?country=Vietnam" },
 ];
 
@@ -39,7 +41,7 @@ const Hero: React.FC = () => {
 
   const { data: homepageSettings } = useGetHomepageSettingsQuery();
   const defaultImageUrl =
-    "https://images.unsplash.com/photo-1764276266750-4d6316e972e0?q=80&w=1173&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+    "https://res.cloudinary.com/dcolmsvtp/image/upload/f_auto,q_auto,w_1173,c_limit/v1791880458/TravPlan/stock/unsplash-1764276266750-4d6316e972e0.jpg";
 
   const [shouldFetchDestinations, setShouldFetchDestinations] = useState(false);
   const { data: destinationsData } = useGetDestinationsQuery(undefined, {

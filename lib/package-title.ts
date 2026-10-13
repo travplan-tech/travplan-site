@@ -39,14 +39,33 @@ export function spelledDuration(duration?: string | null): string | null {
     return `${m[1]} nights, ${m[2]} days`
 }
 
+/** Rewrites a trailing "4N/5D" as "4 Nights, 5 Days". */
+function spellOutDuration(title: string): string {
+    return title.replace(
+        /(\d+)\s*N\s*\/\s*(\d+)\s*D\b/i,
+        (_, nights, days) =>
+            `${nights} ${nights === "1" ? "Night" : "Nights"}, ${days} ${days === "1" ? "Day" : "Days"}`
+    )
+}
+
 /**
- * Full <title> for a package page. Prefers the longer, more descriptive brand
- * suffix while it still fits inside Google's display width.
+ * Full <title> for a package page.
+ *
+ * "Kashmir Tour Package 4N/5D" reads like an internal SKU in a search result,
+ * so the spelled-out duration is preferred. Both that and the longer brand
+ * suffix are dropped in turn when they would push the title past Google's
+ * display width, rather than letting it get truncated.
  */
 export function packagePageTitle(raw: string, duration?: string | null): string {
-    const nice = readableTitle(raw, duration)
-    const preferred = `${nice} | Book with Travplan`
-    return preferred.length <= 60 ? preferred : `${nice} | Travplan`
+    const compact = readableTitle(raw, duration)
+    const spelled = spellOutDuration(compact)
+
+    const candidates = [
+        `${spelled} | Book with Travplan`,
+        `${spelled} | Travplan`,
+        `${compact} | Book with Travplan`,
+    ]
+    return candidates.find((c) => c.length <= 60) ?? `${compact} | Travplan`
 }
 
 /** Meta description for a package page, falling back to generated copy. */

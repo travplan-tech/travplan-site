@@ -6,6 +6,15 @@ export const metadata = {
     description:
         'Read Travplan cookie policy to understand how cookies and similar technologies may be used on the website.',
     alternates: { canonical: '/cookies' },
+    // Without its own openGraph block this page inherits the root
+    // layout's og:url, which points at the homepage.
+    openGraph: {
+        title: 'Cookie Policy | Travplan',
+        description:
+            'Read Travplan cookie policy to understand how cookies and similar technologies may be used on the website.',
+        url: '/cookies',
+        type: 'website',
+    },
 };
 
 export default function CookiePolicyPage() {
