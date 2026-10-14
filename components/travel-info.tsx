@@ -167,10 +167,10 @@ const TravelInfoSection: React.FC<TravelInfoProps> = ({
             const IconComponent = getIconComponent(box.icon)
             return (
               <div key={box.id} className={`p-6 rounded-lg bg-primary/10 flex flex-col space-y-3`}>
-                <h4 className="flex items-center text-xl font-semibold">
+                <h3 className="flex items-center text-xl font-semibold">
                   <IconComponent className={`w-6 h-6 mr-2 text-primary`} />
                   {box.title}
-                </h4>
+                </h3>
                 {box.description && (
                   <p className="text-sm">
                     {box.description}

@@ -303,7 +303,7 @@ const VideoCard = ({
                     {destination && destination.toLowerCase() !== "unknown" && (
                         <p className="text-xs font-semibold text-primary mb-1 uppercase tracking-widest">{destination}</p>
                     )}
-                    <h4 className="text-lg font-bold leading-tight">{name}</h4>
+                    <h3 className="text-lg font-bold leading-tight">{name}</h3>
                 </div>
 
                 {/* Play Button Overlay */}
