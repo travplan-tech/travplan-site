@@ -122,7 +122,7 @@ export default function DestinationsCarousel({
                             onClick={() => setSelectedFilter('DOMESTIC')}
                             className={`font-semibold px-4 py-2 rounded-lg transition-colors text-sm ${selectedFilter === 'DOMESTIC'
                                 ? 'bg-white text-gray-900 shadow-sm'
-                                : 'text-gray-500 hover:text-gray-900'
+                                : 'text-gray-600 hover:text-gray-900'
                             }`}
                         >
                             <span>Domestic</span>
@@ -131,7 +131,7 @@ export default function DestinationsCarousel({
                             onClick={() => setSelectedFilter('INTERNATIONAL')}
                             className={`font-semibold px-4 py-2 rounded-lg transition-colors text-sm ${selectedFilter === 'INTERNATIONAL'
                                 ? 'bg-white text-gray-900 shadow-sm'
-                                : 'text-gray-500 hover:text-gray-900'
+                                : 'text-gray-600 hover:text-gray-900'
                             }`}
                         >
                             <span>International</span>

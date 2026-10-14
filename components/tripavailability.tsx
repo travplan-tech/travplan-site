@@ -406,7 +406,7 @@ export default function TourAvailabilitySection({
                 <div className="text-center py-8 mb-8 border border-dashed border-gray-300 rounded-lg">
                     <Calendar className="w-12 h-12 text-gray-300 mx-auto mb-3" />
                     <p className="text-gray-500">No fixed departure dates available.</p>
-                    <p className="text-sm text-gray-400">Contact us for customized departure dates.</p>
+                    <p className="text-sm text-gray-500">Contact us for customized departure dates.</p>
                 </div>
             )}
 
@@ -424,7 +424,7 @@ export default function TourAvailabilitySection({
                             />
                         </div>
                     ) : (
-                        <div className="w-full aspect-video flex items-center justify-center text-gray-400">
+                        <div className="w-full aspect-video flex items-center justify-center text-gray-500">
                             <div className="text-center">
                                 <p className="text-sm">Price comparison chart not available</p>
                                 <p className="text-xs mt-1">Contact us for seasonal pricing details</p>

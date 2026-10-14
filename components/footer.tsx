@@ -207,7 +207,7 @@ export default function Footer() {
                   <Link href={link.href} className="hover:text-purple-600 transition-colors">
                     {link.name}
                   </Link>
-                  {index < footerLinks.legal.length - 1 && <span className="ml-4 text-gray-300">|</span>}
+                  {index < footerLinks.legal.length - 1 && <span aria-hidden="true" className="ml-4 text-gray-300">|</span>}
                 </span>
               ))}
             </div>

@@ -127,14 +127,13 @@ export default function ToursByBudget({ initialStats }: { initialStats?: BudgetS
                                 aria-pressed={active === group.key}
                                 className={`px-4 py-2 text-sm font-semibold rounded-lg transition-colors ${active === group.key
                                     ? "bg-white text-gray-900 shadow-sm"
-                                    : "text-gray-500 hover:text-gray-900"
+                                    : "text-gray-600 hover:text-gray-900"
                                     }`}
                             >
                                 {group.label}
                                 {group.tours > 0 && (
                                     <span
-                                        className={`ml-1.5 text-xs font-medium ${active === group.key ? "text-gray-400" : "text-gray-400"
-                                            }`}
+                                        className="ml-1.5 text-xs font-medium text-gray-600"
                                     >
                                         {group.tours}
                                     </span>

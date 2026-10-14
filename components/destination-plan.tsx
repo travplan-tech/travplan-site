@@ -139,7 +139,7 @@ export default function DestinationPlan({
                                 aria-pressed={type === option}
                                 className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-colors ${type === option
                                     ? "bg-white text-gray-900 shadow-sm"
-                                    : "text-gray-500 hover:text-gray-900"
+                                    : "text-gray-600 hover:text-gray-900"
                                     }`}
                             >
                                 {option}

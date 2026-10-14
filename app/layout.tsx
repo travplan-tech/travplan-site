@@ -5,7 +5,8 @@ import Header from "@/components/header";
 import Footer from "@/components/footer";
 import { Providers } from "./providers";
 import { LayoutWrapper } from "@/components/layout-wrapper";
-import MobileBottomBar from "@/components/mobile-bottom-bar";
+import MobileBottomBar from "@/components/mobile-bottom-bar"
+import Analytics from "@/components/analytics";
 import { prisma } from "@/lib/prisma";
 import { unstable_cache } from "next/cache";
 import { SITE_URL, SITE_NAME } from "@/lib/site";
@@ -134,6 +135,7 @@ export default async function RootLayout({
             {children}
           </LayoutWrapper>
           <MobileBottomBar />
+        <Analytics />
         </Providers>
       </body>
     </html>

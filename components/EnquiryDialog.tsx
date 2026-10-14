@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { useSession } from "next-auth/react"
 import { X, Send, CheckCircle, User, Mail, Phone, Users, MessageSquare } from "lucide-react"
 import { useSubmitEnquiryMutation } from "@/lib/api/publicApi"
+import { track } from "@/lib/analytics"
 
 interface EnquiryDialogProps {
     isOpen: boolean
@@ -74,6 +75,13 @@ export default function EnquiryDialog({
                 message: formData.message,
             }).unwrap()
 
+            // Only after the server accepted it, so the count matches the
+            // enquiries that actually arrived.
+            track("enquiry_submitted", {
+                package_id: packageId,
+                package_name: packageName,
+                travellers: formData.numberOfTravelers,
+            })
             setSuccess(true)
         } catch (err) {
             console.error("Enquiry submission error:", err)
