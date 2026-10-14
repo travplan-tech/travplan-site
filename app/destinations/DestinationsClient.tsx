@@ -66,9 +66,11 @@ interface DestinationsProps {
   initialPackages?: unknown[]
   /** Destination image resolved on the server, so the hero needs no fetch. */
   initialImage?: string
+  /** Planning copy built from live inventory on the server. */
+  initialIntro?: string
 }
 
-function DestinationContent({ initialPackages, initialImage }: DestinationsProps) {
+function DestinationContent({ initialPackages, initialImage, initialIntro }: DestinationsProps) {
   const searchParams = useSearchParams()
   const country = searchParams.get("country")
   const region = searchParams.get("region")
@@ -106,6 +108,7 @@ function DestinationContent({ initialPackages, initialImage }: DestinationsProps
         country={country}
         region={region}
         image={destinationImage}
+        description={initialIntro}
       />
       {/* Both components bring their own section padding and background */}
       <div id="best-tours" className="scroll-mt-24">
@@ -129,6 +132,7 @@ function DestinationContent({ initialPackages, initialImage }: DestinationsProps
 export default function DestinationsClient({
   initialPackages,
   initialImage,
+  initialIntro,
 }: DestinationsProps = {}) {
   return (
     <Suspense fallback={
@@ -136,7 +140,7 @@ export default function DestinationsClient({
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
       </div>
     }>
-      <DestinationContent initialPackages={initialPackages} initialImage={initialImage} />
+      <DestinationContent initialPackages={initialPackages} initialImage={initialImage} initialIntro={initialIntro} />
     </Suspense>
   )
 }

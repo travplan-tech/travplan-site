@@ -5,6 +5,7 @@ import { getDestinationSeo } from "./destination-seo"
 import DestinationsClient from "./DestinationsClient"
 import { PAGE_REVALIDATE, getDestinations } from "@/lib/home-data"
 import { getPackagesList } from "@/lib/packages-data"
+import { getDestinationFacts } from "@/lib/destination-facts"
 
 type SearchParams = Record<string, string | string[] | undefined>
 
@@ -121,6 +122,13 @@ export default async function DestinationsPage({
         country || region ? await getDestinations() : null,
     ]
 
+    // Planning copy built from real inventory, replacing the generic
+    // "Browse our curated collection" line.
+    const place = country || region
+    const facts = place
+        ? await getDestinationFacts(country ? { country } : { region: region as string }, place)
+        : null
+
     const heroImage = destinations?.find((d) =>
         country
             ? d.country?.toLowerCase() === country.toLowerCase()
@@ -131,6 +139,7 @@ export default async function DestinationsPage({
         <DestinationsClient
             initialPackages={result?.packages}
             initialImage={heroImage ?? undefined}
+            initialIntro={facts?.intro}
         />
     )
 }
