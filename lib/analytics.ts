@@ -7,9 +7,10 @@
  * when it is not — so the site behaves identically before the ID is added,
  * and no call site needs a guard.
  *
- * Set NEXT_PUBLIC_GA_ID (a G-XXXXXXX measurement id) in Vercel to switch it
- * on. NEXT_PUBLIC_GTM_ID is supported instead if you would rather manage tags
- * through Tag Manager; set one or the other, not both.
+ * The live property's id ships as the default. Set NEXT_PUBLIC_GA_ID to point
+ * at a different property, or to "off" to disable analytics entirely.
+ * NEXT_PUBLIC_GTM_ID is supported instead if you would rather manage tags
+ * through Tag Manager.
  */
 
 declare global {
@@ -19,7 +20,15 @@ declare global {
     }
 }
 
-export const GA_ID = process.env.NEXT_PUBLIC_GA_ID || ""
+/**
+ * A GA4 measurement id is not a secret — it is visible in the page source of
+ * every site that uses one — so the property's own id is the default and the
+ * env var is an override, for a staging property or to switch it off.
+ */
+const DEFAULT_GA_ID = "G-PF2EKVQ3KD"
+
+export const GA_ID =
+    process.env.NEXT_PUBLIC_GA_ID === "off" ? "" : (process.env.NEXT_PUBLIC_GA_ID || DEFAULT_GA_ID)
 export const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID || ""
 export const analyticsEnabled = Boolean(GA_ID || GTM_ID)
 
