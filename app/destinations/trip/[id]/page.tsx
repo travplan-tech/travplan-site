@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma"
 import { withDbRetry } from "@/lib/db-retry";
 import TripDetailClient, { TourData } from "./TripDetailClient";
 import { SITE_URL } from "@/lib/site"
+import { isPriceOnRequest } from "@/lib/pricing"
 import { upcomingDeparturesOnly, parseDepartureDates } from "@/lib/departures"
 import { packagePageTitle, packagePageDescription, readableTitle } from "@/lib/package-title"
 import Link from "next/link";
@@ -247,6 +248,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
 // Generate Schema.org structured data
 function generateJsonLd(tourData: TourData) {
+    const priceOnRequest = isPriceOnRequest(tourData.price);
     const mainImage = tourData.image || "/placeholder.jpg";
     const galleryImages = tourData.galleryImages.length > 0
         ? tourData.galleryImages
@@ -273,20 +275,25 @@ function generateJsonLd(tourData: TourData) {
                         description: day.description,
                     })),
                 },
-                offers: {
-                    "@type": "Offer",
-                    price: tourData.price,
-                    priceCurrency: "INR",
-                    availability: "https://schema.org/InStock",
-                    url: `${SITE_URL}/destinations/trip/${tourData.id}`,
-                    validFrom: new Date().toISOString(),
-                    priceValidUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-                    seller: {
-                        "@type": "Organization",
-                        name: "Travplan",
-                        url: SITE_URL,
+                // A package sold on enquiry has no price to publish. Emitting
+                // an Offer of 0 would advertise a free trip in search results,
+                // so the Offer is left off entirely instead.
+                ...(priceOnRequest ? {} : {
+                    offers: {
+                        "@type": "Offer",
+                        price: tourData.price,
+                        priceCurrency: "INR",
+                        availability: "https://schema.org/InStock",
+                        url: `${SITE_URL}/destinations/trip/${tourData.id}`,
+                        validFrom: new Date().toISOString(),
+                        priceValidUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+                        seller: {
+                            "@type": "Organization",
+                            name: "Travplan",
+                            url: SITE_URL,
+                        },
                     },
-                },
+                }),
                 provider: {
                     "@type": "TravelAgency",
                     name: "Travplan",
@@ -304,14 +311,16 @@ function generateJsonLd(tourData: TourData) {
                     "@type": "Brand",
                     name: "Travplan",
                 },
-                offers: {
-                    "@type": "Offer",
-                    price: tourData.price,
-                    priceCurrency: "INR",
-                    availability: "https://schema.org/InStock",
-                    url: `${SITE_URL}/destinations/trip/${tourData.id}`,
-                    priceValidUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
-                },
+                ...(priceOnRequest ? {} : {
+                    offers: {
+                        "@type": "Offer",
+                        price: tourData.price,
+                        priceCurrency: "INR",
+                        availability: "https://schema.org/InStock",
+                        url: `${SITE_URL}/destinations/trip/${tourData.id}`,
+                        priceValidUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
+                    },
+                }),
                 aggregateRating: tourData.reviewCount > 0 ? {
                     "@type": "AggregateRating",
                     ratingValue: tourData.rating?.toFixed(1) || "0",

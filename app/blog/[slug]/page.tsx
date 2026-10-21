@@ -7,6 +7,7 @@ import { Calendar, ChevronRight, Clock, MapPin } from "lucide-react"
 import { prisma } from "@/lib/prisma"
 import { SITE_URL, SITE_NAME } from "@/lib/site"
 import BlogContent from "@/components/blog-content"
+import { destinationSlug } from "@/lib/destination-slug"
 
 export const revalidate = 300
 export const dynamicParams = true
@@ -257,7 +258,7 @@ export default async function BlogPostPage({
                                         Compare itineraries, durations and prices.
                                     </p>
                                     <Link
-                                        href={`/destinations/trip?destination=${blog.destination.id}`}
+                                        href={`/destinations/${destinationSlug(blog.destination.name)}`}
                                         className="inline-flex items-center justify-center gap-2 w-full bg-primary hover:bg-primary/90 text-white font-semibold py-2.5 px-4 rounded-xl transition-colors mt-4 text-sm"
                                     >
                                         View trips

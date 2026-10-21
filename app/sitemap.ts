@@ -1,6 +1,8 @@
 import { MetadataRoute } from "next"
 import { prisma } from "@/lib/prisma"
 import { SITE_URL } from "@/lib/site"
+import { destinationSlug } from "@/lib/destination-slug"
+import { getDestinationGuide } from "@/lib/destination-content"
 
 // The sitemap is built from live package/destination data, so refresh it hourly
 // instead of freezing whatever existed at build time.
@@ -156,5 +158,38 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         console.error("Error fetching destinations for sitemap:", error)
     }
 
-    return [...staticPages, ...blogPages, ...dealPages, ...packagePages, ...destinationPages]
+    // Per-destination landing pages at /destinations/<slug>.
+    //
+    // Only destinations that have packages are submitted. The rest render and
+    // are crawlable, but they carry no inventory, so asking Google to index
+    // them would be submitting thin pages on purpose.
+    let destinationSlugPages: MetadataRoute.Sitemap = []
+    try {
+        const all = await prisma.destination.findMany({
+            select: { name: true, updatedAt: true, _count: { select: { packages: true } } },
+        })
+        // Submitted when the page has substance: live packages, a written
+        // guide, or both. The rest render and stay crawlable but are not
+        // offered to Google.
+        const worthIndexing = all.filter(
+            (d) => d._count.packages > 0 || getDestinationGuide(destinationSlug(d.name)) !== null
+        )
+        destinationSlugPages = worthIndexing.map((d) => ({
+            url: `${baseUrl}/destinations/${destinationSlug(d.name)}`,
+            lastModified: d.updatedAt,
+            changeFrequency: "weekly" as const,
+            priority: d._count.packages > 0 ? 0.8 : 0.6,
+        }))
+    } catch (error) {
+        console.error("Error fetching destination slugs for sitemap:", error)
+    }
+
+    return [
+        ...staticPages,
+        ...blogPages,
+        ...dealPages,
+        ...packagePages,
+        ...destinationSlugPages,
+        ...destinationPages,
+    ]
 }

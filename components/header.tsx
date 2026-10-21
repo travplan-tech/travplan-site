@@ -5,6 +5,7 @@ import { useState, useEffect, useRef, useMemo } from "react";
 import Image from "next/image";
 import { useSession, signOut } from "next-auth/react";
 import { useGetDestinationsByRegionQuery, useGetDestinationsByCountryQuery } from "@/lib/api/destinationsApi";
+import { destinationSlug } from "@/lib/destination-slug";
 
 // Define regions and their display order
 const REGIONS = [
@@ -174,7 +175,7 @@ export default function Header({ initialActiveSale }: HeaderProps = {}) {
                               {(indiaDestinations || []).slice(0, 5).map((dest) => (
                                 <li key={dest.id}>
                                   <Link
-                                    href={`/destinations/trip?destination=${dest.id}`}
+                                    href={`/destinations/${destinationSlug(dest.name)}`}
                                     className="text-gray-600 hover:text-primary text-sm transition"
                                     onClick={() => setIsDestinationsOpen(false)}
                                   >
@@ -252,7 +253,7 @@ export default function Header({ initialActiveSale }: HeaderProps = {}) {
                         {(indiaDestinations || []).map((dest) => (
                           <Link
                             key={dest.id}
-                            href={`/destinations/trip?destination=${dest.id}`}
+                            href={`/destinations/${destinationSlug(dest.name)}`}
                             className="text-gray-700 hover:text-primary text-sm transition block"
                             onClick={() => {
                               setIsDestinationsOpen(false);
@@ -509,7 +510,7 @@ export default function Header({ initialActiveSale }: HeaderProps = {}) {
                             {visibleDestinations.map((dest) => (
                               <Link
                                 key={dest.id}
-                                href={`/destinations/trip?destination=${dest.id}`}
+                                href={`/destinations/${destinationSlug(dest.name)}`}
                                 className="block text-sm text-gray-600 hover:text-primary py-0.5"
                                 onClick={(e) => {
                                   e.stopPropagation();
