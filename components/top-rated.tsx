@@ -1,4 +1,5 @@
 "use client";
+import { PRICE_ON_REQUEST_LABEL, isPriceOnRequest } from "@/lib/pricing";
 
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
@@ -195,13 +196,17 @@ export default function TopRated() {
                         <div className="flex items-end justify-between mb-4 mt-auto">
                           <span className="text-sm text-gray-500">{pkg.duration}</span>
                           <div className="text-right">
-                            {pkg.originalPrice && pkg.originalPrice > pkg.price && (
+                            {!isPriceOnRequest(pkg.price) && pkg.originalPrice && pkg.originalPrice > pkg.price && (
                               <span className="text-sm text-gray-400 line-through block">
                                 INR {pkg.originalPrice.toLocaleString("en-IN")}
                               </span>
                             )}
-                            <span className="text-xl font-bold text-gray-900">
-                              INR {pkg.price.toLocaleString("en-IN")}
+                            <span className={isPriceOnRequest(pkg.price)
+                              ? "text-sm font-semibold text-gray-700"
+                              : "text-xl font-bold text-gray-900"}>
+                              {isPriceOnRequest(pkg.price)
+                                ? PRICE_ON_REQUEST_LABEL
+                                : `INR ${pkg.price.toLocaleString("en-IN")}`}
                             </span>
                           </div>
                         </div>

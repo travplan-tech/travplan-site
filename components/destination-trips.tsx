@@ -5,6 +5,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { ArrowRight, Clock, Star, Users } from "lucide-react"
 import FavoriteButton from "@/components/FavoriteButton"
+import { PRICE_ON_REQUEST_LABEL, isPriceOnRequest } from "@/lib/pricing"
 import BrochureDialog from "@/components/BrochureDialog"
 import { useGetPackagesByDestinationQuery } from "@/lib/api/packagesApi"
 import SectionHeading from "@/components/section-heading"
@@ -166,15 +167,25 @@ export default function DestinationTrips({ destinationId, destinationName }: Des
 
                                         <div className="flex items-end justify-between gap-3 mt-5 pt-4 border-t border-white/20">
                                             <div>
-                                                <p className="text-[11px] text-white/60">per person from</p>
+                                                <p className="text-[11px] text-white/60">
+                                                    {isPriceOnRequest(pkg.price) ? "price" : "per person from"}
+                                                </p>
                                                 <p className="flex items-baseline gap-2">
-                                                    <span className="text-2xl font-bold text-white leading-none">
-                                                        ₹{pkg.price.toLocaleString("en-IN")}
-                                                    </span>
-                                                    {saving > 0 && pkg.originalPrice && (
-                                                        <span className="text-sm text-white/50 line-through">
-                                                            ₹{pkg.originalPrice.toLocaleString("en-IN")}
+                                                    {isPriceOnRequest(pkg.price) ? (
+                                                        <span className="text-base font-semibold text-white leading-none">
+                                                            {PRICE_ON_REQUEST_LABEL}
                                                         </span>
+                                                    ) : (
+                                                        <>
+                                                            <span className="text-2xl font-bold text-white leading-none">
+                                                                ₹{pkg.price.toLocaleString("en-IN")}
+                                                            </span>
+                                                            {saving > 0 && pkg.originalPrice && (
+                                                                <span className="text-sm text-white/50 line-through">
+                                                                    ₹{pkg.originalPrice.toLocaleString("en-IN")}
+                                                                </span>
+                                                            )}
+                                                        </>
                                                     )}
                                                 </p>
                                             </div>

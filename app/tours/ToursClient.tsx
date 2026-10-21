@@ -7,6 +7,7 @@ import { useSearchParams } from "next/navigation"
 import { ChevronDown, ChevronUp, Star, Check, Calendar, Users, Clock, Tag, Filter, X } from "lucide-react"
 import FavoriteButton from "@/components/FavoriteButton"
 import BrochureDialog from "@/components/BrochureDialog"
+import { formatPrice, isPriceOnRequest } from "@/lib/pricing"
 import { useGetPackagesQuery, useGetPackageFiltersQuery } from "@/lib/api/packagesApi"
 
 // Types
@@ -714,15 +715,17 @@ function ToursContent({ initialData, initialSignature }: ToursProps) {
                                                                 <p className="font-semibold text-gray-900">{tour.duration}</p>
                                                             </div>
                                                             <div className="text-right mb-3">
-                                                                {tour.originalPrice && tour.originalPrice > tour.price && (
+                                                                {!isPriceOnRequest(tour.price) && tour.originalPrice && tour.originalPrice > tour.price && (
                                                                     <p className="text-gray-400 text-sm line-through">
                                                                         From ₹{tour.originalPrice.toLocaleString("en-IN")}
                                                                     </p>
                                                                 )}
-                                                                <p className="text-2xl font-bold text-gray-900">
-                                                                    ₹{tour.price?.toLocaleString("en-IN")}
+                                                                <p className={isPriceOnRequest(tour.price)
+                                                                    ? "text-base font-semibold text-gray-700"
+                                                                    : "text-2xl font-bold text-gray-900"}>
+                                                                    {formatPrice(tour.price)}
                                                                 </p>
-                                                                {tour.saving && tour.saving > 0 ? (
+                                                                {!isPriceOnRequest(tour.price) && tour.saving && tour.saving > 0 ? (
                                                                     <p className="text-sm text-primary">
                                                                         Saving ₹{tour.saving.toLocaleString("en-IN")} 🏷️
                                                                     </p>
