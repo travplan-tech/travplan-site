@@ -1,6 +1,31 @@
 import type { DestinationGuide } from "../destination-content"
 
 export const INDIA_NORTH: Record<string, DestinationGuide> = {
+    "varanasi-ayodhya": {
+        intro: [
+            "Varanasi and Ayodhya anchor India's northern pilgrimage circuit — the ghats of Kashi on the Ganga, the Buddhist stupas of Sarnath a few kilometres out, and the Shri Ram Janmabhoomi temple three hours north on the Saryu.",
+            "Most trips pair them over three or four nights, usually flying into Varanasi and out of Lucknow or Ayodhya, with Prayagraj and the Triveni Sangam added on the drive between the two.",
+        ],
+        bestTime: [
+            "October to March is the comfortable season, with mild days for walking the ghats and bearable mornings at the temples. Dev Deepawali in November lights every ghat in Varanasi with lamps and is the most spectacular night of the year to be there.",
+            "April to June is severe on the plains, regularly above 42°C, with little shade at the ghats. July to September brings monsoon rain and a swollen Ganga, which can close the lower ghat steps and suspend boat rides, though the city is far quieter and rates drop.",
+        ],
+        thingsToDo: [
+            { title: "Ganga Aarti at Dashashwamedh Ghat", blurb: "Lamps, chanting and devotional ritual at dusk on the river's edge — the thing most people come for." },
+            { title: "Kashi Vishwanath Temple", blurb: "One of the twelve Jyotirlingas and the spiritual centre of Varanasi, reached through the rebuilt corridor from the river." },
+            { title: "Shri Ram Janmabhoomi Mandir", blurb: "The temple at Ayodhya's centre, with Hanuman Garhi and Kanak Bhawan a short walk away." },
+            { title: "Sarnath", blurb: "The Dhamek Stupa, Chaukhandi Stupa and the Archaeological Museum, where Buddha gave his first sermon — ten kilometres from Varanasi." },
+            { title: "Triveni Sangam, Prayagraj", blurb: "The confluence of the Ganga, Yamuna and the mythical Saraswati, usually taken in on the drive from Varanasi to Ayodhya." },
+            { title: "Ram Ki Paidi and Saryu Aarti", blurb: "Ayodhya's stepped riverfront, at its best during the evening aarti." },
+        ],
+        daysNeeded: "Three nights and four days covers Varanasi, Sarnath and Ayodhya at a reasonable pace. Add a night if you want Prayagraj unhurried rather than as a stop on the drive, or if you are continuing to Bodh Gaya.",
+        faqs: [
+            { q: "How do we get there and back?", a: "Varanasi has an airport and a major railhead, and most itineraries start there. Ayodhya now has its own airport and station, and Lucknow is around three hours away — so you can fly in and out without retracing the route." },
+            { q: "Do we need to book darshan in advance?", a: "Shri Ram Janmabhoomi uses a timed entry system and gets very busy at weekends and festivals. Kashi Vishwanath has separate queues, including a paid fast-track. We advise on current arrangements when you book, as they change." },
+            { q: "Is a boat ride included?", a: "Not usually — boat rides on the Ganga and at Triveni Sangam are paid locally and depend on water levels. The early morning ride along the ghats is worth doing and costs very little." },
+            { q: "What should we wear?", a: "Modest clothing covering shoulders and knees for temples, and shoes you can slip off easily — you will remove them often. Some temples restrict phones, cameras and bags, so carry as little as possible." },
+        ],
+    },
     "char-dham-yatra": {
         intro: [
             "The Char Dham circuit links Yamunotri, Gangotri, Kedarnath and Badrinath — the four Himalayan shrines of Uttarakhand, at the sources of the Yamuna and Ganga and in the high valleys beyond.",

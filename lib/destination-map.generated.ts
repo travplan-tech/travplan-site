@@ -45,4 +45,5 @@ export const DESTINATION_SLUG_BY_ID: Record<number, string> = {
     44: "georgia",
     45: "nepal",
     47: "jibhi",
+    48: "varanasi-ayodhya",
 }

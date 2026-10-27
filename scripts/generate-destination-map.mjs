@@ -11,7 +11,7 @@
  * than emptied — a stale entry still redirects correctly, and the route falls
  * back to a database lookup for any id the table does not cover.
  */
-import { writeFile, access } from "node:fs/promises"
+import { writeFile, access, readFile, readdir } from "node:fs/promises"
 import { PrismaClient } from "@prisma/client"
 import { PrismaPg } from "@prisma/adapter-pg"
 import { Pool } from "pg"
@@ -64,6 +64,28 @@ try {
     })
     await writeFile(OUT, render(rows.map((d) => [d.id, destinationSlug(d.name)])), "utf8")
     console.log(`destination map: wrote ${rows.length} entries`)
+
+    // A destination with no written guide renders its trips and then nothing
+    // but the generic FAQ, which is exactly the thin page these guides exist
+    // to remove. It is easy to miss, because the page still returns 200 and
+    // still looks populated above the fold — so say so loudly at build time.
+    const guideDir = new URL("../lib/destination-guides/", import.meta.url)
+    const slugs = new Set()
+    for (const file of await readdir(guideDir)) {
+        const src = await readFile(new URL(file, guideDir), "utf8")
+        for (const m of src.matchAll(/^    "?([a-z][a-z0-9-]*)"?: \{/gm)) slugs.add(m[1])
+    }
+    const missing = rows.filter((d) => !slugs.has(destinationSlug(d.name)))
+    if (missing.length) {
+        console.warn(
+            `\n⚠ ${missing.length} destination(s) have no guide in lib/destination-guides — ` +
+            `their pages will show only the generic FAQ:`
+        )
+        for (const d of missing) console.warn(`    ${destinationSlug(d.name).padEnd(26)} (${d.name})`)
+        console.warn("")
+    } else {
+        console.log(`destination map: all ${rows.length} destinations have a guide`)
+    }
 } catch (error) {
     await keepExisting(error?.message || String(error))
 } finally {
