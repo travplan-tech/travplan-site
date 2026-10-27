@@ -127,6 +127,15 @@ async function queryPackages(q: PackageQuery): Promise<PackageListResult> {
         )
     }
 
+    // The default sort spreads results across destinations. The callers spell
+    // that default differently — /api/packages sends "popular", the server
+    // components send nothing — so all three spellings count as default. An
+    // explicit price/rating/duration sort is the user's instruction and is
+    // left alone.
+    if (!q.sortBy || q.sortBy === "recommended" || q.sortBy === "popular") {
+        filtered = spreadAcrossDestinations(filtered)
+    }
+
     const total = filtered.length
     const limit = q.limit ?? 0
     const page = q.page ?? 1
@@ -177,6 +186,66 @@ const loadPackages = unstable_cache(queryPackages, ["packages-list"], {
  * Cached package listing. Returns null if the read failed, so a caller can
  * fall back to fetching on the client rather than rendering an empty list.
  */
+/**
+ * Spreads a listing across its destinations instead of letting one fill the top.
+ *
+ * The default sort is newest-first, and on a region page that meant the top of
+ * /destinations?region=Asia was Ladakh, Ladakh, Spiti — three India trips —
+ * while Vietnam sat below the fold. India holds 39 of 41 packages, so date
+ * order is effectively country order.
+ *
+ * Two rules, applied to the destination groups rather than to packages:
+ * countries other than the listing's dominant one come first, then smaller
+ * catalogues, then one package is taken from each group in turn. Every
+ * destination therefore appears before any destination appears twice, and the
+ * order within a destination stays whatever the caller asked for.
+ */
+function spreadAcrossDestinations<
+    T extends { destination?: { id: number; name: string; country: string | null } | null }
+>(packages: T[]): T[] {
+    if (packages.length < 2) return packages
+
+    const groups = new Map<number, T[]>()
+    for (const pkg of packages) {
+        const key = pkg.destination?.id ?? -1
+        const group = groups.get(key)
+        if (group) group.push(pkg)
+        else groups.set(key, [pkg])
+    }
+    if (groups.size < 2) return packages
+
+    const byCountry = new Map<string, number>()
+    for (const pkg of packages) {
+        const country = pkg.destination?.country ?? ""
+        byCountry.set(country, (byCountry.get(country) ?? 0) + 1)
+    }
+    let dominant = ""
+    let best = -1
+    for (const [country, count] of byCountry) {
+        if (count > best) {
+            best = count
+            dominant = country
+        }
+    }
+
+    const ordered = [...groups.values()].sort((a, b) => {
+        const aDominant = (a[0].destination?.country ?? "") === dominant ? 1 : 0
+        const bDominant = (b[0].destination?.country ?? "") === dominant ? 1 : 0
+        if (aDominant !== bDominant) return aDominant - bDominant
+        if (a.length !== b.length) return a.length - b.length
+        return (a[0].destination?.name ?? "").localeCompare(b[0].destination?.name ?? "")
+    })
+
+    const out: T[] = []
+    for (let round = 0; out.length < packages.length; round++) {
+        for (const group of ordered) {
+            if (round < group.length) out.push(group[round])
+        }
+    }
+    return out
+}
+
+
 export async function getPackagesList(q: PackageQuery): Promise<PackageListResult | null> {
     try {
         return await withDbRetry(() => loadPackages(q), { label: "getPackagesList" })

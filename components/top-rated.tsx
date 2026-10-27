@@ -183,7 +183,7 @@ export default function TopRated() {
                             {pkg.rating.toFixed(1)}
                           </span>
                           <span className="text-sm text-primary">
-                            ({reviewCount} reviews)
+                            {reviewCount > 0 ? `(${reviewCount} reviews)` : ""}
                           </span>
                         </div>
 

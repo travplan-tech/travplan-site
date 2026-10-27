@@ -44,12 +44,38 @@ const PHOTOS = {
     "prayagraj-sangam-ritual": "1791727868189-4ca392706837",
     "prayagraj-sangam-boats": "1743332509532-f4c6a854f3c9",
     "prayagraj-sangam-crowd": "1674358596018-5b768ca9cfd1",
+    "manali-town-snowpeaks": "1597167231350-d057a45dc868",
+    "manali-valley-river": "1678261151315-887e2dd253e8",
+    "manali-old-cafe-street": "1571677465484-2dd540924245",
+    "manali-pine-mountain": "1565610468500-adc61f362be5",
+    "solang-paragliding": "1497267049703-01d7eb538c99",
+    "solang-snow-group": "1679407985687-08a86c5c53ba",
+    "kasol-riverside": "1652501835967-c8fdb202e098",
+    "kasol-town-mountains": "1652379379235-652d2a6d65e8",
+    "parvati-valley-river": "1652501834567-937de29c4533",
+    "parvati-river-forest": "1673815994546-9913f4d76b77",
+    "kashmir-dal-houseboats": "1595815771614-ade9d652a65d",
+    "kashmir-dal-shikaras": "1715457573748-8e8a70b2c1be",
+    "kashmir-dal-reflection": "1614591276564-7b3e69347a48",
+    "kashmir-dal-fruit-seller": "1564327287902-0ccf559d839e",
+    "kashmir-dal-floating-village": "1768147765107-5eef8e032a62",
+    "kashmir-meadow-village": "1646204892016-711ed35535ec",
+    "kashmir-meadow-horses": "1666545380922-1296a4ac9521",
+    "kashmir-meadow-mountains": "1666545378454-b605635dd55d",
+    "kashmir-valley-river": "1666513307023-5967bf290101",
+    "kashmir-snow-range": "1716099933931-628733759685",
 }
 
 const urls = {}
 let failed = 0
 
+// --only <substr,substr> uploads just the matching names, so adding a set
+// later does not re-upload everything already in TravPlan/stock.
+const onlyArg = process.argv[process.argv.indexOf("--only") + 1]
+const only = process.argv.includes("--only") && onlyArg ? onlyArg.split(",") : null
+
 for (const [name, id] of Object.entries(PHOTOS)) {
+    if (only && !only.some((frag) => name.includes(frag))) continue
     const publicId = `TravPlan/stock/${name}`
     // No query string: that fetches the original rather than a resized variant.
     const source = `https://images.unsplash.com/photo-${id}`

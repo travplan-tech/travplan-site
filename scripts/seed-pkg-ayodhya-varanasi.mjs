@@ -85,13 +85,14 @@ const itinerary = [
     },
     {
         day: 2,
-        title: "Varanasi Full Day Sightseeing | Temples & Ghats of Kashi",
+        title: "Varanasi & Sarnath | Temples, Ghats and the First Sermon",
         description:
             "* Enjoy breakfast at the hotel and set out to explore the sacred city of Kashi.\n" +
             "* Visit the Kashi Vishwanath Temple, one of the twelve Jyotirlingas and the spiritual centre of Varanasi.\n" +
             "* Seek blessings at the Kal Bhairav Temple, the guardian deity of the city.\n" +
             "* Continue to the Sankat Mochan Hanuman Temple, Durga Temple, Tulsi Manas Temple, Annapurna Temple and Bharat Mata Temple.\n" +
             "* Spend time at Assi Ghat, Dashashwamedh Ghat and Manikarnika Ghat along the Ganga.\n" +
+            "* Drive the short distance to Sarnath, where Lord Buddha delivered his first sermon, for the Dhamek Stupa, Chaukhandi Stupa and the Archaeological Museum.\n" +
             "* Return to the hotel in the evening and unwind.\n\n" +
             "🏨 Overnight Stay: Varanasi\n" +
             "🍽️ Meals Included: Breakfast\n" +
@@ -105,23 +106,23 @@ const itinerary = [
     },
     {
         day: 3,
-        title: "Varanasi to Ayodhya via Sarnath | Buddhist Heritage & Saryu Aarti",
+        title: "Varanasi to Ayodhya via Prayagraj | Triveni Sangam & Saryu Aarti",
         description:
-            "* After breakfast, check out from the hotel and proceed to Sarnath, one of the most important Buddhist pilgrimage destinations, where Lord Buddha delivered his first sermon.\n" +
-            "* Visit the magnificent Dhamek Stupa, a historic monument marking the sacred site associated with Buddha's first sermon.\n" +
-            "* Explore Chaukhandi Stupa, believed to mark the place where Buddha met his first disciples after attaining enlightenment.\n" +
-            "* Visit Mulagandha Kuti Vihar, a beautiful Buddhist temple known for its peaceful atmosphere, murals and spiritual significance.\n" +
-            "* Stop at the Sarnath Archaeological Museum, home to the Lion Capital of Ashoka and a notable collection of Buddhist sculpture.\n" +
-            "* Drive on to Ayodhya and, in the evening, visit Saryu Ghat to witness the Aarti.\n" +
-            "* Check in to the hotel for an overnight stay.\n\n" +
+            "* After breakfast, check out from the hotel and drive to Prayagraj, the sacred city of the Triveni Sangam.\n" +
+            "* Experience the holy confluence of the Ganga, the Yamuna and the mythical Saraswati at Triveni Sangam.\n" +
+            "* Continue towards Ayodhya, the birthplace of Lord Ram.\n" +
+            "* On arrival, check in to the hotel and freshen up.\n" +
+            "* In the evening, subject to timing, visit Ram Ki Paidi and the Saryu Ghat for the Aarti.\n" +
+            "* Overnight stay in Ayodhya.\n\n" +
             "🏨 Overnight Stay: Ayodhya\n" +
             "🍽️ Meals Included: Breakfast\n" +
-            "🚗 Total Drive: 5–6 hrs\n" +
+            "🚗 Total Drive: 7–8 hrs\n" +
             "🌡️ Weather: 14–32°C\n\n" +
-            "💡 TravPlan Insider: Try to complete Sarnath sightseeing in the first half of the day to allow enough time for the drive to Ayodhya. If you arrive before the evening Aarti, enjoy a peaceful walk along the Saryu River.\n\n" +
+            "💡 TravPlan Insider: This is the longest driving day of the trip. Leave Varanasi early so there is real time at the Sangam, and you still reach Ayodhya before the evening Aarti.\n\n" +
             "📌 Points to note:\n" +
-            "* The transfer to Ayodhya may take several hours depending on traffic and road conditions.\n" +
-            "* Saryu Ghat Aarti timings may vary according to the season and local arrangements.\n",
+            "* Time at Prayagraj and the drive on to Ayodhya vary with traffic and road conditions.\n" +
+            "* A boat ride at Triveni Sangam is not included and is paid locally.\n" +
+            "* Saryu Aarti timings vary with the season and local arrangements.\n",
     },
     {
         day: 4,
@@ -145,25 +146,27 @@ const itinerary = [
 ]
 
 const pkg = {
-    title: "Ayodhya & Varanasi | Sacred Journeys, Timeless Experiences",
+    title: "Ayodhya, Prayagraj & Varanasi | Sacred Journeys, Timeless Experiences",
     description:
-        "A 3 Nights / 4 Days journey into the heart of faith — Varanasi's eternal ghats and evening Ganga Aarti, the Buddhist stupas of Sarnath, and the divine aura of Ayodhya's Shri Ram Janmabhoomi Mandir. Fly into Varanasi, out of Lucknow, and spend three nights across two of India's most sacred cities.",
+        "A 3 Nights / 4 Days journey into the heart of faith — Varanasi's eternal ghats and evening Ganga Aarti, the Buddhist stupas of Sarnath, the sacred confluence of the Ganga, Yamuna and Saraswati at Prayagraj, and the divine aura of Ayodhya's Shri Ram Janmabhoomi Mandir.",
     price: PRICE,
     originalPrice: ORIGINAL_PRICE,
     duration: "3N/4D",
-    cities: "Varanasi → Sarnath → Ayodhya → Lucknow",
+    cities: "Varanasi → Sarnath → Prayagraj → Ayodhya",
     image: IMAGE,
     mapImage: MAP_IMAGE,
     galleryImages: GALLERY,
     highlights:
         "🛕 Darshan at the Shri Ram Janmabhoomi Temple in Ayodhya, one of the most significant pilgrimage sites in India.\n" +
         "🪔 Witness the divine evening Ganga Aarti at Dashashwamedh Ghat, with its lamps, chants and devotional rituals.\n" +
+        "🌊 Experience the holy confluence of the Ganga, Yamuna and mythical Saraswati at Triveni Sangam, Prayagraj.\n" +
         "🌊 Spend time along the ghats of Kashi — Assi, Dashashwamedh and Manikarnika — on the banks of the holy Ganga.\n" +
         "☸️ Explore Sarnath, where Lord Buddha delivered his first sermon, including the Dhamek and Chaukhandi Stupas.\n" +
         "🛕 Visit the Kashi Vishwanath Temple, one of the twelve Jyotirlingas and the spiritual centre of Varanasi.\n" +
         "🌅 Witness the evening Aarti at Saryu Ghat in Ayodhya.\n" +
         "🏛️ Discover ancient temples and the rich cultural heritage of Uttar Pradesh's pilgrimage circuit.",
     specialNotes:
+        "💰 Pricing: ₹11,500 per person on a group of 4. For two travelling together the trip is ₹27,000 for the couple. Rates vary with group size — tell us how many of you there are and we will confirm the exact figure.\n" +
         "🧳 Travel Essentials: Carry a valid ID proof, modest attire for temple visits, a small day bag, personal medication, both cash and digital payment, and any spiritual essentials you wish to bring.\n" +
         "🙏 Respecting Sacred Spaces: This is a spiritual journey through some of India's most sacred destinations. Please respect the sanctity of temples, ghats and religious spaces by following local customs, maintaining appropriate attire, and cooperating with site-specific guidelines.\n" +
         "🕰️ Cab Timings: Cab service runs from 7:00 AM to 7:00 PM, or until the day's sightseeing is complete as per the itinerary.\n" +
@@ -229,7 +232,13 @@ if (destination.createdAt.getTime() === destination.updatedAt.getTime()) {
     console.log(`using destination ${destination.id} — ${destination.name}`)
 }
 
-const existing = await prisma.package.findFirst({ where: { title: pkg.title } })
+// The package was first seeded before Prayagraj was added, under its old
+// title. Matching that too updates the existing row in place rather than
+// leaving a second, near-identical package behind at a different URL.
+const PREVIOUS_TITLES = ["Ayodhya & Varanasi | Sacred Journeys, Timeless Experiences"]
+const existing = await prisma.package.findFirst({
+    where: { title: { in: [pkg.title, ...PREVIOUS_TITLES] } },
+})
 
 const saved = existing
     ? await prisma.package.update({ where: { id: existing.id }, data: { ...pkg, destinationId: destination.id } })

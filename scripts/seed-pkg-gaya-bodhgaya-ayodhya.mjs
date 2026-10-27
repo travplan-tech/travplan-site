@@ -194,6 +194,7 @@ const pkg = {
         "🗓️ Site Closures: Travellers are advised to confirm that the chosen destinations are open on their travel dates.\n" +
         "🩺 Health: All travellers must ensure they are medically fit for travel. Travel insurance is highly recommended but not included.\n" +
         "💰 Package Rates: Prices are subject to change due to revisions in hotel tariffs, transportation costs, taxes, or any modifications requested after booking.\n" +
+        "📅 Best Time to Visit: October to March.\n" +
         "🌱 Travel Responsibly: Respect nature and local culture, support local communities, and take nothing but pictures.",
     tourType: "Pilgrim Tours, Family",
     tourCategory: "PRIVATE",
@@ -212,21 +213,32 @@ const pkg = {
     departurePoints: "Gaya",
     itinerary: JSON.stringify(itinerary),
     inclusions:
-        "* 4 nights accommodation.\n" +
-        "* 4 breakfasts.\n" +
-        "* Gaya pickup from Airport/Railway Station on Day 1.\n" +
-        "* Ayodhya drop at Railway Station/Airport on Day 5.\n" +
-        "* All sightseeing and transfers by private vehicle as per the itinerary.\n" +
-        "* All applicable driver allowance, toll tax, parking charges and fuel expenses.\n",
+        "* Accommodation for 4 nights on twin/triple sharing basis.\n" +
+        "* Daily breakfast at the hotel.\n" +
+        "* All transfers and sightseeing by private vehicle as per the itinerary.\n" +
+        "* Pickup from Gaya Railway Station / Airport.\n" +
+        "* Drop at Ayodhya Railway Station / Airport, or a location of your choice.\n" +
+        "* Gaya and Bodh Gaya sightseeing as mentioned in the itinerary.\n" +
+        "* Varanasi local sightseeing and the Sarnath excursion.\n" +
+        "* Prayagraj sightseeing, including Triveni Sangam.\n" +
+        "* Ayodhya local sightseeing as mentioned in the itinerary.\n" +
+        "* All applicable toll taxes, parking charges and driver allowances.\n" +
+        "* Fuel expenses for the vehicle.\n" +
+        "* All applicable interstate and state taxes.\n" +
+        "* Assistance throughout the tour.\n",
     exclusions:
-        "* Airfare / train fare.\n" +
+        "* Airfare and train tickets.\n" +
         "* Lunch and dinner.\n" +
-        "* Any boat ride at Triveni Sangam or on the Ganga.\n" +
-        "* Monument and temple entry charges wherever applicable.\n" +
-        "* Personal expenses such as laundry, telephone calls, shopping, tips, porterage and beverages.\n" +
-        "* Travel insurance.\n" +
-        "* Medical expenses and emergency evacuation.\n" +
-        "* Expenses arising due to flight or train delays and cancellations, roadblocks, weather conditions, or any force majeure events.\n" +
+        "* Personal expenses such as laundry, telephone calls and room service.\n" +
+        "* Boat ride at Varanasi.\n" +
+        "* Any special pooja, rituals or religious ceremonies.\n" +
+        "* VIP or special darshan charges at temples, where applicable.\n" +
+        "* Monument, museum and sightseeing entry tickets.\n" +
+        "* Camera and video camera charges wherever applicable.\n" +
+        "* Guide charges.\n" +
+        "* Any additional sightseeing not mentioned in the itinerary.\n" +
+        "* Expenses arising from natural calamities, roadblocks, strikes, weather conditions or other unforeseen circumstances.\n" +
+        "* Any increase in taxes, fuel prices or transportation costs after confirmation.\n" +
         "* Anything not specifically mentioned under Inclusions.\n",
     cancellationPolicy:
         "* 30 days or more before departure: Full refund after deducting a 10% administrative fee.\n" +

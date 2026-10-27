@@ -211,7 +211,7 @@ export default function BestTours({ country, region, saleSlug, tourCategory, exc
                                 {pkg.rating.toFixed(1)}
                               </span>
                               <span className="text-sm text-primary">
-                                ({reviewCount} reviews)
+                                {reviewCount > 0 ? `(${reviewCount} reviews)` : ""}
                               </span>
                             </div>
 
