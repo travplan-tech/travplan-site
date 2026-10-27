@@ -80,21 +80,6 @@ const nextConfig = {
         ],
       },
       {
-        // /destinations and /tours render from searchParams, which makes them
-        // dynamic, and Next then sends no-store: every visitor paid a server
-        // invocation (~350ms) for markup that is identical for everyone and
-        // only changes when inventory does. Their output depends on the URL
-        // alone, so the CDN can serve it; stale-while-revalidate means the
-        // refresh happens behind a cache hit rather than in front of a visitor.
-        source: '/:path(destinations|tours)',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, s-maxage=300, stale-while-revalidate=86400',
-          },
-        ],
-      },
-      {
         source: '/:path*',
         headers: [
           {
