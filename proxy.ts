@@ -16,19 +16,6 @@ import type { NextRequest } from "next/server"
 const CANONICAL_HOST = "www.travplan.in"
 const APEX_HOST = "travplan.in"
 
-/**
- * Listings whose output depends only on the URL.
- *
- * Both read searchParams, which makes them dynamic, and Next then sends
- * no-store: every visitor paid a server invocation for markup that is the
- * same for everyone and only changes when inventory does. Setting the header
- * in next.config does not survive — Vercel replaces it on a dynamic page
- * response — but a header set here does, because it is applied at the edge
- * after the function returns.
- */
-const CACHEABLE_LISTINGS = new Set(["/destinations", "/tours"])
-const LISTING_CACHE_CONTROL = "public, s-maxage=300, stale-while-revalidate=86400"
-
 export default function proxy(request: NextRequest) {
     const host = request.headers.get("host")?.toLowerCase()
 
@@ -42,16 +29,13 @@ export default function proxy(request: NextRequest) {
         return NextResponse.redirect(url, 308)
     }
 
-    const response = NextResponse.next()
-
-    // Logged-in visitors see the same listing markup — the account-specific
-    // parts (favourites) are fetched in the browser — so a shared cache entry
-    // cannot leak anything between them.
-    if (CACHEABLE_LISTINGS.has(request.nextUrl.pathname)) {
-        response.headers.set("Cache-Control", LISTING_CACHE_CONTROL)
-    }
-
-    return response
+    // Note: /destinations and /tours cannot be CDN-cached from here. They read
+    // searchParams, so Next marks them dynamic, and Vercel replaces
+    // Cache-Control with no-store on a dynamic response — set in next.config
+    // or set on the response here, it does not survive. Making them cacheable
+    // means making them static, which is a change to how the pages read their
+    // filters, not a header.
+    return NextResponse.next()
 }
 
 export const config = {
