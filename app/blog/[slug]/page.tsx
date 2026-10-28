@@ -7,6 +7,8 @@ import { Calendar, ChevronRight, Clock, MapPin } from "lucide-react"
 import { prisma } from "@/lib/prisma"
 import { SITE_URL, SITE_NAME } from "@/lib/site"
 import BlogContent from "@/components/blog-content"
+import { buildAutolinkTerms } from "@/lib/blog-autolink"
+import { getAllDestinations, getDestinationPackages } from "@/lib/destination-page-data"
 import { destinationSlug } from "@/lib/destination-slug"
 
 export const revalidate = 300
@@ -93,6 +95,17 @@ export default async function BlogPostPage({
     const blog = await getBlog(slug)
 
     if (!blog) notFound()
+
+    // Linking happens against live rows, so a renamed destination or a new
+    // trip is picked up without touching the post.
+    const [allDestinations, destPackages] = await Promise.all([
+        getAllDestinations(),
+        blog.destination?.id ? getDestinationPackages(blog.destination.id) : Promise.resolve([]),
+    ])
+    const autolinkTerms = buildAutolinkTerms({
+        destinations: allDestinations,
+        packages: destPackages,
+    })
 
     const place = blog.destination?.city?.trim().replace(/\s*,\s*$/, "") || null
     const tags = (blog.tags || "")
@@ -194,7 +207,44 @@ export default async function BlogPostPage({
                                     {blog.excerpt}
                                 </p>
                             )}
-                            <BlogContent content={blog.content} />
+                            <BlogContent content={blog.content} autolink={autolinkTerms} />
+
+                            {/* Destination names link inline, but package titles
+                                never appear in the prose, so the trips the post
+                                is actually about get their own block rather than
+                                being forced into a sentence. */}
+                            {destPackages.length > 0 && (
+                                <section className="mt-12 pt-9 border-t border-gray-200">
+                                    <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-1.5">
+                                        {place ? `${place} trips you can book` : "Trips you can book"}
+                                    </h2>
+                                    <p className="text-gray-600 mb-6">
+                                        Every itinerary we run here, with what each covers and what it costs.
+                                    </p>
+                                    <ul className="grid gap-4 sm:grid-cols-2">
+                                        {destPackages.slice(0, 4).map((pkg) => (
+                                            <li key={pkg.id}>
+                                                <Link
+                                                    href={`/destinations/trip/${pkg.id}`}
+                                                    className="group flex h-full flex-col rounded-2xl border border-gray-200 bg-white p-5 transition hover:border-primary/40 hover:shadow-md"
+                                                >
+                                                    <p className="text-xs font-semibold uppercase tracking-wider text-primary">
+                                                        {pkg.duration}
+                                                    </p>
+                                                    <h3 className="mt-1.5 font-semibold leading-snug text-gray-900 group-hover:text-primary">
+                                                        {pkg.title}
+                                                    </h3>
+                                                    <p className="mt-auto pt-4 text-sm text-gray-600">
+                                                        {pkg.price > 0
+                                                            ? `From ₹${pkg.price.toLocaleString("en-IN")} per person`
+                                                            : "Contact for price"}
+                                                    </p>
+                                                </Link>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </section>
+                            )}
                         </article>
 
                         <aside className="lg:sticky lg:top-24 space-y-4">

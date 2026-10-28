@@ -64,6 +64,20 @@ const PHOTOS = {
     "kashmir-meadow-mountains": "1666545378454-b605635dd55d",
     "kashmir-valley-river": "1666513307023-5967bf290101",
     "kashmir-snow-range": "1716099933931-628733759685",
+    "meghalaya-nohkalikai-falls": "1637043765564-a071ff91a09f",
+    "meghalaya-waterfall-aerial": "1685346388921-26dd3ae934be",
+    "meghalaya-living-root-bridge": "1742494267580-e026d3737f65",
+    "meghalaya-waterfall-scale": "1594514113865-d1deac339435",
+    "kerala-houseboat-backwaters": "1506461883276-594a12b11cf3",
+    "kerala-tea-hills": "1714489896584-233675ee2f62",
+    "kerala-lake-periyar": "1594034279458-0188b77b943c",
+    "spiti-key-monastery": "1653844573020-71f77a0ccb8c",
+    "spiti-key-monastery-snow": "1746093846930-ab89242b9fb9",
+    "spiti-monastery-range": "1746037299530-8ad5d2061435",
+    "spiti-key-golden-hour": "1652514284048-a297d43ab05d",
+    "tawang-prayer-flags-sunrise": "1668437824006-1be44600774b",
+    "tawang-sunset-range": "1639134956519-3ce73019ef84",
+    "tawang-monastery-monk": "1628070018796-a9f4e2dd482a",
 }
 
 const urls = {}
