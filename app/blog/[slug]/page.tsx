@@ -226,19 +226,32 @@ export default async function BlogPostPage({
                                             <li key={pkg.id}>
                                                 <Link
                                                     href={`/destinations/trip/${pkg.id}`}
-                                                    className="group flex h-full flex-col rounded-2xl border border-gray-200 bg-white p-5 transition hover:border-primary/40 hover:shadow-md"
+                                                    className="group flex h-full flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white transition hover:border-primary/40 hover:shadow-md"
                                                 >
-                                                    <p className="text-xs font-semibold uppercase tracking-wider text-primary">
-                                                        {pkg.duration}
-                                                    </p>
-                                                    <h3 className="mt-1.5 font-semibold leading-snug text-gray-900 group-hover:text-primary">
-                                                        {pkg.title}
-                                                    </h3>
-                                                    <p className="mt-auto pt-4 text-sm text-gray-600">
-                                                        {pkg.price > 0
-                                                            ? `From ₹${pkg.price.toLocaleString("en-IN")} per person`
-                                                            : "Contact for price"}
-                                                    </p>
+                                                    <div className="relative aspect-[16/10] w-full bg-gray-100">
+                                                        {pkg.image && (
+                                                            <Image
+                                                                src={pkg.image}
+                                                                alt={pkg.title}
+                                                                fill
+                                                                sizes="(max-width: 640px) 100vw, 380px"
+                                                                className="object-cover transition-transform duration-500 group-hover:scale-105"
+                                                            />
+                                                        )}
+                                                        <span className="absolute left-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-primary backdrop-blur-sm">
+                                                            {pkg.duration}
+                                                        </span>
+                                                    </div>
+                                                    <div className="flex flex-1 flex-col p-5">
+                                                        <h3 className="font-semibold leading-snug text-gray-900 group-hover:text-primary">
+                                                            {pkg.title}
+                                                        </h3>
+                                                        <p className="mt-auto pt-4 text-sm text-gray-600">
+                                                            {pkg.price > 0
+                                                                ? `From ₹${pkg.price.toLocaleString("en-IN")} per person`
+                                                                : "Contact for price"}
+                                                        </p>
+                                                    </div>
                                                 </Link>
                                             </li>
                                         ))}
