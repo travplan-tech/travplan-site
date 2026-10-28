@@ -23,6 +23,8 @@ interface Destination {
   country: string | null;
   city: string | null;
   region: string | null;
+  /** Live package count, from the API's _count.packages. */
+  tours?: number;
 }
 
 interface HeaderProps {
@@ -74,7 +76,13 @@ export default function Header({ initialActiveSale }: HeaderProps = {}) {
         // A destination is a country if it has no city field or if the name matches the country
         const isCountry = !dest.city || dest.name === dest.country;
 
-        if (dest.name && isCountry) {
+        // And only ones we can actually sell. The menu was listing Dubai,
+        // Bhutan, Malaysia, Japan, Singapore, Nepal and Sri Lanka, none of
+        // which have a single trip — every one of those is a click to an
+        // empty page. This corrects itself the moment inventory is added.
+        const hasTrips = (dest.tours ?? 0) > 0;
+
+        if (dest.name && isCountry && hasTrips) {
           const key = dest.name.trim().toLowerCase();
           if (!uniqueMap.has(key)) {
             uniqueMap.set(key, dest);
@@ -197,7 +205,7 @@ export default function Header({ initialActiveSale }: HeaderProps = {}) {
                           )}
                         </ul>
                       </div>
-                      {REGIONS.map((region) => (
+                      {REGIONS.filter((region) => (destinations[region] || []).length > 0).map((region) => (
                         <div key={region}>
                           <h3 className="font-bold text-gray-900 mb-3 text-sm">{region}</h3>
                           <ul className="space-y-2">
@@ -555,7 +563,7 @@ export default function Header({ initialActiveSale }: HeaderProps = {}) {
                       })()}
                     </div>
                   </div>
-                  {REGIONS.map((region) => (
+                  {REGIONS.filter((region) => (destinations[region] || []).length > 0).map((region) => (
                     <div key={region} className="py-1">
                       <p className="text-sm font-semibold text-gray-700">{region}</p>
                       <div className="pl-2 space-y-1">

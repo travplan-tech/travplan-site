@@ -150,6 +150,15 @@ export default function TripDetailClient({ tourData }: TripDetailClientProps) {
             ? tourData.originalPrice - tourData.price
             : 0
 
+    // "₹14,999 per person" is misleading when that rate only holds at four
+    // travellers. The price-breakdown block names the group size the headline
+    // figure belongs to; where there is no such block the wording is unchanged.
+    const basisMatch = tourData.specialNotes?.match(
+        /(Group of \d+|Couple \([^)]*\))\s*—[^\n]*headline rate/i
+    )
+    const priceBasis = basisMatch ? `per person · ${basisMatch[1].trim().toLowerCase()}` : "per person"
+    const hasBreakdown = !!tourData.specialNotes?.includes("Price Breakdown")
+
     const destinationLabel =
         (tourData.destination?.name || "")
             .split(",")
@@ -346,7 +355,15 @@ export default function TripDetailClient({ tourData }: TripDetailClientProps) {
                                         </span>
                                     )}
                                 </p>
-                                <p className="text-xs text-white/60 mt-1.5">per person · {tourData.duration}</p>
+                                <p className="text-xs text-white/60 mt-1.5">{priceBasis} · {tourData.duration}</p>
+                                {hasBreakdown && (
+                                    <a
+                                        href="#good-to-know"
+                                        className="inline-block mt-2 text-xs font-semibold text-white/85 underline underline-offset-2 hover:text-white"
+                                    >
+                                        See full price breakdown
+                                    </a>
+                                )}
                             </div>
 
                             <div className="p-5 md:p-6">
@@ -509,7 +526,7 @@ export default function TripDetailClient({ tourData }: TripDetailClientProps) {
 
                         {/* --- Special Notes --- */}
                         {tourData.specialNotes && (
-                            <PackageSection title="Good to know" eyebrow="Before you book">
+                            <PackageSection id="good-to-know" title="Good to know" eyebrow="Before you book">
                                 <div className="rounded-2xl border border-amber-200 bg-amber-50/60 overflow-hidden">
                                     <div className="flex items-center gap-2.5 bg-amber-100/70 border-b border-amber-200 px-5 py-3.5">
                                         <span className="w-7 h-7 rounded-lg bg-amber-500 text-white flex items-center justify-center shrink-0">

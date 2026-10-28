@@ -7,14 +7,20 @@ export default function PackageSection({
     eyebrow,
     children,
     bordered = true,
+    id,
 }: {
     title: string
     eyebrow?: string
     children: React.ReactNode
     bordered?: boolean
+    /** Anchor target, so another part of the page can link to this section. */
+    id?: string
 }) {
     return (
-        <section className={bordered ? "pt-7 md:pt-9 border-t border-gray-200" : ""}>
+        <section
+            id={id}
+            className={`${bordered ? "pt-7 md:pt-9 border-t border-gray-200" : ""}${id ? " scroll-mt-24" : ""}`}
+        >
             {eyebrow && (
                 <p className="text-xs font-semibold uppercase tracking-[0.14em] text-primary mb-2">
                     {eyebrow}
