@@ -9,8 +9,42 @@ if (process.env.NODE_ENV !== "production") {
 
 const globalForPrisma = global as unknown as { prisma: PrismaClient; pool: Pool };
 
-const connectionString = process.env.DATABASE_URL!;
+const rawConnectionString = process.env.DATABASE_URL!;
 const isServerless = process.env.NODE_ENV === "production" || !!process.env.VERCEL;
+
+// Aiven terminates TLS with a self-signed chain, so the certificate can only
+// be verified against Aiven's own CA. pg 8.14 changed `sslmode=require` to
+// actually verify the chain (before that it asked for TLS and trusted
+// anything), so the sslmode in DATABASE_URL started failing the build with
+// P1011 "self-signed certificate in certificate chain" - visible only on
+// Vercel, because locally NODE_TLS_REJECT_UNAUTHORIZED=0 is set above.
+//
+// The mode is stripped from the string so that the ssl object below is the
+// only thing deciding, whatever pg does with sslmode in a future release.
+function splitSslMode(url: string): { connectionString: string; sslMode: string | null } {
+    try {
+        const parsed = new URL(url);
+        const sslMode = parsed.searchParams.get("sslmode");
+        parsed.searchParams.delete("sslmode");
+        return { connectionString: parsed.toString(), sslMode };
+    } catch {
+        // A malformed URL is Prisma's problem to report, not ours to mask.
+        return { connectionString: url, sslMode: null };
+    }
+}
+
+const { connectionString, sslMode } = splitSslMode(rawConnectionString);
+
+// Set DATABASE_CA_CERT to Aiven's CA (Service -> Overview -> CA certificate)
+// to verify the chain properly. Without it the connection is still encrypted,
+// but the server's identity is not checked.
+const caCert = process.env.DATABASE_CA_CERT;
+const wantsSsl = isServerless || (sslMode !== null && sslMode !== "disable");
+const sslConfig = wantsSsl
+    ? caCert
+        ? { ca: caCert, rejectUnauthorized: true }
+        : { rejectUnauthorized: false }
+    : undefined;
 // `next build` prerenders with one worker per CPU, and each worker builds its
 // own pool. At 3 connections each that alone overshoots the database's 20, and
 // prerendering then fails with P2037 and bakes empty data into the static
@@ -21,9 +55,7 @@ const isBuild = process.env.NEXT_PHASE === "phase-production-build";
 if (!globalForPrisma.pool) {
     globalForPrisma.pool = new Pool({
         connectionString,
-        ssl: isServerless || connectionString.includes("sslmode=require")
-            ? { rejectUnauthorized: false }
-            : undefined,
+        ssl: sslConfig,
         // The database allows only 20 connections in total, shared by every
         // warm serverless instance plus any local dev server.
         //
