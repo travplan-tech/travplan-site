@@ -25,7 +25,10 @@ import { prisma } from "@/lib/prisma"
 import { withDbRetry } from "@/lib/db-retry"
 
 /** How long a prerendered page is served before it is rebuilt, in seconds. */
-export const PAGE_REVALIDATE = 300
+// A day. Every tag these caches carry is dropped by the admin write route
+// that changes it, so an edit is live immediately and the window only governs
+// how long an untouched page survives without a rebuild.
+export const PAGE_REVALIDATE = 86400
 
 /** Wraps a cached loader so a failed read becomes null instead of a 500. */
 function safely<T>(name: string, load: () => Promise<T>): () => Promise<T | null> {

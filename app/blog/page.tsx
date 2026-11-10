@@ -4,7 +4,7 @@ import Link from "next/link"
 import { Calendar, Clock } from "lucide-react"
 import { prisma } from "@/lib/prisma"
 
-export const revalidate = 300
+export const revalidate = 86400
 
 export const metadata: Metadata = {
     title: { absolute: "Travel Guides & Trip Planning Blog | Travplan" },

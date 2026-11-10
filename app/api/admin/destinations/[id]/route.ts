@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { requireAdmin } from "@/lib/auth-helpers"
+import { revalidateTags } from "@/lib/revalidate"
 
 export async function PUT(
     request: Request,
@@ -9,6 +10,8 @@ export async function PUT(
     try {
         const { user, error, status } = await requireAdmin()
         if (error || !user) {
+            revalidateTags("destinations", "packages")
+
             return NextResponse.json(
                 { error: error || "Unauthorized - Admin access required" },
                 { status: status || 403 }
@@ -32,9 +35,13 @@ export async function PUT(
             },
         })
 
+        revalidateTags("destinations", "packages")
+
         return NextResponse.json(destination)
     } catch (error) {
         console.error("Error updating destination:", error)
+        revalidateTags("destinations", "packages")
+
         return NextResponse.json(
             { error: "Failed to update destination" },
             { status: 500 }
@@ -49,6 +56,8 @@ export async function DELETE(
     try {
         const { user, error, status } = await requireAdmin()
         if (error || !user) {
+            revalidateTags("destinations", "packages")
+
             return NextResponse.json(
                 { error: error || "Unauthorized - Admin access required" },
                 { status: status || 403 }
@@ -62,9 +71,13 @@ export async function DELETE(
             where: { id: destinationId },
         })
 
+        revalidateTags("destinations", "packages")
+
         return NextResponse.json({ message: "Destination deleted successfully" })
     } catch (error) {
         console.error("Error deleting destination:", error)
+        revalidateTags("destinations", "packages")
+
         return NextResponse.json(
             { error: "Failed to delete destination" },
             { status: 500 }

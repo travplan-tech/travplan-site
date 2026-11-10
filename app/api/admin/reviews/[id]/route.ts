@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { requireAdmin } from "@/lib/auth-helpers"
+import { revalidateTags } from "@/lib/revalidate"
 
 export async function PUT(
     request: Request,
@@ -9,6 +10,8 @@ export async function PUT(
     try {
         const { user, error, status } = await requireAdmin()
         if (error || !user) {
+            revalidateTags("reviews")
+
             return NextResponse.json(
                 { error: error || "Unauthorized - Admin access required" },
                 { status: status || 403 }
@@ -47,9 +50,13 @@ export async function PUT(
             },
         })
 
+        revalidateTags("reviews")
+
         return NextResponse.json(review)
     } catch (error) {
         console.error("Error updating review:", error)
+        revalidateTags("reviews")
+
         return NextResponse.json(
             { error: "Failed to update review" },
             { status: 500 }
@@ -64,6 +71,8 @@ export async function DELETE(
     try {
         const { user, error, status } = await requireAdmin()
         if (error || !user) {
+            revalidateTags("reviews")
+
             return NextResponse.json(
                 { error: error || "Unauthorized - Admin access required" },
                 { status: status || 403 }
@@ -77,9 +86,13 @@ export async function DELETE(
             where: { id: reviewId },
         })
 
+        revalidateTags("reviews")
+
         return NextResponse.json({ message: "Review deleted successfully" })
     } catch (error) {
         console.error("Error deleting review:", error)
+        revalidateTags("reviews")
+
         return NextResponse.json(
             { error: "Failed to delete review" },
             { status: 500 }

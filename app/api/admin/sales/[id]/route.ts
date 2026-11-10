@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { requireAdmin } from "@/lib/auth-helpers"
+import { revalidateTags } from "@/lib/revalidate"
 
 // Prevent Next.js from caching this route
 export const dynamic = "force-dynamic"
@@ -44,6 +45,8 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     try {
     const { error, status } = await requireAdmin()
     if (error) {
+        revalidateTags("active-sale")
+
         return NextResponse.json({ error }, { status })
     }
 
@@ -85,9 +88,13 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
             }
         })
 
+        revalidateTags("active-sale")
+
         return NextResponse.json(sale)
     } catch (error) {
         console.error("Error updating sale:", error)
+        revalidateTags("active-sale")
+
         return NextResponse.json({ error: "Failed to update sale" }, { status: 500 })
     }
 }
@@ -96,6 +103,8 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
     try {
     const { error, status } = await requireAdmin()
     if (error) {
+        revalidateTags("active-sale")
+
         return NextResponse.json({ error }, { status })
     }
 
@@ -107,9 +116,13 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
             where: { id }
         })
 
+        revalidateTags("active-sale")
+
         return NextResponse.json({ success: true })
     } catch (error) {
         console.error("Error deleting sale:", error)
+        revalidateTags("active-sale")
+
         return NextResponse.json({ error: "Failed to delete sale" }, { status: 500 })
     }
 }

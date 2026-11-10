@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { requireAdmin } from "@/lib/auth-helpers"
 import { getPackagesList } from "@/lib/packages-data"
+import { revalidateTags } from "@/lib/revalidate"
 
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url)
@@ -66,6 +67,8 @@ export async function POST(request: Request) {
         // Check admin authorization
         const { error, status } = await requireAdmin()
         if (error) {
+            revalidateTags("packages")
+
             return NextResponse.json({ error }, { status })
         }
 
@@ -169,9 +172,13 @@ export async function POST(request: Request) {
             },
         })
 
+        revalidateTags("packages")
+
         return NextResponse.json(pkg, { status: 201 })
     } catch (error) {
         console.error("Error creating package:", error)
+        revalidateTags("packages")
+
         return NextResponse.json({ error: "Failed to create package" }, { status: 500 })
     }
 }

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { requireAdmin } from "@/lib/auth-helpers"
+import { revalidateTags } from "@/lib/revalidate"
 
 interface RoomConfig {
     roomType: number
@@ -51,12 +52,16 @@ export async function POST(request: Request) {
     try {
         const { error, status } = await requireAdmin()
         if (error) {
+            revalidateTags("packages")
+
             return NextResponse.json({ error }, { status })
         }
 
         const body: TourDateInput = await request.json()
 
         if (!body.packageId || !body.startDate || !body.endDate || !body.dateLabel) {
+            revalidateTags("packages")
+
             return NextResponse.json(
                 { error: "Package ID, start date, end date, and date label are required" },
                 { status: 400 }
@@ -103,9 +108,13 @@ export async function POST(request: Request) {
             })
         })
 
+        revalidateTags("packages")
+
         return NextResponse.json(tourDate, { status: 201 })
     } catch (error) {
         console.error("Error creating tour date:", error)
+        revalidateTags("packages")
+
         return NextResponse.json({ error: "Failed to create tour date" }, { status: 500 })
     }
 }
@@ -115,6 +124,8 @@ export async function PUT(request: Request) {
     try {
         const { error, status } = await requireAdmin()
         if (error) {
+            revalidateTags("packages")
+
             return NextResponse.json({ error }, { status })
         }
 
@@ -122,6 +133,8 @@ export async function PUT(request: Request) {
         const { id, roomConfig, ...tourDateData } = body
 
         if (!id) {
+            revalidateTags("packages")
+
             return NextResponse.json({ error: "Tour date ID required" }, { status: 400 })
         }
 
@@ -173,9 +186,13 @@ export async function PUT(request: Request) {
             })
         })
 
+        revalidateTags("packages")
+
         return NextResponse.json(tourDate)
     } catch (error) {
         console.error("Error updating tour date:", error)
+        revalidateTags("packages")
+
         return NextResponse.json({ error: "Failed to update tour date" }, { status: 500 })
     }
 }
@@ -185,6 +202,8 @@ export async function DELETE(request: Request) {
     try {
         const { error, status } = await requireAdmin()
         if (error) {
+            revalidateTags("packages")
+
             return NextResponse.json({ error }, { status })
         }
 
@@ -192,6 +211,8 @@ export async function DELETE(request: Request) {
         const id = searchParams.get("id")
 
         if (!id) {
+            revalidateTags("packages")
+
             return NextResponse.json({ error: "Tour date ID required" }, { status: 400 })
         }
 
@@ -199,9 +220,13 @@ export async function DELETE(request: Request) {
             where: { id: parseInt(id) }
         })
 
+        revalidateTags("packages")
+
         return NextResponse.json({ success: true })
     } catch (error) {
         console.error("Error deleting tour date:", error)
+        revalidateTags("packages")
+
         return NextResponse.json({ error: "Failed to delete tour date" }, { status: 500 })
     }
 }

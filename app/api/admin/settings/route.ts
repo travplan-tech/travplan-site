@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma"
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { requireAdmin } from "@/lib/auth-helpers"
+import { revalidateTags } from "@/lib/revalidate"
 
 // GET - Fetch site settings (public for sale button)
 export async function GET(request: NextRequest) {
@@ -42,12 +43,16 @@ export async function POST(request: NextRequest) {
     try {
         const { error, status } = await requireAdmin()
         if (error) {
+            revalidateTags("homepage-settings")
+
             return NextResponse.json({ error }, { status })
         }
 
         const { key, value } = await request.json();
 
         if (!key) {
+            revalidateTags("homepage-settings")
+
             return NextResponse.json(
                 { error: "Key is required" },
                 { status: 400 }
@@ -61,9 +66,13 @@ export async function POST(request: NextRequest) {
             create: { key, value },
         });
 
+        revalidateTags("homepage-settings")
+
         return NextResponse.json(setting);
     } catch (error) {
         console.error("Failed to update setting:", error);
+        revalidateTags("homepage-settings")
+
         return NextResponse.json(
             { error: "Failed to update setting" },
             { status: 500 }

@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { requireAdmin } from "@/lib/auth-helpers"
+import { revalidateTags } from "@/lib/revalidate"
 
 // GET - Fetch single expert
 export async function GET(
@@ -43,6 +44,8 @@ export async function PUT(
     try {
         const { error, status } = await requireAdmin()
         if (error) {
+            revalidateTags("experts")
+
             return NextResponse.json({ error }, { status })
         }
 
@@ -70,9 +73,13 @@ export async function PUT(
             },
         })
 
+        revalidateTags("experts")
+
         return NextResponse.json(expert)
     } catch (error) {
         console.error("Failed to update expert:", error)
+        revalidateTags("experts")
+
         return NextResponse.json(
             { error: "Failed to update expert" },
             { status: 500 }
@@ -88,6 +95,8 @@ export async function DELETE(
     try {
         const { error, status } = await requireAdmin()
         if (error) {
+            revalidateTags("experts")
+
             return NextResponse.json({ error }, { status })
         }
 
@@ -96,9 +105,13 @@ export async function DELETE(
             where: { id: parseInt(id) },
         })
 
+        revalidateTags("experts")
+
         return NextResponse.json({ message: "Expert deleted successfully" })
     } catch (error) {
         console.error("Failed to delete expert:", error)
+        revalidateTags("experts")
+
         return NextResponse.json(
             { error: "Failed to delete expert" },
             { status: 500 }

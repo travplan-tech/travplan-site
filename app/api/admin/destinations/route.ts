@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { requireAdmin } from "@/lib/auth-helpers"
+import { revalidateTags } from "@/lib/revalidate"
 
 export async function GET() {
     try {
@@ -49,6 +50,8 @@ export async function POST(request: Request) {
     try {
         const { user, error, status } = await requireAdmin()
         if (error || !user) {
+            revalidateTags("destinations")
+
             return NextResponse.json(
                 { error: error || "Unauthorized - Admin access required" },
                 { status: status || 403 }
@@ -69,9 +72,13 @@ export async function POST(request: Request) {
             },
         })
 
+        revalidateTags("destinations")
+
         return NextResponse.json(destination, { status: 201 })
     } catch (error) {
         console.error("Error creating destination:", error)
+        revalidateTags("destinations")
+
         return NextResponse.json(
             { error: "Failed to create destination" },
             { status: 500 }

@@ -15,7 +15,7 @@ import {
 // Prerendered at build time and rebuilt in the background every 5 minutes, so
 // a visitor is never waiting on the database. Next.js reads this statically, so
 // it has to be a literal and cannot reference PAGE_REVALIDATE.
-export const revalidate = 300
+export const revalidate = 86400
 
 export const metadata: Metadata = {
   title: { absolute: "Travplan Tour Packages | Group Trips & Custom Holidays" },

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { requireAdmin } from "@/lib/auth-helpers"
+import { revalidateTags } from "@/lib/revalidate"
 
 // GET - List all feature boxes
 export async function GET() {
@@ -32,6 +33,8 @@ export async function POST(request: Request) {
     try {
         const { user, error, status } = await requireAdmin()
         if (error || !user) {
+            revalidateTags("feature-boxes")
+
             return NextResponse.json(
                 { error: error || "Unauthorized - Admin access required" },
                 { status: status || 403 }
@@ -50,9 +53,13 @@ export async function POST(request: Request) {
             },
         })
 
+        revalidateTags("feature-boxes")
+
         return NextResponse.json(featureBox, { status: 201 })
     } catch (error) {
         console.error("Error creating feature box:", error)
+        revalidateTags("feature-boxes")
+
         return NextResponse.json(
             { error: "Failed to create feature box" },
             { status: 500 }

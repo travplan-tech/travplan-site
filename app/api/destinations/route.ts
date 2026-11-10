@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { getDestinations, PAGE_REVALIDATE } from "@/lib/home-data"
 import { requireAdmin } from "@/lib/auth-helpers"
+import { revalidateTags } from "@/lib/revalidate"
 
 export async function GET(request: Request) {
     try {
@@ -106,6 +107,8 @@ export async function POST(request: Request) {
         // Check admin authorization
         const { error, status } = await requireAdmin()
         if (error) {
+            revalidateTags("destinations")
+
             return NextResponse.json({ error }, { status })
         }
 
@@ -124,9 +127,13 @@ export async function POST(request: Request) {
             },
         })
 
+        revalidateTags("destinations")
+
         return NextResponse.json(destination, { status: 201 })
     } catch (error) {
         console.error("Error creating destination:", error)
+        revalidateTags("destinations")
+
         return NextResponse.json({ error: "Failed to create destination" }, { status: 500 })
     }
 }

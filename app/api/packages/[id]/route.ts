@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { requireAdmin } from "@/lib/auth-helpers"
+import { revalidateTags } from "@/lib/revalidate"
 
 export async function GET(
     request: Request,
@@ -156,6 +157,8 @@ export async function PUT(
     try {
         const { error, status } = await requireAdmin()
         if (error) {
+            revalidateTags("packages")
+
             return NextResponse.json({ error }, { status })
         }
 
@@ -343,9 +346,13 @@ export async function PUT(
             })
         }
 
+        revalidateTags("packages")
+
         return NextResponse.json(pkg)
     } catch (error) {
         console.error("Error updating package:", error)
+        revalidateTags("packages")
+
         return NextResponse.json({ error: "Failed to update package" }, { status: 500 })
     }
 }
@@ -357,6 +364,8 @@ export async function DELETE(
     try {
         const { error, status } = await requireAdmin()
         if (error) {
+            revalidateTags("packages")
+
             return NextResponse.json({ error }, { status })
         }
 
@@ -367,9 +376,13 @@ export async function DELETE(
             where: { id: packageId },
         })
 
+        revalidateTags("packages")
+
         return NextResponse.json({ message: "Package deleted successfully" })
     } catch (error) {
         console.error("Error deleting package:", error)
+        revalidateTags("packages")
+
         return NextResponse.json({ error: "Failed to delete package" }, { status: 500 })
     }
 }

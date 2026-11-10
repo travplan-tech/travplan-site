@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { requireAdmin } from "@/lib/auth-helpers"
+import { revalidateTags } from "@/lib/revalidate"
 
 export async function PUT(
     request: Request,
@@ -9,6 +10,8 @@ export async function PUT(
     try {
         const { user, error, status } = await requireAdmin()
         if (error || !user) {
+            revalidateTags("packages")
+
             return NextResponse.json(
                 { error: error || "Unauthorized - Admin access required" },
                 { status: status || 403 }
@@ -58,9 +61,13 @@ export async function PUT(
             },
         })
 
+        revalidateTags("packages")
+
         return NextResponse.json(packageData)
     } catch (error) {
         console.error("Error updating package:", error)
+        revalidateTags("packages")
+
         return NextResponse.json(
             { error: "Failed to update package" },
             { status: 500 }
@@ -75,6 +82,8 @@ export async function DELETE(
     try {
         const { user, error, status } = await requireAdmin()
         if (error || !user) {
+            revalidateTags("packages")
+
             return NextResponse.json(
                 { error: error || "Unauthorized - Admin access required" },
                 { status: status || 403 }
@@ -88,9 +97,13 @@ export async function DELETE(
             where: { id: packageId },
         })
 
+        revalidateTags("packages")
+
         return NextResponse.json({ message: "Package deleted successfully" })
     } catch (error) {
         console.error("Error deleting package:", error)
+        revalidateTags("packages")
+
         return NextResponse.json(
             { error: "Failed to delete package" },
             { status: 500 }

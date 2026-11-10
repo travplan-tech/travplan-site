@@ -13,7 +13,7 @@ import Link from "next/link";
 // Force dynamic rendering so admin changes (e.g., brochure PDF uploads) are reflected immediately
 // Pre-render every package at build time and refresh in the background, so a
 // visitor is served static HTML instead of waiting on a database round trip.
-export const revalidate = 300;
+export const revalidate = 86400;
 export const dynamicParams = true;
 
 export async function generateStaticParams() {

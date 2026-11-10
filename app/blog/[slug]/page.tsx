@@ -11,7 +11,7 @@ import { buildAutolinkTerms } from "@/lib/blog-autolink"
 import { getAllDestinations, getDestinationPackages } from "@/lib/destination-page-data"
 import { destinationSlug } from "@/lib/destination-slug"
 
-export const revalidate = 300
+export const revalidate = 86400
 export const dynamicParams = true
 
 export async function generateStaticParams() {

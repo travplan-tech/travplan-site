@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { requireAdmin } from "@/lib/auth-helpers"
+import { revalidateTags } from "@/lib/revalidate"
 
 // PUT - Update feature box
 export async function PUT(
@@ -10,6 +11,8 @@ export async function PUT(
     try {
         const { user, error, status } = await requireAdmin()
         if (error || !user) {
+            revalidateTags("feature-boxes")
+
             return NextResponse.json(
                 { error: error || "Unauthorized - Admin access required" },
                 { status: status || 403 }
@@ -31,9 +34,13 @@ export async function PUT(
             },
         })
 
+        revalidateTags("feature-boxes")
+
         return NextResponse.json(featureBox)
     } catch (error) {
         console.error("Error updating feature box:", error)
+        revalidateTags("feature-boxes")
+
         return NextResponse.json(
             { error: "Failed to update feature box" },
             { status: 500 }
@@ -49,6 +56,8 @@ export async function PATCH(
     try {
         const { user, error, status } = await requireAdmin()
         if (error || !user) {
+            revalidateTags("feature-boxes")
+
             return NextResponse.json(
                 { error: error || "Unauthorized - Admin access required" },
                 { status: status || 403 }
@@ -64,9 +73,13 @@ export async function PATCH(
             data: { isActive: body.isActive },
         })
 
+        revalidateTags("feature-boxes")
+
         return NextResponse.json(featureBox)
     } catch (error) {
         console.error("Error updating feature box status:", error)
+        revalidateTags("feature-boxes")
+
         return NextResponse.json(
             { error: "Failed to update feature box status" },
             { status: 500 }
@@ -82,6 +95,8 @@ export async function DELETE(
     try {
         const { user, error, status } = await requireAdmin()
         if (error || !user) {
+            revalidateTags("feature-boxes")
+
             return NextResponse.json(
                 { error: error || "Unauthorized - Admin access required" },
                 { status: status || 403 }
@@ -95,9 +110,13 @@ export async function DELETE(
             where: { id: featureBoxId },
         })
 
+        revalidateTags("feature-boxes")
+
         return NextResponse.json({ message: "Feature box deleted successfully" })
     } catch (error) {
         console.error("Error deleting feature box:", error)
+        revalidateTags("feature-boxes")
+
         return NextResponse.json(
             { error: "Failed to delete feature box" },
             { status: 500 }

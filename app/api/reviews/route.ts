@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { requireAuth } from "@/lib/auth-helpers"
+import { revalidateTags } from "@/lib/revalidate"
 
 export const dynamic = "force-dynamic"
 
@@ -91,6 +92,8 @@ export async function POST(request: Request) {
     try {
         const { user, error, status } = await requireAuth()
         if (error || !user) {
+            revalidateTags("reviews")
+
             return NextResponse.json({ error: error || "Unauthorized" }, { status: status || 401 })
         }
 
@@ -98,6 +101,8 @@ export async function POST(request: Request) {
         const { packageId, rating, comment, images, video, bookingRef } = body
 
         if (!packageId || !rating || !comment) {
+            revalidateTags("reviews")
+
             return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
         }
 
@@ -122,6 +127,8 @@ export async function POST(request: Request) {
                 }
             })
             if (existingByBooking) {
+                revalidateTags("reviews")
+
                 return NextResponse.json({ error: "You have already reviewed this booking" }, { status: 400 })
             }
         } else {
@@ -134,6 +141,8 @@ export async function POST(request: Request) {
                 }
             })
             if (existingByPackage) {
+                revalidateTags("reviews")
+
                 return NextResponse.json({ error: "You have already reviewed this package" }, { status: 400 })
             }
         }
@@ -162,9 +171,13 @@ export async function POST(request: Request) {
             }
         })
 
+        revalidateTags("reviews")
+
         return NextResponse.json(review)
     } catch (error) {
         console.error("Error creating review:", error)
+        revalidateTags("reviews")
+
         return NextResponse.json({ error: "Failed to create review" }, { status: 500 })
     }
 }

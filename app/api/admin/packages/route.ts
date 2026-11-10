@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { requireAdmin } from "@/lib/auth-helpers"
+import { revalidateTags } from "@/lib/revalidate"
 
 // GET - List all packages for admin
 export async function GET() {
@@ -50,6 +51,8 @@ export async function POST(request: Request) {
     try {
         const { user, error, status } = await requireAdmin()
         if (error || !user) {
+            revalidateTags("packages")
+
             return NextResponse.json(
                 { error: error || "Unauthorized - Admin access required" },
                 { status: status || 403 }
@@ -96,9 +99,13 @@ export async function POST(request: Request) {
             },
         })
 
+        revalidateTags("packages")
+
         return NextResponse.json(packageData, { status: 201 })
     } catch (error) {
         console.error("Error creating package:", error)
+        revalidateTags("packages")
+
         return NextResponse.json(
             { error: "Failed to create package" },
             { status: 500 }

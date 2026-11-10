@@ -97,11 +97,18 @@ export const metadata: Metadata = {
   },
 };
 
+const DAY = 60 * 60 * 24
+
 // Fetch active sale data server-side
 // This runs in the root layout, so noStore() here forced a database query on
 // every request for every page - a round trip before any HTML could be sent,
-// and a steady drain on a connection pool capped at 20. Sales change rarely,
-// so cache it for a minute instead.
+// and a steady drain on a connection pool capped at 20.
+//
+// The window here is the whole site's: Next takes the SHORTEST revalidate in
+// a render tree as the page's own, and this layout wraps every page. A minute
+// here meant 124 routes revalidating every minute regardless of what their own
+// files asked for, which is what exhausted the ISR write budget. The sales
+// admin routes drop the "active-sale" tag, so a sale still goes live at once.
 const getActiveSale = unstable_cache(
   async () => {
     try {
@@ -116,7 +123,7 @@ const getActiveSale = unstable_cache(
     }
   },
   ["active-sale"],
-  { revalidate: 60, tags: ["active-sale"] }
+  { revalidate: DAY, tags: ["active-sale"] }
 );
 
 export default async function RootLayout({

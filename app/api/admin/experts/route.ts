@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { requireAdmin } from "@/lib/auth-helpers"
+import { revalidateTags } from "@/lib/revalidate"
 
 // GET - Fetch all trip experts
 export async function GET(request: NextRequest) {
@@ -72,6 +73,8 @@ export async function POST(request: NextRequest) {
     try {
         const { error, status } = await requireAdmin()
         if (error) {
+            revalidateTags("experts")
+
             return NextResponse.json({ error }, { status })
         }
 
@@ -79,6 +82,8 @@ export async function POST(request: NextRequest) {
         const { name, email, avatar, bio, expertise, whatsappNumber, type, isActive, order } = body
 
         if (!name) {
+            revalidateTags("experts")
+
             return NextResponse.json(
                 { error: "Name is required" },
                 { status: 400 }
@@ -104,9 +109,13 @@ export async function POST(request: NextRequest) {
             },
         })
 
+        revalidateTags("experts")
+
         return NextResponse.json(expert, { status: 201 })
     } catch (error) {
         console.error("Failed to create expert:", error)
+        revalidateTags("experts")
+
         return NextResponse.json(
             { error: "Failed to create expert" },
             { status: 500 }

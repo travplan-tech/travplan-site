@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { requireAdmin } from "@/lib/auth-helpers"
+import { revalidateTags } from "@/lib/revalidate"
 
 export const dynamic = "force-dynamic"
 
@@ -63,6 +64,8 @@ export async function POST(request: Request) {
     try {
         const { user, error, status } = await requireAdmin()
         if (error || !user) {
+            revalidateTags("reviews")
+
             return NextResponse.json(
                 { error: error || "Unauthorized - Admin access required" },
                 { status: status || 403 }
@@ -83,6 +86,8 @@ export async function POST(request: Request) {
             if (existingPackage) {
                 packageId = existingPackage.id
             } else {
+                revalidateTags("reviews")
+
                 return NextResponse.json(
                     { error: "Package not found. Please select an existing package." },
                     { status: 400 }
@@ -92,6 +97,8 @@ export async function POST(request: Request) {
 
         // Validate packageId is present
         if (!packageId) {
+            revalidateTags("reviews")
+
             return NextResponse.json(
                 { error: "Package is required" },
                 { status: 400 }
@@ -117,6 +124,8 @@ export async function POST(request: Request) {
         } else if (body.userName) {
             reviewData.userName = body.userName
         } else {
+            revalidateTags("reviews")
+
             return NextResponse.json(
                 { error: "User selection or Name is required" },
                 { status: 400 }
@@ -142,9 +151,13 @@ export async function POST(request: Request) {
             },
         })
 
+        revalidateTags("reviews")
+
         return NextResponse.json(review, { status: 201 })
     } catch (error) {
         console.error("Error creating review:", error)
+        revalidateTags("reviews")
+
         return NextResponse.json(
             { error: "Failed to create review" },
             { status: 500 }

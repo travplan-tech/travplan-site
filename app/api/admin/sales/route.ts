@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { requireAdmin } from "@/lib/auth-helpers"
+import { revalidateTags } from "@/lib/revalidate"
 
 // Prevent Next.js from caching this route
 export const dynamic = "force-dynamic"
@@ -37,6 +38,8 @@ export async function POST(request: Request) {
     try {
     const { error, status } = await requireAdmin()
     if (error) {
+        revalidateTags("active-sale")
+
         return NextResponse.json({ error }, { status })
     }
 
@@ -44,6 +47,8 @@ export async function POST(request: Request) {
         const { name, slug, description, isActive } = body
 
         if (!name || !slug) {
+            revalidateTags("active-sale")
+
             return NextResponse.json({ error: "Name and Slug are required" }, { status: 400 })
         }
 
@@ -56,9 +61,13 @@ export async function POST(request: Request) {
             }
         })
 
+        revalidateTags("active-sale")
+
         return NextResponse.json(sale)
     } catch (error) {
         console.error("Error creating sale:", error)
+        revalidateTags("active-sale")
+
         return NextResponse.json({ error: "Failed to create sale" }, { status: 500 })
     }
 }
