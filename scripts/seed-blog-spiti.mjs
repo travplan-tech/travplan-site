@@ -9,6 +9,7 @@
 import { PrismaClient } from "@prisma/client"
 import { PrismaPg } from "@prisma/adapter-pg"
 import { Pool } from "pg"
+import { revalidateRemote } from "../lib/revalidate-remote.mjs"
 
 const connectionString = process.env.DATABASE_URL
 if (!connectionString) {
@@ -183,5 +184,6 @@ async function main() {
 }
 
 main()
+    .then(() => revalidateRemote(["blogs"]))
     .catch((e) => { console.error(e); process.exit(1) })
     .finally(async () => { await prisma.$disconnect(); await pool.end() })

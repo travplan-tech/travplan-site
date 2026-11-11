@@ -13,6 +13,7 @@
 import { PrismaClient } from "@prisma/client"
 import { PrismaPg } from "@prisma/adapter-pg"
 import { Pool } from "pg"
+import { revalidateRemote } from "../lib/revalidate-remote.mjs"
 
 const APPLY = process.argv.includes("--apply")
 
