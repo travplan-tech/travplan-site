@@ -1,7 +1,8 @@
 "use client"
 
 import { useState } from "react"
-import { MessageCircle, Phone, Send } from "lucide-react"
+import { Phone, Send } from "lucide-react"
+import { FaWhatsapp } from "react-icons/fa"
 import EnquirySheet from "@/components/enquiry-sheet"
 import { PHONE_HREF, enquiryMessage, whatsappUrl } from "@/lib/contact"
 import { track } from "@/lib/analytics"
@@ -43,7 +44,7 @@ export default function StickyEnquiryCta({
                     aria-label="Chat with us on WhatsApp"
                     className="flex h-12 w-12 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg shadow-black/20 transition hover:scale-105 hover:bg-[#1ebe5b]"
                 >
-                    <MessageCircle size={22} aria-hidden="true" />
+                    <FaWhatsapp size={26} aria-hidden="true" />
                 </a>
                 <a
                     href={PHONE_HREF}

@@ -110,7 +110,9 @@ export default function EnquirySheet({ open, onClose, context, packageId }: Enqu
     }
 
     const field =
-        "w-full rounded-xl border border-gray-300 px-3.5 py-2.5 text-[16px] text-gray-900 placeholder:text-gray-400 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+        "w-full rounded-xl border border-gray-300 px-4 py-3.5 text-[16px] text-gray-900 placeholder:text-gray-400 transition focus:border-primary focus:outline-none focus:ring-4 focus:ring-primary/15"
+
+    const labelClass = "block text-sm font-semibold text-gray-800 mb-1.5"
 
     return (
         <div className="fixed inset-0 z-[70]" role="dialog" aria-modal="true" aria-label="Send an enquiry">
@@ -122,7 +124,7 @@ export default function EnquirySheet({ open, onClose, context, packageId }: Enqu
             />
 
             <div
-                className={`absolute inset-x-0 bottom-0 md:inset-0 md:m-auto md:h-fit md:max-w-lg rounded-t-3xl md:rounded-3xl bg-white shadow-2xl transition-transform duration-200 ease-out max-h-[92vh] overflow-y-auto ${shown ? "translate-y-0" : "translate-y-full md:translate-y-4"
+                className={`absolute inset-x-0 bottom-0 md:inset-0 md:m-auto md:h-fit md:max-w-xl rounded-t-3xl md:rounded-3xl bg-white shadow-2xl transition-transform duration-200 ease-out max-h-[92vh] overflow-y-auto ${shown ? "translate-y-0" : "translate-y-full md:translate-y-4"
                     }`}
             >
                 {/* Grab handle: the affordance that says this panel can be pulled away. */}
@@ -169,38 +171,51 @@ export default function EnquirySheet({ open, onClose, context, packageId }: Enqu
                         </button>
                     </div>
                 ) : (
-                    <form onSubmit={submit} className="space-y-3 px-5 pb-[calc(1.5rem+env(safe-area-inset-bottom))] pt-4">
-                        <input
-                            className={field}
-                            placeholder="Your name"
-                            autoComplete="name"
-                            value={form.name}
-                            onChange={(e) => setForm({ ...form, name: e.target.value })}
-                        />
-                        <input
-                            className={field}
-                            type="tel"
-                            inputMode="tel"
-                            placeholder="Phone number"
-                            autoComplete="tel"
-                            value={form.phone}
-                            onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                        />
-                        <input
-                            className={field}
-                            type="email"
-                            inputMode="email"
-                            placeholder="Email address"
-                            autoComplete="email"
-                            value={form.email}
-                            onChange={(e) => setForm({ ...form, email: e.target.value })}
-                        />
-                        <div className="flex gap-3">
+                    <form onSubmit={submit} className="space-y-4 px-5 pb-[calc(1.5rem+env(safe-area-inset-bottom))] pt-5 md:px-7">
+                        <div>
+                            <label htmlFor="enq-name" className={labelClass}>Your name</label>
+                            <input
+                                id="enq-name"
+                                className={field}
+                                placeholder="e.g. Priya Sharma"
+                                autoComplete="name"
+                                value={form.name}
+                                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                            />
+                        </div>
+                        <div>
+                            <label htmlFor="enq-phone" className={labelClass}>Phone number</label>
+                            <input
+                                id="enq-phone"
+                                className={field}
+                                type="tel"
+                                inputMode="tel"
+                                placeholder="We will call or WhatsApp you"
+                                autoComplete="tel"
+                                value={form.phone}
+                                onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                            />
+                        </div>
+                        <div>
+                            <label htmlFor="enq-email" className={labelClass}>Email address</label>
+                            <input
+                                id="enq-email"
+                                className={field}
+                                type="email"
+                                inputMode="email"
+                                placeholder="Where we send the details"
+                                autoComplete="email"
+                                value={form.email}
+                                onChange={(e) => setForm({ ...form, email: e.target.value })}
+                            />
+                        </div>
+                        <div>
+                            <label htmlFor="enq-travellers" className={labelClass}>Travellers</label>
                             <select
-                                className={`${field} flex-1`}
+                                id="enq-travellers"
+                                className={field}
                                 value={form.numberOfTravelers}
                                 onChange={(e) => setForm({ ...form, numberOfTravelers: e.target.value })}
-                                aria-label="Number of travellers"
                             >
                                 {["1", "2", "3", "4", "5", "6+"].map((n) => (
                                     <option key={n} value={n}>
@@ -209,12 +224,18 @@ export default function EnquirySheet({ open, onClose, context, packageId }: Enqu
                                 ))}
                             </select>
                         </div>
-                        <textarea
-                            className={`${field} min-h-[84px] resize-none`}
-                            placeholder="Travel dates, budget, anything else (optional)"
-                            value={form.message}
-                            onChange={(e) => setForm({ ...form, message: e.target.value })}
-                        />
+                        <div>
+                            <label htmlFor="enq-message" className={labelClass}>
+                                Anything else <span className="font-normal text-gray-500">(optional)</span>
+                            </label>
+                            <textarea
+                                id="enq-message"
+                                className={`${field} min-h-[92px] resize-none`}
+                                placeholder="Travel dates, budget, what you want to see"
+                                value={form.message}
+                                onChange={(e) => setForm({ ...form, message: e.target.value })}
+                            />
+                        </div>
 
                         {error && (
                             <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
@@ -225,7 +246,7 @@ export default function EnquirySheet({ open, onClose, context, packageId }: Enqu
                         <button
                             type="submit"
                             disabled={sending}
-                            className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3.5 font-semibold text-white transition hover:bg-primary/90 disabled:opacity-60"
+                            className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-4 text-lg font-semibold text-white shadow-lg shadow-primary/25 transition hover:bg-primary/90 active:scale-[0.99] disabled:opacity-60"
                         >
                             {sending ? (
                                 <>
