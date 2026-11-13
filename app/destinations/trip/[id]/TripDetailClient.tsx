@@ -46,6 +46,7 @@ const TopRatedSection = dynamic(() => import("@/components/top-rated"), {
     loading: () => <CardGridSkeleton cards={3} />,
 });
 const EnquiryDialog = dynamic(() => import("@/components/EnquiryDialog"));
+const StickyEnquiryCta = dynamic(() => import("@/components/sticky-enquiry-cta"));
 const BrochureDialog = dynamic(() => import("@/components/BrochureDialog"));
 const FavoriteButton = dynamic(() => import("@/components/FavoriteButton"));
 
@@ -586,6 +587,11 @@ export default function TripDetailClient({ tourData }: TripDetailClientProps) {
                 </div>
                 <TopRatedSection />
             </div>
+
+            {/* Same conversion bar as the destination pages: one enquiry button
+                in place of the phone navigation, with WhatsApp and call pinned
+                bottom-right. */}
+            <StickyEnquiryCta context={tourData.title} packageId={tourData.id} />
 
             {/* Enquiry Dialog - Conditionally Rendered by dynamic import */}
             {showEnquiryDialog && (

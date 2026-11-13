@@ -25,6 +25,14 @@ export default function MobileBottomBar() {
     // Checkout and admin screens have their own controls at the bottom.
     if (pathname.startsWith("/admin") || pathname.startsWith("/checkout")) return null
 
+    // Destination and package pages swap this navigation for a single
+    // "Send enquiry" bar (components/sticky-enquiry-cta.tsx). A visitor who
+    // is already looking at one trip is better served by the action than by
+    // four ways to go somewhere else - and two fixed bars would stack.
+    const isConversionPage =
+        /^\/destinations\/[^/]+$/.test(pathname) || pathname.startsWith("/destinations/trip/")
+    if (isConversionPage) return null
+
     const isActive = (href: string) =>
         href === "/" ? pathname === "/" : pathname.startsWith(href)
 

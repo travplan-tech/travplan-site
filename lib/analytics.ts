@@ -35,6 +35,7 @@ export const analyticsEnabled = Boolean(GA_ID || GTM_ID)
 /** The conversions worth counting, named so a report reads plainly. */
 export type AnalyticsEvent =
     | "enquiry_submitted"
+    | "lead_form_submitted"
     | "brochure_requested"
     | "whatsapp_click"
     | "phone_click"
